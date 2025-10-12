@@ -48,14 +48,14 @@ Welcome to Vroom Vroom, a driving simulator where the police presence is so absu
 
 ### Prerequisites
 - Windows 10/11 (64-bit)
-- Unreal Engine 5.3+
+- Unreal Engine 5.6+ (tested with 5.6.1)
 - Visual Studio 2022 with C++ Game Development
 - 10GB free disk space
 
 ### Building the Game
 
 #### Option 1: Using Unreal Editor (Recommended)
-1. Open `VroomVroom.uproject` in Unreal Engine 5.3+
+1. Open `VroomVroom.uproject` in Unreal Engine 5.6.1
 2. When prompted about missing modules, click "Yes" to rebuild
 3. Follow the Blueprint setup in `BUILD_INSTRUCTIONS.md`
 4. File → Package Project → Windows → Windows (64-bit)

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-1. **Unreal Engine 5.3+** installed via Epic Games Launcher
+1. **Unreal Engine 5.6+** installed via Epic Games Launcher (tested with 5.6.1)
 2. **Visual Studio 2022** with:
    - Game Development with C++ workload
    - Windows 10/11 SDK
@@ -19,8 +19,11 @@
 
 ### Step 2: Open in Unreal Engine
 1. Double-click `VroomVroom.uproject`
-2. If prompted about missing modules, click "Yes" to rebuild
-3. Wait for compilation (first time takes 5-10 minutes)
+2. Epic Games Launcher will open and associate with UE 5.6.1
+3. If prompted about missing modules, click "Yes" to rebuild
+4. Wait for compilation (first time takes 5-10 minutes)
+
+**Note**: The project is configured for UE 5.6+. If using 5.6.1 from Epic Launcher, everything will work perfectly!
 
 ### Step 3: Create Required Blueprint Assets
 Since we have C++ base classes, you'll need to create Blueprint versions:

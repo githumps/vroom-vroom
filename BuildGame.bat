@@ -9,7 +9,7 @@ echo =========================================
 echo.
 
 REM Configuration - UPDATE THESE PATHS FOR YOUR SYSTEM
-set UE_PATH=C:\Program Files\Epic Games\UE_5.3
+set UE_PATH=C:\Program Files\Epic Games\UE_5.6
 set PROJECT_PATH=%~dp0
 set PROJECT_FILE=%PROJECT_PATH%VroomVroom.uproject
 set OUTPUT_PATH=%PROJECT_PATH%Builds\Windows
