@@ -1,6 +1,152 @@
 // VROOM VROOM - Complete Game Engine
 // NO EXCUSES. THIS WORKS.
 
+// API Key Manager - Secure sessionStorage-based key management
+class ApiKeyManager {
+    constructor() {
+        this.STORAGE_KEY = 'gemini_api_key';
+        this.SKIP_PROMPT_KEY = 'skip_api_prompt';
+    }
+
+    // Get API key from sessionStorage
+    getApiKey() {
+        return sessionStorage.getItem(this.STORAGE_KEY);
+    }
+
+    // Save API key to sessionStorage (secure, cleared on browser close)
+    saveApiKey(key) {
+        if (key && key.trim()) {
+            sessionStorage.setItem(this.STORAGE_KEY, key.trim());
+            return true;
+        }
+        return false;
+    }
+
+    // Remove API key
+    removeApiKey() {
+        sessionStorage.removeItem(this.STORAGE_KEY);
+    }
+
+    // Check if API key exists
+    hasApiKey() {
+        return !!this.getApiKey();
+    }
+
+    // Check if user wants to skip the prompt
+    shouldSkipPrompt() {
+        return localStorage.getItem(this.SKIP_PROMPT_KEY) === 'true';
+    }
+
+    // Set skip prompt preference
+    setSkipPrompt(skip) {
+        if (skip) {
+            localStorage.setItem(this.SKIP_PROMPT_KEY, 'true');
+        } else {
+            localStorage.removeItem(this.SKIP_PROMPT_KEY);
+        }
+    }
+
+    // Test API key with Gemini API
+    async testApiKey(apiKey) {
+        const key = apiKey || this.getApiKey();
+        if (!key) {
+            return { success: false, message: 'No API key provided' };
+        }
+
+        try {
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: 'Say "test successful" if you receive this.'
+                            }]
+                        }]
+                    })
+                }
+            );
+
+            if (response.ok) {
+                return { success: true, message: 'API key is valid and working!' };
+            } else {
+                const error = await response.json();
+                return {
+                    success: false,
+                    message: `API key test failed: ${error.error?.message || 'Invalid key'}`
+                };
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: `Network error: ${error.message}`
+            };
+        }
+    }
+
+    // Generate AI charges using Gemini API
+    async generateAICharges(drivingData, arrestCount) {
+        const apiKey = this.getApiKey();
+        if (!apiKey) {
+            return null; // Fall back to default charges
+        }
+
+        const prompt = `You are Judge Hardcastle, an absurdly strict judge in a dystopian world where driving is illegal. Generate 4-6 creative, bureaucratic charges for someone arrested for driving.
+
+Context:
+- Speed: ${Math.floor(drivingData.speed)} km/h
+- Driving time: ${Math.floor(drivingData.time)} seconds
+- This is arrest #${arrestCount}
+
+Requirements:
+- Make charges absurd but legal-sounding
+- Include form numbers (like "Form TX-401")
+- Mix real violations with ridiculous ones
+- Escalate severity with arrest count
+- Keep charges under 15 words each
+
+Return ONLY a JSON array of charge strings, nothing else. Example format:
+["Charge 1", "Charge 2", "Charge 3"]`;
+
+        try {
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }]
+                    })
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                const text = data.candidates[0].content.parts[0].text;
+
+                // Try to parse JSON from response
+                const jsonMatch = text.match(/\[[\s\S]*\]/);
+                if (jsonMatch) {
+                    const charges = JSON.parse(jsonMatch[0]);
+                    return charges;
+                }
+            }
+        } catch (error) {
+            console.error('AI charge generation failed:', error);
+        }
+
+        return null; // Fall back to default charges
+    }
+}
+
 // Cinematic System - Ken Burns style dramatic transitions
 class CinematicSystem {
     constructor() {
@@ -196,6 +342,10 @@ class JudgeHardcastle {
         this.memory = [];
         this.arrestCount = 0;
         this.currentCharges = [];
+
+        // Gemini API cache (stores last 10 responses)
+        this.chargeCache = [];
+        this.maxCacheSize = 10;
     }
 
     // Generate response based on context
@@ -443,11 +593,17 @@ class VroomVroomGame {
         this.buildings = [];
         this.roadMarkers = [];
 
+        // Initialize API Key Manager
+        this.apiKeyManager = new ApiKeyManager();
+
         // Initialize Judge Hardcastle
         this.judge = new JudgeHardcastle();
 
         // Initialize Cinematic System
         this.cinematics = new CinematicSystem();
+
+        // Initialize Sound System
+        this.soundSystem = new SoundSystem();
 
         this.init();
     }
@@ -514,6 +670,21 @@ class VroomVroomGame {
         document.getElementById('height').addEventListener('input', (e) => {
             document.getElementById('heightValue').textContent = e.target.value + 'cm';
         });
+
+        // Show API key prompt on first load (if not skipped)
+        if (!this.apiKeyManager.shouldSkipPrompt() && !this.apiKeyManager.hasApiKey()) {
+            setTimeout(() => this.showModal('apiKeyModal'), 1000);
+        }
+
+        // Update AI status indicator
+        this.updateAIStatus();
+
+        // Initialize sound system on first user interaction (Web Audio API requirement)
+        document.addEventListener('click', () => {
+            if (!this.soundSystem.initialized) {
+                this.soundSystem.init();
+            }
+        }, { once: true });
 
         // Start render loop
         this.animate();
@@ -759,6 +930,181 @@ class VroomVroomGame {
         setTimeout(() => box.classList.remove('active'), duration);
     }
 
+    // Modal Management
+    showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+
+            // If settings modal, update status
+            if (modalId === 'settingsModal') {
+                this.updateSettingsStatus();
+            }
+        }
+    }
+
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    // API Key Management - First Load Modal
+    useApiKey() {
+        const apiKey = document.getElementById('apiKeyInput').value.trim();
+        const dontAskAgain = document.getElementById('dontAskAgain').checked;
+
+        if (!apiKey) {
+            this.showMessage('Please enter an API key or click Skip', 3000);
+            return;
+        }
+
+        // Save API key
+        if (this.apiKeyManager.saveApiKey(apiKey)) {
+            this.showMessage('API key saved! AI features enabled.', 3000);
+            this.updateAIStatus();
+            this.closeModal('apiKeyModal');
+
+            // Set skip preference
+            if (dontAskAgain) {
+                this.apiKeyManager.setSkipPrompt(true);
+            }
+        } else {
+            this.showMessage('Invalid API key', 3000);
+        }
+    }
+
+    skipApiKey() {
+        const dontAskAgain = document.getElementById('dontAskAgain').checked;
+
+        // Set skip preference
+        if (dontAskAgain) {
+            this.apiKeyManager.setSkipPrompt(true);
+        }
+
+        this.showMessage('Using default charges', 2000);
+        this.closeModal('apiKeyModal');
+        this.updateAIStatus();
+    }
+
+    // API Key Management - Settings Modal
+    saveApiKeyFromSettings() {
+        const apiKey = document.getElementById('settingsApiKeyInput').value.trim();
+
+        if (!apiKey) {
+            this.showMessage('Please enter an API key', 3000);
+            return;
+        }
+
+        if (this.apiKeyManager.saveApiKey(apiKey)) {
+            this.showMessage('API key saved! AI features enabled.', 3000);
+            this.updateAIStatus();
+            this.updateSettingsStatus();
+
+            // Clear input field
+            document.getElementById('settingsApiKeyInput').value = '';
+        } else {
+            this.showMessage('Invalid API key', 3000);
+        }
+    }
+
+    async testApiKey() {
+        const apiKey = document.getElementById('settingsApiKeyInput').value.trim();
+        const keyToTest = apiKey || this.apiKeyManager.getApiKey();
+
+        if (!keyToTest) {
+            this.showMessage('Please enter an API key to test', 3000);
+            return;
+        }
+
+        const testResult = document.getElementById('testResult');
+        testResult.style.display = 'block';
+        testResult.className = 'test-result';
+        testResult.textContent = 'Testing API key...';
+
+        const result = await this.apiKeyManager.testApiKey(keyToTest);
+
+        if (result.success) {
+            testResult.className = 'test-result success';
+            testResult.textContent = result.message;
+        } else {
+            testResult.className = 'test-result error';
+            testResult.textContent = result.message;
+        }
+
+        // Hide after 5 seconds
+        setTimeout(() => {
+            testResult.style.display = 'none';
+        }, 5000);
+    }
+
+    removeApiKey() {
+        this.apiKeyManager.removeApiKey();
+        this.showMessage('API key removed. Using default charges.', 3000);
+        this.updateAIStatus();
+        this.updateSettingsStatus();
+
+        // Clear input field
+        document.getElementById('settingsApiKeyInput').value = '';
+    }
+
+    // Update AI status indicator
+    updateAIStatus() {
+        const indicator = document.getElementById('aiIndicator');
+        const statusText = document.getElementById('aiStatusText');
+
+        if (this.apiKeyManager.hasApiKey()) {
+            indicator.classList.add('active', 'using-ai');
+            indicator.classList.remove('using-default');
+            statusText.textContent = 'AI-Generated Charges Active';
+        } else {
+            indicator.classList.add('active', 'using-default');
+            indicator.classList.remove('using-ai');
+            statusText.textContent = 'Using Default Charges';
+        }
+    }
+
+    // Update settings modal status display
+    updateSettingsStatus() {
+        const currentStatus = document.getElementById('currentStatus');
+
+        if (this.apiKeyManager.hasApiKey()) {
+            currentStatus.textContent = 'Using AI-Generated Charges';
+            currentStatus.style.color = '#0ff';
+        } else {
+            currentStatus.textContent = 'Using Default Charges';
+            currentStatus.style.color = '#ff0';
+        }
+
+        // Update volume controls to match current sound system state
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeDisplay = document.getElementById('volumeDisplay');
+        const muteButton = document.getElementById('muteButton');
+
+        if (volumeSlider && volumeDisplay && muteButton) {
+            const volumePercent = Math.round(this.soundSystem.volume * 100);
+            volumeSlider.value = volumePercent;
+            volumeDisplay.textContent = volumePercent;
+            muteButton.textContent = this.soundSystem.muted ? 'Unmute' : 'Mute';
+        }
+    }
+
+    // Update volume from slider
+    updateVolume(value) {
+        const volume = parseFloat(value) / 100;
+        this.soundSystem.setVolume(volume);
+        document.getElementById('volumeDisplay').textContent = value;
+    }
+
+    // Toggle mute
+    toggleMute() {
+        const muted = this.soundSystem.toggleMute();
+        const muteButton = document.getElementById('muteButton');
+        muteButton.textContent = muted ? 'Unmute' : 'Mute';
+        this.showMessage(muted ? 'Sound muted' : 'Sound unmuted', 2000);
+    }
+
     startNewGame() {
         this.showScreen('characterCreation');
     }
@@ -860,10 +1206,10 @@ class VroomVroomGame {
         }
 
         if (this.keys['a'] || this.keys['arrowleft']) {
-            this.car.rotation.y += turnSpeed * (this.player.speed / maxSpeed);
+            this.car.rotation.y -= turnSpeed * (this.player.speed / maxSpeed);
         }
         if (this.keys['d'] || this.keys['arrowright']) {
-            this.car.rotation.y -= turnSpeed * (this.player.speed / maxSpeed);
+            this.car.rotation.y += turnSpeed * (this.player.speed / maxSpeed);
         }
 
         // Move car forward
@@ -933,6 +1279,9 @@ class VroomVroomGame {
         this.gameState = 'courtroom';
         document.getElementById('drivingHUD').style.display = 'none';
 
+        // Play arrest sound (siren + handcuff click)
+        this.soundSystem.playArrestSound();
+
         // Show dramatic arrest cinematic
         this.cinematics.play('arrest', () => {
             this.showScreen('courtroom');
@@ -940,12 +1289,29 @@ class VroomVroomGame {
         });
     }
 
-    setupCourtroom() {
-        // Generate charges
-        const charges = this.judge.generateCharges({
-            speed: this.player.speed,
-            time: this.player.drivingTime
-        });
+    async setupCourtroom() {
+        // Play cop mumbling sound (Sims-style gibberish)
+        this.soundSystem.playCopMumbling();
+
+        // Try to generate AI charges first, fall back to default if API key not available
+        let charges;
+
+        if (this.apiKeyManager.hasApiKey()) {
+            this.showMessage('Judge Hardcastle is consulting the AI legal database...', 2000);
+
+            charges = await this.apiKeyManager.generateAICharges({
+                speed: this.player.speed,
+                time: this.player.drivingTime
+            }, this.judge.arrestCount + 1);
+        }
+
+        // Fall back to default charges if AI generation failed or no API key
+        if (!charges) {
+            charges = this.judge.generateCharges({
+                speed: this.player.speed,
+                time: this.player.drivingTime
+            });
+        }
 
         // Update judge mood
         this.judge.addMemory(`Arrested for driving at ${Math.floor(this.player.speed)} km/h for ${Math.floor(this.player.drivingTime)} seconds`);
@@ -1136,7 +1502,13 @@ class VroomVroomGame {
 
         // Show dramatic judgment and gavel cinematic
         setTimeout(() => {
+            // Play gavel strike sound
+            this.soundSystem.playGavelStrike();
+
             this.cinematics.play('judgment', () => {
+                // Play prison door clang sound
+                this.soundSystem.playPrisonDoorClang();
+
                 // Then show prison entrance
                 this.cinematics.play('prison', () => {
                     this.startPrison();

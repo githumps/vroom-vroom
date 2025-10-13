@@ -331,6 +331,162 @@
         .message-box.active {
             display: block;
         }
+
+        /* API Key Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            pointer-events: all;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #000;
+            border: 3px solid #0f0;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 0 40px #0f0;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-title {
+            font-size: 2em;
+            color: #0f0;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .modal-text {
+            color: #0f0;
+            line-height: 1.6;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: #000;
+            color: #0f0;
+            border: 2px solid #0f0;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .modal-button {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .privacy-notice {
+            font-size: 0.9em;
+            color: #0f0;
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #0f0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .api-link {
+            color: #0f0;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .api-link:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .ai-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #0f0;
+            padding: 10px 15px;
+            font-size: 0.9em;
+            display: none;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .ai-indicator.active {
+            display: block;
+        }
+
+        .ai-indicator.using-ai {
+            border-color: #0ff;
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff;
+        }
+
+        .ai-indicator.using-default {
+            border-color: #ff0;
+            color: #ff0;
+        }
+
+        .status-text {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 3px solid #0f0;
+        }
+
+        .test-result {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #0f0;
+        }
+
+        .test-result.success {
+            color: #0f0;
+            border-color: #0f0;
+        }
+
+        .test-result.error {
+            color: #f00;
+            border-color: #f00;
+        }
     </style>
 </head>
 <body>
@@ -343,6 +499,7 @@
             <p style="font-size: 1.2em; margin-bottom: 30px;">A game about freedom, bureaucracy, and consequences</p>
             <button onclick="game.startNewGame()">NEW GAME</button>
             <button onclick="game.loadGame()">LOAD GAME</button>
+            <button onclick="game.showModal('settingsModal')">SETTINGS</button>
             <button onclick="game.showScreen('credits')">CREDITS</button>
         </div>
 
@@ -537,6 +694,98 @@
 
         <!-- MESSAGE BOX -->
         <div id="messageBox" class="message-box"></div>
+
+        <!-- AI STATUS INDICATOR -->
+        <div id="aiIndicator" class="ai-indicator">
+            <div id="aiStatusText">Using Default Charges</div>
+        </div>
+    </div>
+
+    <!-- API KEY MODAL (First Load) -->
+    <div id="apiKeyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Optional: Enhanced Experience</div>
+            <div class="modal-text">
+                Provide your free Gemini API key for AI-generated charges and judge commentary.
+            </div>
+            <div class="modal-text">
+                Get your free API key at:<br>
+                <a href="https://makersuite.google.com/app/apikey" target="_blank" class="api-link">https://makersuite.google.com/app/apikey</a>
+            </div>
+            <div class="privacy-notice">
+                <strong>Privacy Notice:</strong> Your API key stays in your browser session only.
+                It is never sent to any server except Google's Gemini API.
+                The key is cleared when you close your browser.
+            </div>
+            <input type="password" id="apiKeyInput" class="modal-input" placeholder="Enter your Gemini API key (optional)">
+            <div class="checkbox-container">
+                <input type="checkbox" id="dontAskAgain">
+                <label for="dontAskAgain">Don't ask again</label>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button" onclick="game.useApiKey()">Use API Key</button>
+                <button class="modal-button" onclick="game.skipApiKey()">Skip (Use Default)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Settings</div>
+
+            <!-- SOUND SETTINGS -->
+            <div class="modal-text">
+                <strong>Sound Settings</strong>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin-bottom: 10px;">
+                    Volume: <span id="volumeDisplay">50</span>%
+                </label>
+                <input type="range" id="volumeSlider" min="0" max="100" value="50"
+                       style="width: 100%;" oninput="game.updateVolume(this.value)">
+            </div>
+
+            <div style="margin: 20px 0;">
+                <button class="modal-button" onclick="game.toggleMute()" id="muteButton">Mute</button>
+            </div>
+
+            <hr style="border: 1px solid #0f0; margin: 30px 0;">
+
+            <!-- AI SETTINGS -->
+            <div class="status-text">
+                <strong>Current Status:</strong> <span id="currentStatus">Using Default Charges</span>
+            </div>
+
+            <div class="modal-text">
+                <strong>Gemini API Key</strong><br>
+                Enable AI-generated charges and judge commentary by providing your free Gemini API key.
+            </div>
+
+            <div class="modal-text">
+                Get your free API key at:<br>
+                <a href="https://makersuite.google.com/app/apikey" target="_blank" class="api-link">https://makersuite.google.com/app/apikey</a>
+            </div>
+
+            <input type="password" id="settingsApiKeyInput" class="modal-input" placeholder="Enter your Gemini API key">
+
+            <div class="privacy-notice">
+                <strong>Security:</strong><br>
+                - Stored in sessionStorage only (cleared on browser close)<br>
+                - Never sent to any server except Google's Gemini API<br>
+                - No tracking or logging of your key
+            </div>
+
+            <div id="testResult" class="test-result" style="display: none;"></div>
+
+            <div class="modal-buttons">
+                <button class="modal-button" onclick="game.saveApiKeyFromSettings()">Save API Key</button>
+                <button class="modal-button" onclick="game.testApiKey()">Test API Key</button>
+                <button class="modal-button" onclick="game.removeApiKey()">Remove Key</button>
+                <button class="modal-button" onclick="game.closeModal('settingsModal')">Close</button>
+            </div>
+        </div>
     </div>
 
     <!-- CINEMATIC OVERLAY -->
@@ -552,6 +801,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="soundsystem.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
