@@ -567,6 +567,9 @@ class JudgeHardcastle {
 
 class VroomVroomGame {
     constructor() {
+        // Game version (semantic versioning)
+        this.VERSION = '1.0.0';
+
         this.scene = null;
         this.camera = null;
         this.renderer = null;
@@ -648,6 +651,9 @@ class VroomVroomGame {
     }
 
     init() {
+        // Display version number
+        document.getElementById('gameVersion').textContent = this.VERSION;
+
         // Setup Three.js
         this.renderer = new THREE.WebGLRenderer({
             canvas: document.getElementById('gameCanvas'),

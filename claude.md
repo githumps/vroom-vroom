@@ -1,6 +1,7 @@
 # VROOM VROOM - Project Documentation
 
 **Last Updated:** 2025-10-13 (Late Evening Session - Integration Complete)
+**Current Version:** v1.0.0
 
 ## Project Overview
 
@@ -130,7 +131,8 @@ vroom-vroom/
 │   └── tattoo-system.js    # Tattoo drawing system class
 ├── index.html              # GitHub Pages redirect
 ├── claude.md               # This file - single source of truth
-└── README.md               # Public-facing documentation
+├── README.md               # Public-facing documentation
+└── CHANGELOG.md            # Version history and release notes
 ```
 
 ---
@@ -281,10 +283,61 @@ setupCourtroom() → apiKeyManager.generateAICharges() → fallback to judge.gen
 ### Branches
 - `main` - Production (auto-deploys to GitHub Pages)
 
-### Commit Strategy
-- Feature commits: Descriptive messages with context
-- Bug fixes: Reference specific line numbers
-- Generated with Claude Code
+### Commit Strategy (Semantic Commits)
+We use semantic commit messages following the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+- `feat:` - New features (MINOR version bump)
+- `fix:` - Bug fixes (PATCH version bump)
+- `docs:` - Documentation changes only
+- `style:` - Code style changes (formatting, etc.)
+- `refactor:` - Code refactoring
+- `perf:` - Performance improvements
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks, dependency updates
+- `BREAKING CHANGE:` - Breaking changes (MAJOR version bump)
+
+**Examples:**
+- `feat: add escape planning system with 4 routes`
+- `fix: correct car orientation in driving mode`
+- `docs: update CHANGELOG for v1.0.0 release`
+- `chore: add semantic versioning system`
+
+---
+
+## Versioning
+
+### Semantic Versioning
+This project follows [Semantic Versioning 2.0.0](https://semver.org/):
+
+**Format:** MAJOR.MINOR.PATCH (e.g., v1.0.0)
+
+- **MAJOR** - Incompatible changes or major gameplay overhauls
+- **MINOR** - New features in a backwards compatible manner
+- **PATCH** - Backwards compatible bug fixes
+
+### Version Display
+- Version displayed on main menu (bottom of screen)
+- Stored in `game.js` as `this.VERSION` constant
+- Automatically updated in HTML on game init
+
+### CHANGELOG
+All notable changes documented in `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/) format.
+
+**Categories:**
+- **Added** - New features
+- **Changed** - Changes to existing functionality
+- **Deprecated** - Soon-to-be removed features
+- **Removed** - Removed features
+- **Fixed** - Bug fixes
+- **Security** - Vulnerability fixes
+- **Technical** - Implementation details
+
+### Version History
+- **v1.0.0** (2025-10-13) - Advanced Prison Systems (tattoo, gang, escape)
+- **v0.3.0** (2025-10-13) - Audio & AI Integration
+- **v0.2.0** (2025-10-12) - Prison Activities & Cinematic System
+- **v0.1.0** (2025-10-11) - Core Game Mechanics
+- **v0.0.1** (2025-10-10) - Initial Setup
 
 ---
 
@@ -415,6 +468,13 @@ setupCourtroom() → apiKeyManager.generateAICharges() → fallback to judge.gen
   - Comprehensive claude.md update
   - All new systems documented
   - Updated line numbers and file structure
+
+- ✅ **Added Semantic Versioning**
+  - Created CHANGELOG.md with full version history
+  - Added version display to main menu (v1.0.0)
+  - Implemented VERSION constant in game.js
+  - Documented semantic commit message format
+  - Established versioning workflow
 
 ### 2025-10-13 (Evening Session)
 - ✅ Integrated Web Audio API sound system
