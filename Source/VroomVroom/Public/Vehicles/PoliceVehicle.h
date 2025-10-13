@@ -83,7 +83,7 @@ public:
 	void PerformPITManeuver();
 
 	UFUNCTION(BlueprintCallable, Category = "Police")
-	void DeploySpikeSt;
+	void DeploySpikeStrip();
 
 	UFUNCTION(BlueprintCallable, Category = "Police")
 	void SetRoadblock();

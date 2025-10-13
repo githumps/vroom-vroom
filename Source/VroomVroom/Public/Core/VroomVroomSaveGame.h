@@ -262,16 +262,16 @@ public:
 
 	// Static save/load helpers
 	UFUNCTION(BlueprintCallable, Category = "Save Game", meta = (WorldContext = "WorldContextObject"))
-	static bool SaveGameToSlot(UObject* WorldContextObject, const FString& SlotName, int32 UserIndex);
+	static bool SaveGameToSlot(UObject* WorldContextObject, const FString& SlotName, int32 InUserIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Save Game", meta = (WorldContext = "WorldContextObject"))
-	static UVroomVroomSaveGame* LoadGameFromSlot(UObject* WorldContextObject, const FString& SlotName, int32 UserIndex);
+	static UVroomVroomSaveGame* LoadGameFromSlot(UObject* WorldContextObject, const FString& SlotName, int32 InUserIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Save Game")
-	static bool DoesSaveGameExist(const FString& SlotName, int32 UserIndex);
+	static bool DoesSaveGameExist(const FString& SlotName, int32 InUserIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Save Game")
-	static bool DeleteSaveGame(const FString& SlotName, int32 UserIndex);
+	static bool DeleteSaveGame(const FString& SlotName, int32 InUserIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Save Game")
 	static TArray<FString> GetAllSaveGameSlots();

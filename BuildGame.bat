@@ -9,7 +9,7 @@ echo =========================================
 echo.
 
 REM Configuration - UPDATE THESE PATHS FOR YOUR SYSTEM
-set UE_PATH=C:\Program Files\Epic Games\UE_5.6
+set UE_PATH=E:\Epic Games\UE_5.6
 set PROJECT_PATH=%~dp0
 set PROJECT_FILE=%PROJECT_PATH%VroomVroom.uproject
 set OUTPUT_PATH=%PROJECT_PATH%Builds\Windows
@@ -41,20 +41,9 @@ if exist "%OUTPUT_PATH%" (
 )
 mkdir "%OUTPUT_PATH%"
 
-REM Generate project files
+REM Build the project (UE5.6 doesn't require separate project file generation)
 echo.
-echo Step 1: Generating project files...
-"%UE_PATH%\Engine\Build\BatchFiles\GenerateProjectFiles.bat" "%PROJECT_FILE%" -Game
-
-if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: Failed to generate project files
-    pause
-    exit /b 1
-)
-
-REM Build the project
-echo.
-echo Step 2: Building C++ code...
+echo Step 1: Building C++ code...
 "%UE_PATH%\Engine\Build\BatchFiles\Build.bat" VroomVroom Win64 Development "%PROJECT_FILE%" -WaitMutex
 
 if %ERRORLEVEL% NEQ 0 (
@@ -65,7 +54,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Cook and package
 echo.
-echo Step 3: Cooking and packaging for Windows...
+echo Step 2: Cooking and packaging for Windows...
 echo This may take 15-30 minutes depending on your hardware...
 echo.
 

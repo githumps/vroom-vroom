@@ -116,7 +116,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Replicated)
 	FString CurrentGang;
 
-	UPROPERTY(BlueprintReadWrite, Replicated)
+	UPROPERTY(BlueprintReadWrite)
 	TMap<FString, float> GangRelationships;
 
 	// Driving Stats

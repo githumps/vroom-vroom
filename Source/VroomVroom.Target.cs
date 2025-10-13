@@ -6,24 +6,9 @@ public class VroomVroomTarget : TargetRules
 	public VroomVroomTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V4;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+		DefaultBuildSettings = BuildSettingsVersion.V5;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
 
 		ExtraModuleNames.Add("VroomVroom");
-
-		// Windows-specific optimizations
-		if (Target.Platform == UnrealTargetPlatform.Win64)
-		{
-			bUseStaticCRT = false;
-			bDebugBuildsActuallyUseDebugCRT = false;
-			bBuildWithEditorOnlyData = false;
-			bCompileAgainstEngine = true;
-			bCompileAgainstCoreUObject = true;
-		}
-
-		// Performance settings
-		bUseIncrementalLinking = false;
-		bUseFastPDBLinking = false;
-		bForcePrecompiledHeaderForGameModules = true;
 	}
 }

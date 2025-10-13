@@ -177,7 +177,10 @@ public:
 	virtual void UnlockVehicle();
 
 	UFUNCTION(BlueprintCallable, Category = "Vehicle")
-	virtual void TakeDamage(float DamageAmount);
+	void ApplyVehicleDamage(float DamageAmount);
+
+	// Override APawn's TakeDamage
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Vehicle")
 	virtual void Refuel(float FuelAmount);
@@ -211,6 +214,7 @@ public:
 	virtual void Handbrake();
 	virtual void LookUp(float Value);
 	virtual void Turn(float Value);
+	void RequestExitVehicle(); // Void wrapper for input binding
 
 	// Camera
 	UFUNCTION(BlueprintCallable, Category = "Camera")

@@ -5,6 +5,7 @@
 #include "Core/VroomVroomGameMode.h"
 #include "Core/VroomVroomPlayerState.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
@@ -198,7 +199,7 @@ void APoliceVehicle::PerformPITManeuver()
 	}
 }
 
-void APoliceVehicle::DeploySpikesTrip()
+void APoliceVehicle::DeploySpikeStrip()
 {
 	// Deploy spike strip ahead of target
 	if (PursuitTarget && PursuitTarget->CurrentVehicle)
@@ -293,13 +294,13 @@ void APoliceVehicle::IssueTicket(AVroomVroomCharacter* Driver, const FString& Vi
 	}
 
 	// Add to criminal record
-	if (AVroomVroomPlayerState* PlayerState = Driver->GetPlayerState<AVroomVroomPlayerState>())
+	if (AVroomVroomPlayerState* DriverPlayerState = Driver->GetPlayerState<AVroomVroomPlayerState>())
 	{
-		PlayerState->TrafficViolations++;
-		PlayerState->TotalFinesOwed += FMath::RandRange(100.0f, 500.0f);
+		DriverPlayerState->TrafficViolations++;
+		DriverPlayerState->TotalFinesOwed += FMath::RandRange(100.0f, 500.0f);
 
 		UE_LOG(LogTemp, Warning, TEXT("TICKET ISSUED: %s - Fine: $%.2f"),
-			*Violation, PlayerState->TotalFinesOwed);
+			*Violation, DriverPlayerState->TotalFinesOwed);
 	}
 }
 
@@ -559,9 +560,9 @@ float APoliceVehicle::CalculateThreatLevel(AVroomVroomCharacter* Suspect)
 	}
 
 	// Previous arrests add threat
-	if (AVroomVroomPlayerState* PlayerState = Suspect->GetPlayerState<AVroomVroomPlayerState>())
+	if (AVroomVroomPlayerState* SuspectPlayerState = Suspect->GetPlayerState<AVroomVroomPlayerState>())
 	{
-		ThreatLevel += PlayerState->TotalArrests * 5.0f;
+		ThreatLevel += SuspectPlayerState->TotalArrests * 5.0f;
 	}
 
 	return FMath::Min(ThreatLevel, 100.0f);

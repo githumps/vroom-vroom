@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "VroomVroom",
+			"Path": "..\\Source\\VroomVroom.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "VroomVroomEditor",
+			"Path": "..\\Source\\VroomVroomEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

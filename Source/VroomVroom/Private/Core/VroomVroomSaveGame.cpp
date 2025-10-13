@@ -86,17 +86,7 @@ void UVroomVroomSaveGame::UpdateFromGameState(UObject* WorldContextObject)
 		LastPlayerLocation = PlayerCharacter->GetActorLocation();
 		LastPlayerRotation = PlayerCharacter->GetActorRotation();
 
-		// Save character state
-		CurrentHealth = PlayerCharacter->HealthStatus;
-		CurrentStamina = PlayerCharacter->StaminaLevel;
-		CurrentStrength = PlayerCharacter->StrengthLevel;
-
-		// Save prison data
-		CigarettesOwned = PlayerCharacter->Cigarettes;
-		PrisonReputation = PlayerCharacter->PrisonReputation;
-		CurrentGang = PlayerCharacter->GangAffiliation;
-		Inventory = PlayerCharacter->Inventory;
-		ContrabandItems = PlayerCharacter->ContrabandItems;
+		// Note: Health, Stamina, Strength, Inventory are saved from PlayerState below
 	}
 
 	// Get Player State
@@ -119,8 +109,18 @@ void UVroomVroomSaveGame::UpdateFromGameState(UObject* WorldContextObject)
 		VehiclesCrashed = PlayerState->VehiclesCrashed;
 		TopSpeed = PlayerState->TopSpeed;
 
+		// Save character stats
+		CurrentHealth = PlayerState->HealthStatus;
+		CurrentStamina = PlayerState->StaminaLevel;
+		CurrentStrength = PlayerState->StrengthLevel;
+
 		// Save inventory
+		Inventory = PlayerState->Inventory;
+		ContrabandItems = PlayerState->ContrabandItems;
 		MoneyInWallet = PlayerState->MoneyInWallet;
+		CigarettesOwned = PlayerState->CigarettesOwned;
+		PrisonReputation = PlayerState->PrisonReputation;
+		CurrentGang = PlayerState->CurrentGang;
 	}
 
 	// Save current map name
@@ -163,20 +163,10 @@ void UVroomVroomSaveGame::ApplyToGameState(UObject* WorldContextObject)
 		PlayerCharacter->SetActorLocation(LastPlayerLocation);
 		PlayerCharacter->SetActorRotation(LastPlayerRotation);
 
-		// Restore character state
-		PlayerCharacter->HealthStatus = CurrentHealth;
-		PlayerCharacter->StaminaLevel = CurrentStamina;
-		PlayerCharacter->StrengthLevel = CurrentStrength;
-
-		// Restore prison data
-		PlayerCharacter->Cigarettes = CigarettesOwned;
-		PlayerCharacter->PrisonReputation = PrisonReputation;
-		PlayerCharacter->GangAffiliation = CurrentGang;
-		PlayerCharacter->Inventory = Inventory;
-		PlayerCharacter->ContrabandItems = ContrabandItems;
-
 		// Apply customization visually
 		PlayerCharacter->ApplyCustomization(CharacterCustomization);
+
+		// Note: Health, Stamina, Strength, Inventory are restored to PlayerState below
 	}
 
 	// Apply to Player State
@@ -199,7 +189,14 @@ void UVroomVroomSaveGame::ApplyToGameState(UObject* WorldContextObject)
 		PlayerState->VehiclesCrashed = VehiclesCrashed;
 		PlayerState->TopSpeed = TopSpeed;
 
+		// Restore character stats
+		PlayerState->HealthStatus = CurrentHealth;
+		PlayerState->StaminaLevel = CurrentStamina;
+		PlayerState->StrengthLevel = CurrentStrength;
+
 		// Restore inventory
+		PlayerState->Inventory = Inventory;
+		PlayerState->ContrabandItems = ContrabandItems;
 		PlayerState->MoneyInWallet = MoneyInWallet;
 		PlayerState->CigarettesOwned = CigarettesOwned;
 		PlayerState->PrisonReputation = PrisonReputation;

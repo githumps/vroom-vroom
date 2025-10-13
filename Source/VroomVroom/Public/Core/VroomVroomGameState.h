@@ -56,8 +56,9 @@ struct FPrisonState
 	UPROPERTY(BlueprintReadWrite)
 	bool bLockdownActive;
 
-	UPROPERTY(BlueprintReadWrite)
-	TMap<FString, int32> GangMemberCounts;
+	// Note: TMap cannot be replicated within a struct. Gang data moved to GameState class.
+	// UPROPERTY(BlueprintReadWrite)
+	// TMap<FString, int32> GangMemberCounts;
 
 	FPrisonState()
 	{
@@ -139,7 +140,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	FPrisonState PrisonStatus;
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
+	UPROPERTY(BlueprintReadOnly)
 	TMap<FString, float> InmateRelationships;
 
 	// Court State

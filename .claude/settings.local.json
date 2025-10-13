@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//e/Epic Games/UE_5.6/Engine/Build/BatchFiles/**)",
+      "Read(//e/Epic Games/UE_5.6/**)",
+      "Bash(\"E:\\Epic Games\\UE_5.6\\Engine\\Build\\BatchFiles\\Build.bat\" VroomVroom Win64 Development \"C:\\Users\\evan\\Documents\\GitHub\\vroom-vroom\\VroomVroom.uproject\" -WaitMutex)",
+      "Read(//c/Users/evan/AppData/Local/UnrealBuildTool/**)",
+      "Read(//c/Program Files (x86)/Windows Kits/10/**)",
+      "Bash(dir:*)",
+      "Read(//c/Program Files/Windows Kits/10/**)",
+      "Read(//c/Program Files/**)",
+      "Bash(winget:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

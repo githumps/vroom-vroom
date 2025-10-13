@@ -203,7 +203,10 @@ void AVroomVroomPlayerController::SetInputModeGameOnly()
 void AVroomVroomPlayerController::SetInputModeUIOnly(UUserWidget* InWidgetToFocus)
 {
 	FInputModeUIOnly InputMode;
-	InputMode.SetWidgetToFocus(InWidgetToFocus ? InWidgetToFocus->TakeWidget() : nullptr);
+	if (InWidgetToFocus)
+	{
+		InputMode.SetWidgetToFocus(InWidgetToFocus->TakeWidget());
+	}
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	SetInputMode(InputMode);
 	bShowMouseCursor = true;
@@ -212,7 +215,10 @@ void AVroomVroomPlayerController::SetInputModeUIOnly(UUserWidget* InWidgetToFocu
 void AVroomVroomPlayerController::SetInputModeGameAndUI(UUserWidget* InWidgetToFocus)
 {
 	FInputModeGameAndUI InputMode;
-	InputMode.SetWidgetToFocus(InWidgetToFocus ? InWidgetToFocus->TakeWidget() : nullptr);
+	if (InWidgetToFocus)
+	{
+		InputMode.SetWidgetToFocus(InWidgetToFocus->TakeWidget());
+	}
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputMode.SetHideCursorDuringCapture(false);
 	SetInputMode(InputMode);
@@ -451,7 +457,7 @@ UUserWidget* AVroomVroomPlayerController::CreateWidget(TSubclassOf<UUserWidget> 
 		return nullptr;
 	}
 
-	return CreateWidget<UUserWidget>(this, WidgetClass);
+	return ::CreateWidget<UUserWidget>(this, WidgetClass);
 }
 
 void AVroomVroomPlayerController::ShowWidget(UUserWidget* Widget)
@@ -466,6 +472,6 @@ void AVroomVroomPlayerController::HideWidget(UUserWidget* Widget)
 {
 	if (Widget && Widget->IsInViewport())
 	{
-		Widget->RemoveFromViewport();
+		Widget->RemoveFromParent();
 	}
 }

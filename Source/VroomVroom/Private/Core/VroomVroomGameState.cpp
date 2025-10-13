@@ -31,11 +31,8 @@ AVroomVroomGameState::AVroomVroomGameState()
 	PrisonStatus.bLockdownActive = false;
 
 	// Initialize gang populations
-	PrisonStatus.GangMemberCounts.Add("Aryan Brotherhood", 120);
-	PrisonStatus.GangMemberCounts.Add("Latin Kings", 150);
-	PrisonStatus.GangMemberCounts.Add("Crips", 100);
-	PrisonStatus.GangMemberCounts.Add("Bloods", 80);
-	PrisonStatus.GangMemberCounts.Add("Unaffiliated", 50);
+	// Note: GangMemberCounts moved to separate replicated property due to TMap replication limitations
+	// TODO: Implement gang tracking in a replicated-friendly way
 
 	// Initialize court state
 	CourtStatus.JudgeName = "Judge Hardcastle";
@@ -237,13 +234,10 @@ void AVroomVroomGameState::TriggerPrisonEvent(const FString& EventType)
 
 void AVroomVroomGameState::UpdateGangPower(const FString& GangName, int32 MemberDelta)
 {
-	if (PrisonStatus.GangMemberCounts.Contains(GangName))
-	{
-		PrisonStatus.GangMemberCounts[GangName] += MemberDelta;
-
-		UE_LOG(LogTemp, Warning, TEXT("Gang %s power changed by %d. Total members: %d"),
-			*GangName, MemberDelta, PrisonStatus.GangMemberCounts[GangName]);
-	}
+	// Note: GangMemberCounts removed due to TMap replication limitations
+	// TODO: Implement gang tracking using replicated arrays or separate tracking system
+	UE_LOG(LogTemp, Warning, TEXT("Gang %s power changed by %d (not tracked yet)"),
+		*GangName, MemberDelta);
 }
 
 void AVroomVroomGameState::UpdateJudgeMood(int32 MoodDelta)

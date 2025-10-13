@@ -154,7 +154,7 @@ void AVehicleBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	// Vehicle controls
 	PlayerInputComponent->BindAction("Horn", IE_Pressed, this, &AVehicleBase::HonkHorn);
 	PlayerInputComponent->BindAction("ToggleLights", IE_Pressed, this, &AVehicleBase::ToggleLights);
-	PlayerInputComponent->BindAction("ExitVehicle", IE_Pressed, this, &AVehicleBase::ExitVehicle);
+	PlayerInputComponent->BindAction("ExitVehicle", IE_Pressed, this, &AVehicleBase::RequestExitVehicle);
 
 	// Police vehicle controls
 	if (bIsPoliceVehicle)
@@ -378,7 +378,15 @@ void AVehicleBase::UnlockVehicle()
 	UE_LOG(LogTemp, Warning, TEXT("Vehicle unlocked"));
 }
 
-void AVehicleBase::TakeDamage(float DamageAmount)
+// Override APawn's TakeDamage to handle vehicle damage
+float AVehicleBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	ApplyVehicleDamage(ActualDamage);
+	return ActualDamage;
+}
+
+void AVehicleBase::ApplyVehicleDamage(float DamageAmount)
 {
 	VehicleStats.Health = FMath::Max(0.0f, VehicleStats.Health - DamageAmount);
 
@@ -494,18 +502,23 @@ void AVehicleBase::Handbrake()
 
 void AVehicleBase::LookUp(float Value)
 {
-	if (Controller)
+	if (APlayerController* PC = Cast<APlayerController>(Controller))
 	{
-		Controller->AddControllerPitchInput(Value);
+		PC->AddPitchInput(Value);
 	}
 }
 
 void AVehicleBase::Turn(float Value)
 {
-	if (Controller)
+	if (APlayerController* PC = Cast<APlayerController>(Controller))
 	{
-		Controller->AddControllerYawInput(Value);
+		PC->AddYawInput(Value);
 	}
+}
+
+void AVehicleBase::RequestExitVehicle()
+{
+	ExitVehicle();
 }
 
 void AVehicleBase::SwitchCamera()
