@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-10-13
+
+### Added
+- **Testing/Debug Menu** - Hidden developer tools for system testing
+  - "TEST" cheat code on main menu unlocks testing menu
+  - 10 system shortcuts: Tattoo, Gang, Escape, Weights, Eating, Library, Commissary, Cellmate, Letter, Driving
+  - Direct access to any game system without normal progression
+  - Auto-initialization of test player with resources (100 credits, 20 cigarettes)
+  - 4 debug tools: Add Credits, Add Cigarettes, Max Gang Rep, Reset Progress
+- Improved developer experience for testing and debugging
+
+### Changed
+- Enhanced testability of all prison systems
+- All major game systems now accessible for isolated testing
+
+### Technical
+- Added `initCheatCodeListener()` method for keyboard input monitoring
+- Added `testJumpTo()` method with 10 system shortcuts
+- Added 4 debug helper methods: `testAddMoney()`, `testAddCigarettes()`, `testMaxGangRep()`, `testResetProgress()`
+- Added testing menu HTML screen (~70 lines)
+- Total new code: ~150 lines
+
 ## [1.0.0] - 2025-10-13
 
 ### Added
@@ -197,7 +219,8 @@ Given a version number MAJOR.MINOR.PATCH:
 
 ---
 
-[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/githumps/vroom-vroom/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/githumps/vroom-vroom/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/githumps/vroom-vroom/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/githumps/vroom-vroom/compare/v0.1.0...v0.2.0

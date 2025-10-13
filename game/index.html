@@ -1107,6 +1107,78 @@
             </div>
         </div>
 
+        <!-- TESTING MENU (Hidden Easter Egg) -->
+        <div id="testingMenu" class="screen">
+            <h2 style="color: #ff0;">⚙️ TESTING / DEBUG MENU ⚙️</h2>
+            <p style="margin: 20px; font-size: 1em; color: #888;">Type "TEST" on main menu to access</p>
+
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div class="form-container">
+                    <h3 style="margin-bottom: 20px; color: #ff0;">JUMP TO SYSTEM</h3>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('tattoo')">
+                        <h3>TATTOO SYSTEM</h3>
+                        <p>Test the prison tattoo drawing system</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('gang')">
+                        <h3>GANG SYSTEM</h3>
+                        <p>Test gang alliances and reputation</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('escape')">
+                        <h3>ESCAPE SYSTEM</h3>
+                        <p>Test escape planning and execution</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('weights')">
+                        <h3>WEIGHT LIFTING</h3>
+                        <p>Test the weight lifting simulator</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('eating')">
+                        <h3>EATING SIMULATOR</h3>
+                        <p>Test the meal eating system</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('library')">
+                        <h3>LIBRARY SYSTEM</h3>
+                        <p>Test book reading and intelligence</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('commissary')">
+                        <h3>COMMISSARY SHOP</h3>
+                        <p>Test the prison shop system</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('prison')">
+                        <h3>PRISON MENU</h3>
+                        <p>Jump to main prison menu</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('courtroom')">
+                        <h3>COURTROOM</h3>
+                        <p>Test the paperwork simulator</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.testJumpTo('driving')">
+                        <h3>DRIVING MODE</h3>
+                        <p>Test the 3D driving system</p>
+                    </div>
+                </div>
+
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #ff0;">DEBUG TOOLS</h3>
+                    <button onclick="game.testAddMoney(100)">Add 100 Credits</button>
+                    <button onclick="game.testAddCigarettes(20)">Add 20 Cigarettes</button>
+                    <button onclick="game.testMaxGangRep()">Max All Gang Reps</button>
+                    <button onclick="game.testResetProgress()">Reset All Progress</button>
+                </div>
+
+                <button onclick="game.showScreen('mainMenu')" style="margin-top: 30px;">BACK TO MAIN MENU</button>
+            </div>
+        </div>
+
         <!-- CREDITS -->
         <div id="credits" class="screen">
             <div class="credits-scroll">

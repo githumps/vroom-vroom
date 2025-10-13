@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.0.0';
+        this.VERSION = '1.1.0';
 
         this.scene = null;
         this.camera = null;
@@ -730,6 +730,9 @@ class VroomVroomGame {
                 this.soundSystem.init();
             }
         }, { once: true });
+
+        // Initialize cheat code listener for testing menu
+        this.initCheatCodeListener();
 
         // Start render loop
         this.animate();
@@ -3233,6 +3236,163 @@ class VroomVroomGame {
         this.showMessage(`COMMISSARY RESTOCK: ${itemToRestock} (+${restockAmount} in stock)`, 3000);
         this.updateCommissaryDisplay();
     }
+
+    // ==================== TESTING / DEBUG METHODS ====================
+
+    // Initialize cheat code listener
+    initCheatCodeListener() {
+        let cheatBuffer = '';
+        const cheatCode = 'TEST';
+
+        document.addEventListener('keydown', (e) => {
+            // Only listen when on main menu
+            if (this.gameState !== 'menu') {
+                cheatBuffer = '';
+                return;
+            }
+
+            // Add key to buffer
+            if (e.key.length === 1) {
+                cheatBuffer += e.key.toUpperCase();
+
+                // Keep buffer length manageable
+                if (cheatBuffer.length > cheatCode.length) {
+                    cheatBuffer = cheatBuffer.slice(-cheatCode.length);
+                }
+
+                // Check if cheat code matches
+                if (cheatBuffer === cheatCode) {
+                    this.showMessage('🔓 Testing menu unlocked! Welcome, developer.', 3000);
+                    setTimeout(() => {
+                        this.showScreen('testingMenu');
+                    }, 500);
+                    cheatBuffer = '';
+                }
+            }
+        });
+    }
+
+    // Jump to a specific system for testing
+    testJumpTo(system) {
+        // Initialize player if needed
+        if (!this.player.name) {
+            this.player.name = 'Test Player';
+            this.player.skinTone = 2;
+            this.player.height = 175;
+            this.player.voice = 'deep';
+        }
+
+        // Give player test resources
+        this.player.money = 100;
+        this.player.prisonDays = 10;
+        this.player.sentence = 50;
+        if (!this.player.cigarettes) this.player.cigarettes = 20;
+        if (!this.player.gangRep) {
+            this.player.gangRep = { safedrivers: 0, turnsignals: 0, roadwarriors: 0 };
+        }
+
+        // Jump to requested system
+        switch(system) {
+            case 'tattoo':
+                this.showScreen('tattooStudio');
+                this.initTattooSystem();
+                break;
+
+            case 'gang':
+                this.showScreen('gangSystem');
+                this.showGangSystem();
+                break;
+
+            case 'escape':
+                this.showEscapeMenu();
+                break;
+
+            case 'weights':
+                this.showScreen('weightLifting');
+                this.initializeWeightLifting();
+                break;
+
+            case 'eating':
+                this.startEating();
+                break;
+
+            case 'library':
+                this.showScreen('prisonLibrary');
+                this.updateLibraryScreen();
+                break;
+
+            case 'commissary':
+                this.showScreen('commissaryShop');
+                this.updateCommissaryDisplay();
+                break;
+
+            case 'prison':
+                this.showScreen('prisonMenu');
+                this.gameState = 'prison';
+                break;
+
+            case 'courtroom':
+                this.setupCourtroom();
+                break;
+
+            case 'driving':
+                this.startDriving();
+                break;
+
+            default:
+                this.showMessage('Unknown system: ' + system, 2000);
+        }
+
+        this.showMessage(`Jumped to: ${system.toUpperCase()}`, 2000);
+    }
+
+    // Debug: Add money
+    testAddMoney(amount) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.money = (this.player.money || 0) + amount;
+        this.showMessage(`Added ${amount} credits. Total: ${this.player.money}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Add cigarettes
+    testAddCigarettes(amount) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.cigarettes = (this.player.cigarettes || 0) + amount;
+        this.showMessage(`Added ${amount} cigarettes. Total: ${this.player.cigarettes}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Max all gang reputations
+    testMaxGangRep() {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        if (!this.player.gangRep) {
+            this.player.gangRep = {};
+        }
+        this.player.gangRep.safedrivers = 100;
+        this.player.gangRep.turnsignals = 100;
+        this.player.gangRep.roadwarriors = 100;
+        this.showMessage('All gang reputations set to 100', 2000);
+        this.saveGame();
+    }
+
+    // Debug: Reset progress
+    testResetProgress() {
+        if (confirm('Reset ALL progress? This will delete your save!')) {
+            localStorage.removeItem('vroomVroomSave');
+            this.showMessage('Progress reset! Reload the page.', 3000);
+        }
+    }
+
+    // ==================== END TESTING METHODS ====================
 
     animate() {
         requestAnimationFrame(() => this.animate());
