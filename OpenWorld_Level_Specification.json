@@ -1,0 +1,307 @@
+{
+  "level_name": "OpenWorld",
+  "level_path": "/Game/Maps/OpenWorld",
+  "file_path": "C:/Users/evan/Documents/GitHub/vroom-vroom/Content/Maps/OpenWorld.umap",
+  "description": "Open world driving level with excessive police spawn points for Vroom Vroom game",
+  "map_size": {
+    "width_meters": 8192,
+    "height_meters": 8192,
+    "description": "8x8 kilometer driving area"
+  },
+  "actors": [
+    {
+      "type": "Landscape",
+      "name": "Landscape",
+      "class": "/Script/Landscape.Landscape",
+      "transform": {
+        "location": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [100, 100, 100]
+      },
+      "properties": {
+        "component_size": "127x127 quads",
+        "num_components": "8x8",
+        "total_size": "8192m x 8192m"
+      }
+    },
+    {
+      "type": "DirectionalLight",
+      "name": "Sun_DirectionalLight",
+      "class": "/Script/Engine.DirectionalLight",
+      "transform": {
+        "location": [0, 0, 500],
+        "rotation": [-45, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "properties": {
+        "intensity": 10.0,
+        "mobility": "Stationary",
+        "light_color": [255, 255, 255]
+      }
+    },
+    {
+      "type": "SkyAtmosphere",
+      "name": "SkyAtmosphere",
+      "class": "/Script/Engine.SkyAtmosphere",
+      "transform": {
+        "location": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "properties": {
+        "default_settings": true
+      }
+    },
+    {
+      "type": "VolumetricCloud",
+      "name": "VolumetricClouds",
+      "class": "/Script/Engine.VolumetricCloud",
+      "transform": {
+        "location": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "properties": {
+        "default_settings": true
+      }
+    },
+    {
+      "type": "SkyLight",
+      "name": "SkyLight",
+      "class": "/Script/Engine.SkyLight",
+      "transform": {
+        "location": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "properties": {
+        "intensity": 1.0,
+        "mobility": "Stationary"
+      }
+    },
+    {
+      "type": "PostProcessVolume",
+      "name": "PostProcessVolume_Global",
+      "class": "/Script/Engine.PostProcessVolume",
+      "transform": {
+        "location": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "properties": {
+        "unbound": true,
+        "priority": 0
+      }
+    },
+    {
+      "type": "PlayerStart",
+      "name": "PlayerStart_Center",
+      "class": "/Script/Engine.PlayerStart",
+      "transform": {
+        "location": [0, 0, 200],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "properties": {
+        "spawn_location": "Map center, 200 units above ground"
+      }
+    }
+  ],
+  "police_spawn_points": [
+    {
+      "name": "PoliceSpawn_01",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-320000, -320000, 200],
+      "rotation": [0, 0, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_02",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-160000, -320000, 200],
+      "rotation": [0, 45, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_03",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [0, -320000, 200],
+      "rotation": [0, 90, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_04",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [160000, -320000, 200],
+      "rotation": [0, 135, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_05",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [320000, -320000, 200],
+      "rotation": [0, 180, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_06",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-320000, -160000, 200],
+      "rotation": [0, 225, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_07",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-160000, -160000, 200],
+      "rotation": [0, 270, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_08",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [0, -160000, 200],
+      "rotation": [0, 315, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_09",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [160000, -160000, 200],
+      "rotation": [0, 0, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_10",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [320000, -160000, 200],
+      "rotation": [0, 45, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_11",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-320000, 0, 200],
+      "rotation": [0, 90, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_12",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-160000, 0, 200],
+      "rotation": [0, 135, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_13",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [0, 0, 200],
+      "rotation": [0, 180, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_14",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [160000, 0, 200],
+      "rotation": [0, 225, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_15",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [320000, 0, 200],
+      "rotation": [0, 270, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_16",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-320000, 160000, 200],
+      "rotation": [0, 315, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_17",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-160000, 160000, 200],
+      "rotation": [0, 0, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_18",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [0, 160000, 200],
+      "rotation": [0, 45, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_19",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [160000, 160000, 200],
+      "rotation": [0, 90, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_20",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [320000, 160000, 200],
+      "rotation": [0, 135, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_21",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-320000, 320000, 200],
+      "rotation": [0, 180, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_22",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [-160000, 320000, 200],
+      "rotation": [0, 225, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_23",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [0, 320000, 200],
+      "rotation": [0, 270, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_24",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [160000, 320000, 200],
+      "rotation": [0, 315, 0],
+      "tags": ["PoliceSpawn"]
+    },
+    {
+      "name": "PoliceSpawn_25",
+      "class": "/Script/Engine.TargetPoint",
+      "location": [320000, 320000, 200],
+      "rotation": [0, 0, 0],
+      "tags": ["PoliceSpawn"]
+    }
+  ],
+  "spawn_point_layout": {
+    "pattern": "5x5 grid",
+    "total_count": 25,
+    "spacing": "~1.6km between spawn points",
+    "elevation": "200 units above terrain",
+    "coverage": "Full 8x8km map coverage"
+  },
+  "integration_notes": {
+    "for_agent_2": "Use TargetPoint actors tagged 'PoliceSpawn' in BP_VehicleSpawner",
+    "for_agent_3": "Police AI should navigate across full 8x8km terrain",
+    "for_agent_4": "Main menu should load /Game/Maps/OpenWorld on game start"
+  },
+  "testing_requirements": [
+    "Level loads without errors",
+    "Lighting is visible and correct",
+    "Player spawns at center (0,0,200)",
+    "All 25 spawn points visible in editor",
+    "Landscape is 8x8km and flat",
+    "Play mode works (PIE)"
+  ]
+}

@@ -1,0 +1,376 @@
+================================================================================
+BP_VEHICLEBASE COMPONENT HIERARCHY DIAGRAM
+================================================================================
+Configuration by: Agent 2 - Vehicle Blueprint Engineer
+Date: 2025-10-12
+================================================================================
+
+VISUAL COMPONENT TREE
+================================================================================
+
+                    BP_VehicleBase (VehicleBase)
+                              |
+                              |
+                    ┌─────────▼─────────┐
+                    │   VehicleBody     │  ⚡ ROOT COMPONENT
+                    │  (BoxComponent)   │  ⚡ PHYSICS ENABLED
+                    │                   │  📦 Mass: 1500 kg
+                    │   Collision: ON   │  🎮 Collision Preset: PhysicsActor
+                    └─────────┬─────────┘
+                              |
+              ┌───────────────┼───────────────┬───────────────┐
+              │               │               │               │
+              │               │               │               │
+    ┌─────────▼──────┐  ┌────▼────┐   ┌──────▼──────┐  ┌────▼─────┐
+    │VehicleVisualMesh│  │SpringArm│   │EntryTrigger │  │  Audio   │
+    │(StaticMesh)     │  │(Spring  │   │(Box)        │  │Components│
+    │                 │  │ArmComp) │   │             │  │          │
+    │[NEW COMPONENT]  │  │         │   │Trigger area │  │ Engine   │
+    │Mesh: Cube       │  │Z=200    │   │for entry    │  │ Horn     │
+    │Scale: 4x2x1     │  │Length:  │   └─────────────┘  │ Siren    │
+    │Collision: OFF   │  │600      │                    └──────────┘
+    └─────────────────┘  │CameraLag│
+                         │Enabled  │
+                         └────┬────┘
+                              |
+                              |
+                    ┌─────────▼──────────┐
+                    │   FollowCamera     │  📷 ACTIVE CAMERA
+                    │  (CameraComponent) │  🎥 FOV: 90°
+                    │                    │  👁 Third-person view
+                    │  600cm behind      │
+                    │  200cm above       │
+                    └────────────────────┘
+
+
+COMPONENT DETAILS
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 1. VehicleBody (ROOT) - BoxComponent                                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Created by: C++ VehicleBase constructor                                │
+│ Role: Physics simulation, collision detection, root anchor             │
+│ Properties:                                                              │
+│   - Transform: (0, 0, 0) World origin                                   │
+│   - Simulate Physics: TRUE                                              │
+│   - Mass: 1500.0 kg (realistic sedan weight)                           │
+│   - Linear Damping: 0.01 (minimal air resistance)                      │
+│   - Angular Damping: 0.5 (prevents spinning)                           │
+│   - Enable Gravity: TRUE                                                │
+│   - Collision Preset: PhysicsActor                                      │
+│   - Collision Enabled: Query and Physics                               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 2. VehicleVisualMesh - StaticMeshComponent [NEW]                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Created by: Configuration script/manual setup                          │
+│ Parent: VehicleBody                                                     │
+│ Role: Visual representation of vehicle                                 │
+│ Properties:                                                              │
+│   - Static Mesh: /Engine/BasicShapes/Cube                              │
+│   - Scale: (4.0, 2.0, 1.0) - Car-like proportions                      │
+│     * X: 4.0 = 400cm long (front to back)                              │
+│     * Y: 2.0 = 200cm wide (side to side)                               │
+│     * Z: 1.0 = 100cm tall (ground to roof)                             │
+│   - Location: (0, 0, 0) relative to VehicleBody                        │
+│   - Collision: NoCollision (VehicleBody handles physics)               │
+│   - Visible: TRUE                                                       │
+│   - Cast Shadow: TRUE                                                   │
+│   - Material: Default (can be replaced with custom material)           │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 3. SpringArm - SpringArmComponent                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Created by: C++ VehicleBase constructor                                │
+│ Parent: VehicleBody                                                     │
+│ Role: Camera positioning and smooth follow behavior                    │
+│ Properties:                                                              │
+│   - Location: (0, 0, 200) - 200cm above vehicle center                 │
+│   - Target Arm Length: 600.0 - Camera follows 600cm behind             │
+│   - Socket Offset: (0, 0, 50) - Additional height offset               │
+│   - Enable Camera Lag: TRUE                                             │
+│   - Camera Lag Speed: 3.0 - Smooth, cinematic follow                   │
+│   - Enable Camera Rotation Lag: TRUE                                    │
+│   - Camera Rotation Lag Speed: 4.0                                      │
+│   - Use Pawn Control Rotation: TRUE                                     │
+│   - Inherit Pitch/Yaw/Roll: TRUE                                        │
+│   - Do Collision Test: TRUE (prevents camera clipping)                 │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 4. FollowCamera - CameraComponent                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Created by: C++ VehicleBase constructor                                │
+│ Parent: SpringArm                                                       │
+│ Role: Third-person view of vehicle                                     │
+│ Properties:                                                              │
+│   - Location: (0, 0, 0) - At SpringArm socket                          │
+│   - Field of View: 90.0 degrees                                         │
+│   - Aspect Ratio: 1.777778 (16:9 widescreen)                           │
+│   - Constrain Aspect Ratio: FALSE                                       │
+│   - Use Pawn Control Rotation: FALSE (SpringArm handles)               │
+│   - Auto Activate: TRUE                                                 │
+│                                                                          │
+│ Resulting Camera Position:                                              │
+│   - 600cm behind vehicle (from SpringArm length)                        │
+│   - 200cm above vehicle center (from SpringArm location)               │
+│   - 50cm additional height (from socket offset)                         │
+│   - Total height: 250cm above vehicle center                            │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 5. EntryTrigger - BoxComponent                                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Created by: C++ VehicleBase constructor                                │
+│ Parent: VehicleBody                                                     │
+│ Role: Detects when player is near vehicle for entry                    │
+│ Properties: (Pre-configured by C++)                                     │
+│   - Collision: Overlap events only                                      │
+│   - Size: Slightly larger than vehicle                                  │
+│   - Triggers: OnComponentBeginOverlap event                             │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 6. InteriorCamera - CameraComponent                                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Created by: C++ VehicleBase constructor                                │
+│ Parent: VehicleBody                                                     │
+│ Role: First-person interior view (alternative camera)                  │
+│ Properties: (Pre-configured by C++)                                     │
+│   - Auto Activate: FALSE (FollowCamera is default)                     │
+│   - Can be activated with SwitchCamera() function                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 7. Audio Components                                                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Created by: C++ VehicleBase constructor                                │
+│ Parent: VehicleBody                                                     │
+│                                                                          │
+│ a) EngineAudioComponent:                                                │
+│    - Plays engine sound loop                                            │
+│    - Pitch varies with speed                                            │
+│    - Auto Activate: TRUE                                                │
+│                                                                          │
+│ b) HornAudioComponent:                                                  │
+│    - Plays horn sound when HonkHorn() called                            │
+│    - Auto Activate: FALSE                                               │
+│                                                                          │
+│ c) SirenAudioComponent:                                                 │
+│    - Police vehicles only                                               │
+│    - Plays siren when ToggleSiren() called                              │
+│    - Auto Activate: FALSE                                               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+COMPONENT INTERACTION FLOW
+================================================================================
+
+PHYSICS SIMULATION:
+  VehicleBody (Root) → Simulates physics
+       ↓
+  Ground collision detected
+       ↓
+  Forces applied: Engine, Brake, Steering
+       ↓
+  VehicleBody moves in world
+       ↓
+  All child components move with VehicleBody
+
+VISUAL REPRESENTATION:
+  VehicleBody moves → VehicleVisualMesh moves with it
+       ↓
+  Player sees cube mesh moving
+       ↓
+  Shadow rendered on ground
+
+CAMERA FOLLOW:
+  VehicleBody moves
+       ↓
+  SpringArm follows with lag (smooth)
+       ↓
+  SpringArm maintains 600cm distance behind
+       ↓
+  FollowCamera attached to SpringArm endpoint
+       ↓
+  Camera view shows vehicle from behind and above
+
+PLAYER INTERACTION:
+  Player approaches vehicle
+       ↓
+  Player enters EntryTrigger overlap volume
+       ↓
+  "Press F to Enter" prompt shown
+       ↓
+  Player presses F
+       ↓
+  PlayerController possesses VehicleBase
+       ↓
+  FollowCamera becomes active view
+       ↓
+  Input actions route to vehicle movement functions
+
+
+COORDINATE SYSTEM
+================================================================================
+
+World Space:
+  - X: Forward (vehicle length)
+  - Y: Right (vehicle width)
+  - Z: Up (vehicle height)
+
+Vehicle Local Space (VehicleBody):
+  - Origin: (0, 0, 0) at vehicle center
+  - VehicleVisualMesh: (0, 0, 0) - Same as VehicleBody
+  - SpringArm: (0, 0, 200) - 200cm above vehicle center
+  - Camera: 600cm behind SpringArm in local -X direction
+
+Camera Position in World:
+  When vehicle at (0, 0, 100):
+  - Camera approximately at (-600, 0, 350)
+  - Looking toward vehicle at (0, 0, 100)
+  - 600cm behind, 250cm above
+
+
+SCALE REFERENCE
+================================================================================
+
+VehicleVisualMesh Scale: (4.0, 2.0, 1.0)
+
+Real-world dimensions:
+  Length (X): 4.0 * 100cm = 400cm = 4 meters  (typical sedan)
+  Width (Y):  2.0 * 100cm = 200cm = 2 meters  (typical sedan)
+  Height (Z): 1.0 * 100cm = 100cm = 1 meter   (sedan roof height)
+
+For reference:
+  - Honda Civic: ~4.6m long, ~1.8m wide, ~1.4m tall
+  - Cube mesh is slightly wider/shorter for arcade feel
+
+SpringArm Length: 600cm = 6 meters
+  - Comfortable third-person follow distance
+  - Not too close (claustrophobic)
+  - Not too far (loss of control feeling)
+
+SpringArm Height: 200cm = 2 meters
+  - Above vehicle roof (1 meter) + 1 meter clearance
+  - Provides good overview of vehicle and surroundings
+
+
+PHYSICS CALCULATIONS
+================================================================================
+
+Mass: 1500 kg
+  - Typical sedan: 1200-1600 kg
+  - Affects:
+    * Acceleration (F = ma)
+    * Braking distance
+    * Collision impact forces
+    * Momentum during turns
+
+Damping:
+  Linear Damping: 0.01
+    - Very low = minimal speed loss from air resistance
+    - Allows high speeds without excessive drag
+    - Arcade feel vs realistic air resistance
+
+  Angular Damping: 0.5
+    - Moderate = prevents unrealistic spinning
+    - Vehicle settles after rotating
+    - Prevents perpetual rotation after collision
+
+Gravity: 980 cm/s² (default UE5)
+  - Realistic Earth gravity
+  - Vehicle falls naturally when airborne
+  - Jump physics feel authentic
+
+
+CONFIGURATION STATUS
+================================================================================
+
+[✓] VehicleBody - ROOT COMPONENT - CONFIGURED
+    Physics: ON | Mass: 1500kg | Collision: PhysicsActor
+
+[✓] VehicleVisualMesh - STATIC MESH - ADDED
+    Mesh: Cube | Scale: 4x2x1 | Collision: OFF
+
+[✓] SpringArm - CAMERA RIG - CONFIGURED
+    Height: 200cm | Length: 600cm | Lag: ON
+
+[✓] FollowCamera - VIEWPORT - CONFIGURED
+    FOV: 90° | Position: Behind vehicle | Active: YES
+
+[✓] EntryTrigger - INTERACTION - PRE-CONFIGURED
+    Overlap detection: ON | Trigger volume: Active
+
+[✓] Audio Components - SOUND - PRE-CONFIGURED
+    Engine: Ready | Horn: Ready | Siren: Ready (Police only)
+
+[✓] InteriorCamera - ALTERNATE VIEW - PRE-CONFIGURED
+    First-person view: Available via SwitchCamera()
+
+
+TESTING SCENARIOS
+================================================================================
+
+TEST 1: GRAVITY AND PHYSICS
+  Setup: Place vehicle at Z=100 (100cm above ground)
+  Expected: Vehicle falls and lands with bounce/settle
+  Verify: Physics simulation working
+
+TEST 2: VISUAL REPRESENTATION
+  Setup: View vehicle in editor viewport
+  Expected: Blue cube visible with 4x2x1 proportions
+  Verify: Static mesh configured correctly
+
+TEST 3: CAMERA SYSTEM
+  Setup: Play in Editor, possess vehicle
+  Expected: Camera behind vehicle at 600cm distance
+  Verify: Spring arm and camera configured
+
+TEST 4: COMPONENT HIERARCHY
+  Setup: Open BP_VehicleBase Components panel
+  Expected: Tree structure matches diagram above
+  Verify: All components properly parented
+
+
+TROUBLESHOOTING QUICK REFERENCE
+================================================================================
+
+ISSUE: Vehicle falls through floor
+FIX: Check VehicleBody collision preset = PhysicsActor
+
+ISSUE: Vehicle doesn't fall
+FIX: Enable "Simulate Physics" and "Enable Gravity" on VehicleBody
+
+ISSUE: Can't see vehicle
+FIX: Add VehicleVisualMesh with Cube mesh, scale 4x2x1
+
+ISSUE: Camera not following
+FIX: Verify FollowCamera is child of SpringArm, SpringArm child of VehicleBody
+
+ISSUE: Camera too close/far
+FIX: Adjust SpringArm "Target Arm Length" (default: 600)
+
+ISSUE: Camera stutters
+FIX: Enable "Camera Lag" on SpringArm (Speed: 3.0)
+
+
+================================================================================
+COMPONENT DIAGRAM LEGEND
+================================================================================
+
+⚡ = Physics Enabled
+📦 = Mass/Physics Properties
+🎮 = Collision Detection
+📷 = Active Camera
+🎥 = Camera Settings
+👁 = Visual Component
+[NEW] = Added by configuration (not from C++)
+
+================================================================================
+END OF COMPONENT DIAGRAM
+Agent 2 - Vehicle Blueprint Engineer | 2025-10-12
+================================================================================

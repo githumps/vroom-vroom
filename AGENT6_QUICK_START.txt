@@ -1,0 +1,87 @@
+================================================================================
+AGENT 6: VEHICLE SPAWNER PLACEMENT - QUICK START
+================================================================================
+
+MISSION: Place BP_VehicleSpawner in OpenWorld map to spawn 25 police vehicles
+
+TIME: 2-10 minutes
+
+================================================================================
+FAST PATH (2 MINUTES)
+================================================================================
+
+1. Open Unreal Engine 5.6.1 with Vroom Vroom project
+2. Tools > Execute Python Script
+3. Select: place_vehicle_spawner.py
+4. Watch Output Log for "SUCCESS" messages
+5. Select "VehicleSpawner_Police" in World Outliner
+6. Verify Details panel properties:
+   - Vehicle Class To Spawn: BP_PoliceVehicle
+   - Initial Police Vehicles: 25
+   - Max Police Vehicles: 50
+   - Spawn Radius: 10000
+7. Window > World Settings > verify GameMode Override: BP_VroomGameMode
+8. Save (Ctrl+S)
+9. Press Play (Alt+P) to test
+
+================================================================================
+MANUAL PATH (10 MINUTES)
+================================================================================
+
+See: AGENT6_SPAWNER_PLACEMENT_INSTRUCTIONS.md
+Section: "Method 2: Manual Placement (FALLBACK)"
+
+================================================================================
+VERIFICATION
+================================================================================
+
+Press Play (Alt+P) in OpenWorld map
+Expected: 25 police vehicles spawn across the map
+Check: Output Log shows "Spawned police vehicle #1" through "#25"
+
+================================================================================
+FILES CREATED
+================================================================================
+
+1. place_vehicle_spawner.py
+   - Python automation script
+   - Run in Unreal Editor
+
+2. AGENT6_SPAWNER_PLACEMENT_INSTRUCTIONS.md
+   - Complete manual instructions
+   - Troubleshooting guide
+
+3. AGENT6_EXECUTION_REPORT.md
+   - Full task report
+   - Technical details
+
+4. AGENT6_QUICK_START.txt
+   - This file
+
+================================================================================
+CONFIGURATION TARGET
+================================================================================
+
+Location: (0, 0, 200)
+Vehicle Class: BP_PoliceVehicle
+Initial Vehicles: 25
+Max Vehicles: 50
+Spawn Radius: 10000
+GameMode: BP_VroomGameMode
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Q: No vehicles spawn?
+A: Check spawner properties are set correctly, verify GameMode override
+
+Q: Python script fails?
+A: Use manual method in AGENT6_SPAWNER_PLACEMENT_INSTRUCTIONS.md
+
+Q: Can't find spawner?
+A: World Outliner > search "VehicleSpawner" > press F to focus
+
+================================================================================
+STATUS: READY FOR EXECUTION
+================================================================================

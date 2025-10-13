@@ -1,0 +1,326 @@
+================================================================================
+                    BP_VEHICLEBASE EVENT GRAPH VISUAL GUIDE
+================================================================================
+                            Agent 4 Deliverable
+           Complete Node Layout for Driving Physics Implementation
+================================================================================
+
+
+                               ┌─────────────────┐
+                               │   EVENT TICK    │
+                               └────────┬────────┘
+                                        │
+                 ┌──────────────────────┼──────────────────────┐
+                 │                      │                       │
+                 │                      │                       │
+        ┌────────▼────────┐    ┌───────▼────────┐     ┌───────▼────────┐
+        │ FORWARD MOVEMENT│    │    STEERING    │     │    BRAKING     │
+        └─────────────────┘    └────────────────┘     └────────────────┘
+
+
+================================================================================
+CHAIN 1: FORWARD MOVEMENT (LEFT PATH)
+================================================================================
+
+    ┌─────────────────────┐
+    │  Get Input Axis     │
+    │  "MoveForward"      │  ◄─── Set Axis Name to "MoveForward"
+    └──────────┬──────────┘
+               │ Axis Value (float)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Float × Float      │
+    │  [1500.0]           │  ◄─── Type 1500.0 in right input pin
+    └──────────┬──────────┘
+               │ Result (float)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Get Actor          │
+    │  Forward Vector     │
+    └──────────┬──────────┘
+               │ Return Value (Vector)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Vector × Float     │  ◄─── Connect Forward Vector to left pin
+    │                     │       Connect 1500.0 result to right pin
+    └──────────┬──────────┘
+               │ Result (Vector)
+               │
+               ▼
+    ┌─────────────────────┐
+    │     Add Force       │
+    │  [✓] Velocity Change│  ◄─── CHECK the "Velocity Change" checkbox!
+    └─────────────────────┘
+
+
+================================================================================
+CHAIN 2: STEERING (MIDDLE PATH)
+================================================================================
+
+    ┌─────────────────────┐
+    │  Get Input Axis     │
+    │  "MoveRight"        │  ◄─── Set Axis Name to "MoveRight"
+    └──────────┬──────────┘
+               │ Axis Value (float)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Float × Float      │
+    │  [100.0]            │  ◄─── Type 100.0 in right input pin
+    └──────────┬──────────┘
+               │ Result (float)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Get Actor          │
+    │  Up Vector          │
+    └──────────┬──────────┘
+               │ Return Value (Vector)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Vector × Float     │  ◄─── Connect Up Vector to left pin
+    │                     │       Connect 100.0 result to right pin
+    └──────────┬──────────┘
+               │ Result (Vector)
+               │
+               ▼
+    ┌─────────────────────┐
+    │ Add Torque in Radians│
+    │  [✓] Velocity Change│  ◄─── CHECK the "Velocity Change" checkbox!
+    └─────────────────────┘
+
+
+================================================================================
+CHAIN 3: BRAKING (RIGHT PATH - WITH BRANCHING LOGIC)
+================================================================================
+
+    ┌─────────────────────┐
+    │  Get Input Axis     │
+    │  "Brake"            │  ◄─── Set Axis Name to "Brake"
+    └──────────┬──────────┘
+               │ Axis Value (float)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Float > Float      │
+    │  [0.01]             │  ◄─── Type 0.01 in right input pin
+    └──────────┬──────────┘
+               │ Boolean result
+               │
+               ▼
+    ┌─────────────────────┐
+    │      BRANCH         │  ◄─── Condition determines execution path
+    └────┬────────────┬───┘
+         │            │
+       TRUE         FALSE (do nothing)
+         │
+         ▼
+    ┌─────────────────────┐
+    │   Get Velocity      │
+    └──────────┬──────────┘
+               │ Return Value (Vector)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Vector × Float     │
+    │  [-1.0]             │  ◄─── Type -1.0 to invert velocity direction
+    └──────────┬──────────┘
+               │ Result (Vector)
+               │
+               ▼
+    ┌─────────────────────┐
+    │  Vector × Float     │
+    │  [2000.0]           │  ◄─── Type 2000.0 to amplify brake force
+    └──────────┬──────────┘
+               │ Result (Vector)
+               │
+               ▼
+    ┌─────────────────────┐
+    │     Add Force       │
+    │  [✓] Velocity Change│  ◄─── CHECK the "Velocity Change" checkbox!
+    └─────────────────────┘
+
+
+================================================================================
+COMPLETE GRAPH OVERVIEW (BIRD'S EYE VIEW)
+================================================================================
+
+                            ╔═══════════════════╗
+                            ║   EVENT TICK      ║
+                            ╚═════════╦═════════╝
+                                      ║
+              ┌───────────────────────╬───────────────────────┐
+              │                       ║                       │
+              ▼                       ▼                       ▼
+         ┌─────────┐            ┌─────────┐            ┌─────────┐
+         │ Forward │            │Steering │            │ Braking │
+         │Movement │            │         │            │         │
+         └────┬────┘            └────┬────┘            └────┬────┘
+              │                      │                      │
+      GetInput(MoveForward)  GetInput(MoveRight)   GetInput(Brake)
+              │                      │                      │
+         * 1500.0                * 100.0                > 0.01
+              │                      │                      │
+      GetActorForward           GetActorUp               Branch
+              │                      │                      │
+       Vector*Float             Vector*Float         GetVelocity
+              │                      │                      │
+         Add Force                Add Torque            * -1.0
+        [VelChange]              [VelChange]               │
+                                                        * 2000.0
+                                                            │
+                                                        Add Force
+                                                       [VelChange]
+
+
+================================================================================
+PIN CONNECTION GUIDE
+================================================================================
+
+EXECUTION PINS (White):
+  → Connect: Event Tick → Get Input Axis nodes (all 3 chains)
+  → Connect: Get Input (Brake) → Branch node
+  → Connect: Branch TRUE → Get Velocity
+
+DATA PINS:
+  Float (Green):
+    → Axis Value → Multiply nodes
+    → Multiply results → Vector*Float nodes
+
+  Vector (Yellow):
+    → GetActorForward/Up → Vector*Float nodes
+    → GetVelocity → Vector*Float
+    → Vector*Float results → Add Force/Torque nodes
+
+  Boolean (Red):
+    → Float comparison → Branch Condition
+
+
+================================================================================
+CRITICAL SETTINGS CHECKLIST
+================================================================================
+
+Input Axis Names (must match exactly):
+  [ ] MoveForward
+  [ ] MoveRight
+  [ ] Brake
+
+Multiply Values (must be exact):
+  [ ] Forward force: 1500.0
+  [ ] Steering torque: 100.0
+  [ ] Brake invert: -1.0
+  [ ] Brake force: 2000.0
+
+Brake Comparison:
+  [ ] Threshold: 0.01
+
+Velocity Change Flags (CRITICAL!):
+  [ ] Forward Add Force: ✓ Velocity Change = TRUE
+  [ ] Steering Add Torque: ✓ Velocity Change = TRUE
+  [ ] Braking Add Force: ✓ Velocity Change = TRUE
+
+
+================================================================================
+NODE SEARCH TERMS (for Blueprint Editor)
+================================================================================
+
+Type these EXACTLY in the node search box:
+
+  "Get Input Axis Value"       → Input system
+  "float * float"              → Multiply float by float
+  "Get Actor Forward Vector"   → Self reference
+  "Get Actor Up Vector"        → Self reference
+  "Vector * Float"             → Multiply vector by scalar
+  "Add Force"                  → Physics force (linear)
+  "Add Torque in Radians"      → Physics torque (rotational)
+  "float > float"              → Greater than comparison
+  "Branch"                     → Conditional execution
+  "Get Velocity"               → Current movement velocity
+
+
+================================================================================
+IMPLEMENTATION TIME ESTIMATE
+================================================================================
+
+Forward Movement:    3 minutes
+Steering:            3 minutes
+Braking:             4 minutes
+Compile & Test:      2 minutes
+                     ──────────
+TOTAL:               12 minutes (with margin)
+
+Actual implementation by experienced user: 8-10 minutes
+
+
+================================================================================
+COMMON MISTAKES TO AVOID
+================================================================================
+
+1. ✗ Forgetting to set Axis Names in Get Input Axis Value nodes
+   ✓ Double-check all three: MoveForward, MoveRight, Brake
+
+2. ✗ Not checking "Velocity Change" on Add Force/Torque nodes
+   ✓ ALL force/torque nodes must have this enabled!
+
+3. ✗ Using wrong multiply values (1500 vs 15000, etc.)
+   ✓ Double-check each value matches specification
+
+4. ✗ Connecting execution pins to data pins
+   ✓ White→White, Green→Green, Yellow→Yellow
+
+5. ✗ Missing the Branch node in braking chain
+   ✓ Brake MUST use Branch to prevent constant force application
+
+
+================================================================================
+PHYSICS COMPONENT REQUIREMENTS
+================================================================================
+
+The Blueprint's Static Mesh Component MUST have:
+  [✓] Simulate Physics
+  [✓] Enable Gravity
+  [ ] Linear Damping: 0.01-0.1
+  [ ] Angular Damping: 0.01-0.1
+  [ ] Mass: 1000-2000 kg
+
+
+================================================================================
+TESTING PROCEDURE
+================================================================================
+
+1. Compile Blueprint (green checkmark button)
+2. Place BP_VehicleBase in OpenWorld map
+3. Press Play (PIE)
+4. Test controls:
+   - W key: Should move forward
+   - S key: Should move backward
+   - A/D keys: Should rotate
+   - Space: Should brake (slow down when moving)
+5. Verify physics feels responsive
+6. Adjust multiply values if needed
+
+
+================================================================================
+FILE REFERENCE
+================================================================================
+
+Blueprint Asset:
+  C:\Users\evan\Documents\GitHub\vroom-vroom\Content\Blueprints\Vehicles\BP_VehicleBase.uasset
+
+Implementation Guide:
+  C:\Users\evan\Documents\GitHub\vroom-vroom\BP_VehicleBase_EventGraph_Implementation.md
+
+Research Notes:
+  C:\Users\evan\Documents\GitHub\vroom-vroom\vehicle_logic_research_notes.py
+
+This Visual Diagram:
+  C:\Users\evan\Documents\GitHub\vroom-vroom\BP_VehicleBase_Visual_Diagram.txt
+
+
+================================================================================
+                            END OF VISUAL GUIDE
+================================================================================

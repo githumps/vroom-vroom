@@ -1,0 +1,97 @@
+================================================================================
+           BP_VEHICLEBASE EVENT GRAPH - QUICK REFERENCE CHEAT SHEET
+================================================================================
+
+IMPLEMENTATION TIME: 8-10 minutes
+TARGET FILE: Content/Blueprints/Vehicles/BP_VehicleBase.uasset
+
+================================================================================
+NODE COUNT: 26 total
+================================================================================
+  - Event Tick: 1 (pre-existing)
+  - Forward Movement: 6 nodes
+  - Steering: 6 nodes
+  - Braking: 8 nodes
+
+================================================================================
+CHAIN 1: FORWARD MOVEMENT
+================================================================================
+Event Tick
+  → Get Input Axis (MoveForward)
+    → * 1500.0
+      → Get Actor Forward Vector
+        → Vector * Float
+          → Add Force [✓ Velocity Change]
+
+================================================================================
+CHAIN 2: STEERING
+================================================================================
+Event Tick
+  → Get Input Axis (MoveRight)
+    → * 100.0
+      → Get Actor Up Vector
+        → Vector * Float
+          → Add Torque in Radians [✓ Velocity Change]
+
+================================================================================
+CHAIN 3: BRAKING
+================================================================================
+Event Tick
+  → Get Input Axis (Brake)
+    → > 0.01
+      → Branch
+        → TRUE: Get Velocity
+          → * -1.0
+            → * 2000.0
+              → Add Force [✓ Velocity Change]
+
+================================================================================
+CRITICAL VALUES
+================================================================================
+  Forward force:     1500.0
+  Steering torque:   100.0
+  Brake threshold:   0.01
+  Brake invert:      -1.0
+  Brake force:       2000.0
+
+  Velocity Change:   TRUE (all force/torque nodes!)
+
+================================================================================
+AXIS NAMES (MUST MATCH EXACTLY)
+================================================================================
+  - MoveForward
+  - MoveRight
+  - Brake
+
+================================================================================
+NODE SEARCH TERMS
+================================================================================
+  "Get Input Axis Value"
+  "float * float"
+  "Get Actor Forward Vector"
+  "Get Actor Up Vector"
+  "Vector * Float"
+  "Add Force"
+  "Add Torque in Radians"
+  "float > float"
+  "Branch"
+  "Get Velocity"
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+  [ ] 3 execution wires from Event Tick
+  [ ] All Axis Names set correctly
+  [ ] All multiply values correct
+  [ ] All Velocity Change boxes checked
+  [ ] Blueprint compiles without errors
+  [ ] Blueprint saved
+
+================================================================================
+FULL DOCUMENTATION
+================================================================================
+  BP_VehicleBase_EventGraph_Implementation.md  (detailed guide)
+  BP_VehicleBase_Visual_Diagram.txt            (ASCII diagrams)
+  vehicle_logic_research_notes.py              (API research)
+
+================================================================================

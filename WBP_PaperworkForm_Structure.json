@@ -1,0 +1,389 @@
+{
+  "widget_name": "WBP_PaperworkForm",
+  "parent_class": "UVroomPaperworkFormWidget",
+  "description": "The Humor Centerpiece - A hilariously frustrating bureaucratic form",
+  "humor_level": "MAXIMUM",
+  "frustration_level": "EVIL",
+
+  "root": {
+    "type": "CanvasPanel",
+    "name": "RootCanvas",
+    "properties": {
+      "is_variable": true,
+      "anchors": {
+        "min": [0.0, 0.0],
+        "max": [1.0, 1.0]
+      }
+    }
+  },
+
+  "text_fields": [
+    {
+      "name": "FullNameTextBox",
+      "label": "Full Legal Name (include maiden names, middle names, nicknames, aliases)",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "John Jacob Jingleheimer Schmidt Sr. III Esquire",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "SSNTextBox",
+      "label": "Social Security Number (all digits, no dashes, memorized)",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "We already know it anyway",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "ExistingWhileDrivingTextBox",
+      "label": "Did you know you were existing while driving? (Y/N)",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "Y or N only (probably Y)",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "Essay500WordsTextBox",
+      "label": "Explain in EXACTLY 500 words why you thought driving was acceptable",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "Begin your 500-word essay here. Not 499. Not 501. Exactly 500.",
+        "font_size": 12,
+        "is_multiline": true,
+        "height": 200,
+        "auto_wrap_text": true
+      }
+    },
+    {
+      "name": "VehicleColorTextBox",
+      "label": "Vehicle color (be specific, use Pantone numbers)",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "e.g., Pantone 19-4052 TCX",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "HeartbeatsTextBox",
+      "label": "Number of heartbeats during violation",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "Count carefully",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "DidYouBreatheTextBox",
+      "label": "Did you breathe while existing? (Y/N)",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "This is a trick question",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "MaidenNamesTextBox",
+      "label": "Mother's maiden name, father's maiden name",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "Both required, comma-separated",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "OfficerFavoriteColorTextBox",
+      "label": "Favorite color of the arresting officer (guess)",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "Take your best guess. It matters.",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    },
+    {
+      "name": "SignatureTextBox",
+      "label": "Sign here (type your full name as signature)",
+      "type": "EditableTextBox",
+      "properties": {
+        "is_variable": true,
+        "hint_text": "Type your full legal name exactly as it appears above",
+        "font_size": 12,
+        "is_multiline": false,
+        "height": 40
+      }
+    }
+  ],
+
+  "checkboxes": [
+    {
+      "name": "CheckBox47B",
+      "label": "Check box 47B subsection 12 paragraph 7 line 4 word 9",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    },
+    {
+      "name": "AcknowledgeGuiltyCheckBox",
+      "label": "I acknowledge I am guilty regardless of circumstances",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    },
+    {
+      "name": "ConsentPaperworkCheckBox",
+      "label": "I consent to excessive paperwork",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    },
+    {
+      "name": "Form30SecondsCheckBox",
+      "label": "I understand this form expires in 30 seconds",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    },
+    {
+      "name": "SurrenderSoulCheckBox",
+      "label": "I hereby surrender my soul to the DMV",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    },
+    {
+      "name": "NotAgreeCheckBox",
+      "label": "I agree to not agree with myself",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    },
+    {
+      "name": "CertifyCheckedCheckBox",
+      "label": "I certify this checkbox is checked",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    },
+    {
+      "name": "AcknowledgeCheckingCheckBox",
+      "label": "I acknowledge checking this box means I checked a box",
+      "properties": {
+        "is_variable": true,
+        "checked_state": "Unchecked",
+        "size": [24, 24]
+      }
+    }
+  ],
+
+  "buttons": [
+    {
+      "name": "SubmitButton",
+      "label": "SUBMIT FORM",
+      "properties": {
+        "is_variable": true,
+        "size": [300, 60],
+        "style": {
+          "normal": {
+            "background_color": "#000080",
+            "text_color": "#FFFFFF",
+            "font_size": 18,
+            "font_style": "Bold"
+          },
+          "hovered": {
+            "background_color": "#0000CD",
+            "text_color": "#FFFFFF"
+          },
+          "pressed": {
+            "background_color": "#000033",
+            "text_color": "#CCCCCC"
+          }
+        }
+      }
+    }
+  ],
+
+  "text_blocks": [
+    {
+      "name": "FormTitleText",
+      "text": "OFFICIAL TRAFFIC VIOLATION BUREAUCRACY FORM 47B-R2-D2",
+      "properties": {
+        "is_variable": true,
+        "font_size": 24,
+        "font_style": "Bold",
+        "color": "#8B0000",
+        "alignment": "Center",
+        "shadow_offset": [2, 2]
+      }
+    },
+    {
+      "name": "ErrorMessageText",
+      "text": "INCOMPLETE FORM! START OVER!",
+      "properties": {
+        "is_variable": true,
+        "font_size": 20,
+        "font_style": "Bold",
+        "color": "#FF0000",
+        "alignment": "Center",
+        "visibility": "Hidden",
+        "background_color": "#00000080",
+        "padding": 20
+      }
+    }
+  ],
+
+  "validation": {
+    "strategy": "EVIL_CLEAR_ALL",
+    "description": "If ANY field is empty OR ANY checkbox is unchecked, clear ALL fields after 2-second delay",
+    "timing": {
+      "error_display_duration": 2.0,
+      "success_delay_before_close": 3.0
+    },
+    "messages": {
+      "incomplete": "INCOMPLETE FORM! START OVER!",
+      "success": "Form accepted. Sentence incoming..."
+    }
+  },
+
+  "animations": {
+    "ErrorShake": {
+      "duration": 0.5,
+      "target": "ErrorMessageText",
+      "keyframes": [
+        {"time": 0.0, "transform": {"x": 0}},
+        {"time": 0.1, "transform": {"x": 10}},
+        {"time": 0.2, "transform": {"x": -10}},
+        {"time": 0.3, "transform": {"x": 10}},
+        {"time": 0.4, "transform": {"x": -10}},
+        {"time": 0.5, "transform": {"x": 0}}
+      ]
+    },
+    "FormClearFlash": {
+      "duration": 0.3,
+      "target": "All input elements",
+      "effect": "Red border flash"
+    },
+    "SubmitSuccess": {
+      "duration": 1.0,
+      "targets": [
+        {
+          "element": "SubmitButton",
+          "keyframes": [
+            {"time": 0.0, "scale": 1.0},
+            {"time": 0.5, "scale": 1.2},
+            {"time": 1.0, "scale": 1.0}
+          ]
+        },
+        {
+          "element": "FormScrollBox",
+          "keyframes": [
+            {"time": 0.0, "opacity": 1.0},
+            {"time": 1.0, "opacity": 0.0}
+          ]
+        }
+      ]
+    }
+  },
+
+  "humor_elements": {
+    "absurd_questions": [
+      "Asking for heartbeat count during violation",
+      "Requiring Pantone color codes for vehicle",
+      "500-word essay requirement",
+      "Guessing officer's favorite color",
+      "Father's maiden name (fathers don't have maiden names)"
+    ],
+    "bureaucratic_nightmares": [
+      "Form 47B-R2-D2 (nonsense designation)",
+      "Checkbox 47B subsection 12 paragraph 7 line 4 word 9",
+      "Form expires in 30 seconds (but takes 10 minutes to fill)",
+      "Surrendering soul to DMV",
+      "Agreeing to not agree with yourself"
+    ],
+    "evil_validation": [
+      "Clear ALL fields if ANY is missing",
+      "2-second delay for comedic realization",
+      "No autosave or field preservation",
+      "Must fill everything in one session"
+    ]
+  },
+
+  "integration": {
+    "show_widget": {
+      "controller": "BP_VroomPlayerController",
+      "function": "ShowPaperworkForm",
+      "input_mode": "UI Only",
+      "cursor": "Visible"
+    },
+    "close_widget": {
+      "trigger": "Successful submission OR manual close",
+      "function": "ReturnToOpenWorld",
+      "input_mode": "Game Only",
+      "cursor": "Hidden"
+    }
+  },
+
+  "sound_cues": {
+    "error": {
+      "name": "ErrorBuzzer_Cue",
+      "description": "Loud, annoying buzzer sound",
+      "volume": 1.0
+    },
+    "submit": {
+      "name": "FormStamp_Cue",
+      "description": "Official rubber stamp sound",
+      "volume": 1.0
+    }
+  },
+
+  "meta": {
+    "created": "2025-10-12",
+    "version": "1.0.0",
+    "humor_rating": "10/10",
+    "frustration_rating": "11/10",
+    "player_rage_quit_probability": "HIGH",
+    "player_laughter_probability": "GUARANTEED",
+    "implementation_status": "SPECIFICATION_COMPLETE",
+    "requires_manual_blueprint_creation": true
+  }
+}
