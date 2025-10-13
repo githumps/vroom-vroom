@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM VROOM - A Game About Freedom and Bureaucracy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            pointer-events: all;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 4em;
+            color: #0f0;
+            text-shadow: 0 0 20px #0f0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2em;
+            color: #0f0;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #000;
+            color: #0f0;
+            border: 2px solid #0f0;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        .hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2em;
+            text-shadow: 2px 2px 4px #000;
+            pointer-events: none;
+        }
+
+        .hud-item {
+            margin: 5px 0;
+        }
+
+        .form-container {
+            background: #000;
+            border: 2px solid #0f0;
+            padding: 30px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .form-field {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #0f0;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .prison-activity {
+            border: 1px solid #0f0;
+            padding: 20px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .prison-activity:hover {
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        #characterCreation {
+            max-width: 600px;
+        }
+
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .credits-scroll {
+            text-align: center;
+            animation: scroll 30s linear infinite;
+        }
+
+        @keyframes scroll {
+            from { transform: translateY(100vh); }
+            to { transform: translateY(-100%); }
+        }
+
+        .message-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #0f0;
+            padding: 15px 30px;
+            max-width: 80%;
+            text-align: center;
+            display: none;
+            pointer-events: none;
+        }
+
+        .message-box.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui">
+        <!-- MAIN MENU -->
+        <div id="mainMenu" class="screen active">
+            <h1>VROOM VROOM</h1>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">A game about freedom, bureaucracy, and consequences</p>
+            <button onclick="game.startNewGame()">NEW GAME</button>
+            <button onclick="game.loadGame()">LOAD GAME</button>
+            <button onclick="game.showScreen('credits')">CREDITS</button>
+        </div>
+
+        <!-- CHARACTER CREATION -->
+        <div id="characterCreation" class="screen">
+            <h2>CREATE YOUR CHARACTER</h2>
+            <div class="form-container">
+                <div class="form-field">
+                    <label>Name:</label>
+                    <input type="text" id="charName" placeholder="Enter your name">
+                </div>
+                <div class="form-field">
+                    <label>Skin Tone:</label>
+                    <input type="range" id="skinTone" min="0" max="5" value="2">
+                </div>
+                <div class="form-field">
+                    <label>Height:</label>
+                    <input type="range" id="height" min="150" max="200" value="175">
+                    <span id="heightValue">175cm</span>
+                </div>
+                <div class="form-field">
+                    <label>Voice:</label>
+                    <select id="voice">
+                        <option value="deep">Deep and Resigned</option>
+                        <option value="high">High and Anxious</option>
+                        <option value="monotone">Monotone Bureaucrat</option>
+                        <option value="enthusiastic">Disturbingly Enthusiastic</option>
+                    </select>
+                </div>
+                <button onclick="game.finishCharacterCreation()">BEGIN YOUR JOURNEY</button>
+            </div>
+        </div>
+
+        <!-- DRIVING MODE -->
+        <div id="drivingHUD" class="hud" style="display: none;">
+            <div class="hud-item">Speed: <span id="speed">0</span> km/h</div>
+            <div class="hud-item">Wanted Level: <span id="wantedLevel">0</span></div>
+            <div class="hud-item">Time Driving: <span id="drivingTime">0</span>s</div>
+            <div class="hud-item" style="margin-top: 20px; color: #ff0;">Press SPACE to stop driving</div>
+        </div>
+
+        <!-- COURTROOM -->
+        <div id="courtroom" class="screen">
+            <h2>PAPERWORK SIMULATOR 3000</h2>
+            <p style="margin: 20px; font-size: 1.1em;">You have been pulled over. Please complete ALL forms in triplicate.</p>
+            <div class="form-container">
+                <div class="form-field">
+                    <label>FORM 27-B: Reason for Driving</label>
+                    <textarea id="reasonForDriving" placeholder="Explain in detail why you were operating a motor vehicle..."></textarea>
+                </div>
+                <div class="form-field">
+                    <label>FORM 42-A: Description of Vehicle</label>
+                    <input type="text" id="vehicleDesc" placeholder="Color, make, model, emotional state...">
+                </div>
+                <div class="form-field">
+                    <label>FORM 99-Z: Statement of Intent</label>
+                    <select id="intentStatement">
+                        <option value="">Select your intent...</option>
+                        <option value="grocery">I was going to buy groceries</option>
+                        <option value="work">I was going to work</option>
+                        <option value="joy">I was experiencing joy</option>
+                        <option value="exist">I was simply existing</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label>FORM 13-C: Please initial here to acknowledge you were driving</label>
+                    <input type="text" id="initial1" placeholder="Initials" maxlength="3">
+                </div>
+                <div class="form-field">
+                    <label>FORM 13-D: Please initial here to acknowledge you know you were driving</label>
+                    <input type="text" id="initial2" placeholder="Initials" maxlength="3">
+                </div>
+                <div class="form-field">
+                    <label>FORM 13-E: Please initial here to acknowledge that you acknowledged driving</label>
+                    <input type="text" id="initial3" placeholder="Initials" maxlength="3">
+                </div>
+                <button onclick="game.submitCourtForms()">SUBMIT FORMS</button>
+            </div>
+        </div>
+
+        <!-- PRISON MENU -->
+        <div id="prisonMenu" class="screen">
+            <h2>CORRECTIONAL FACILITY #7734</h2>
+            <p style="margin: 20px; font-size: 1.1em;">Sentence: <span id="sentenceLength">5</span> years</p>
+            <p style="margin: 20px;">Time Served: <span id="timeServed">0</span> days</p>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="prison-activity" onclick="game.prisonActivity('weights')">
+                    <h3>LIFT WEIGHTS</h3>
+                    <p>Channel your rage into physical fitness. The bar doesn't judge.</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.prisonActivity('eat')">
+                    <h3>EAT LUNCH</h3>
+                    <p>Mystery meat and existential questions. Served daily at noon.</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.prisonActivity('read')">
+                    <h3>READ LIBRARY BOOK</h3>
+                    <p>Escape through literature. Currently available: "Traffic Laws: A History"</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.prisonActivity('letter')">
+                    <h3>WRITE A LETTER</h3>
+                    <p>Communicate with the outside world. Subject to review.</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.prisonActivity('cellmate')">
+                    <h3>TALK TO CELLMATE</h3>
+                    <p>Your cellmate wants to discuss their feelings about traffic violations.</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.prisonActivity('tattoo')">
+                    <h3>GET PRISON TATTOO</h3>
+                    <p>Express yourself through permanent body modification.</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.prisonActivity('commissary')">
+                    <h3>VISIT COMMISSARY</h3>
+                    <p>Spend your hard-earned prison wages on luxury items.</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.prisonActivity('gang')">
+                    <h3>JOIN A GANG</h3>
+                    <p>The "Safe Drivers Club" is recruiting.</p>
+                </div>
+
+                <button onclick="game.endPrison()" style="margin-top: 30px;">SERVE TIME (SKIP AHEAD)</button>
+            </div>
+        </div>
+
+        <!-- LETTER WRITING -->
+        <div id="letterWriting" class="screen">
+            <h2>WRITE A LETTER</h2>
+            <div class="form-container">
+                <div class="form-field">
+                    <label>To:</label>
+                    <input type="text" id="letterTo" placeholder="Recipient name">
+                </div>
+                <div class="form-field">
+                    <label>Message:</label>
+                    <textarea id="letterMessage" placeholder="Dear friend, I am in prison for driving..."></textarea>
+                </div>
+                <button onclick="game.sendLetter()">SEND LETTER (Subject to Review)</button>
+                <button onclick="game.showScreen('prisonMenu')">CANCEL</button>
+            </div>
+        </div>
+
+        <!-- CREDITS -->
+        <div id="credits" class="screen">
+            <div class="credits-scroll">
+                <h1>VROOM VROOM</h1>
+                <p style="margin: 40px;">A game about freedom and its consequences</p>
+
+                <h2>CREATED BY</h2>
+                <p>Claude (Project Manager)</p>
+                <p>The VROOM VROOM ENFORCER</p>
+
+                <h2>SPECIAL THANKS</h2>
+                <p>To everyone who has ever been pulled over for no reason</p>
+                <p>To bureaucracy, our endless inspiration</p>
+                <p>To the color green</p>
+
+                <h2>DEDICATED TO</h2>
+                <p>Freedom of movement</p>
+                <p>The absurdity of paperwork</p>
+                <p>People who just want to drive</p>
+
+                <h2>NO EXCUSES WERE ACCEPTED</h2>
+                <p>IN THE MAKING OF THIS GAME</p>
+
+                <p style="margin-top: 100px; font-size: 2em;">VROOM VROOM</p>
+
+                <button onclick="game.showScreen('mainMenu')" style="margin-top: 50px;">RETURN TO MENU</button>
+            </div>
+        </div>
+
+        <!-- MESSAGE BOX -->
+        <div id="messageBox" class="message-box"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

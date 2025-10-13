@@ -1,36 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Read(//e/Epic Games/UE_5.6/Engine/Build/BatchFiles/**)",
-      "Read(//e/Epic Games/UE_5.6/**)",
-      "Bash(\"E:\\Epic Games\\UE_5.6\\Engine\\Build\\BatchFiles\\Build.bat\" VroomVroom Win64 Development \"C:\\Users\\evan\\Documents\\GitHub\\vroom-vroom\\VroomVroom.uproject\" -WaitMutex)",
-      "Read(//c/Users/evan/AppData/Local/UnrealBuildTool/**)",
-      "Read(//c/Program Files (x86)/Windows Kits/10/**)",
-      "Bash(dir:*)",
-      "Read(//c/Program Files/Windows Kits/10/**)",
-      "Read(//c/Program Files/**)",
-      "Bash(winget:*)",
-      "Bash(findstr:*)",
-      "Bash(\"C:\\Program Files\\Epic Games\\UE_5.6\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe\" \"C:\\Users\\evan\\Documents\\GitHub\\vroom-vroom\\VroomVroom.uproject\" -ExecutePythonScript=\"C:\\Users\\evan\\Documents\\GitHub\\vroom-vroom\\create_openworld_level.py\" -stdout -unattended -nopause -nosplash)",
-      "Bash(tee:*)",
-      "Read(//c/Program Files (x86)/Epic Games//**)",
-      "Bash(for file in create_openworld_level.py EXECUTE_LEVEL_CREATION.bat AGENT1_EXECUTION_REPORT.md LEVEL_CREATION_MANUAL_STEPS.md OpenWorld_Level_Specification.json POLICE_SPAWN_MAP.txt QUICKSTART_AGENT1.txt README_AGENT1.md)",
-      "Bash(do ls:*)",
-      "Bash(awk:*)",
-      "Bash(done)",
-      "Bash(tasklist)",
-      "Bash(cmd /c dir:*)",
-      "Bash(\"E:/Epic Games/UE_5.6/Engine/Binaries/Win64/UnrealEditor-Cmd.exe\" \"C:/Users/evan/Documents/GitHub/vroom-vroom/VroomVroom.uproject\" -run=pythonscript -script=\"C:/Users/evan/Documents/GitHub/vroom-vroom/create_openworld_level.py\" -stdout -unattended -nopause -NullRHI)",
-      "Bash(wmic:*)",
-      "Bash(test:*)",
-      "Bash(\"E:/Epic Games/UE_5.6/Engine/Binaries/Win64/UnrealEditor-Cmd.exe\" \"C:/Users/evan/Documents/GitHub/vroom-vroom/VroomVroom.uproject\" -ExecutePythonScript=\"C:/Users/evan/Documents/GitHub/vroom-vroom/MASTER_BUILD_SCRIPT.py\" -stdout -unattended -nopause -nosplash)",
-      "Bash(where python)",
-      "WebSearch",
-      "Bash(powershell:*)",
-      "WebFetch(domain:dev.epicgames.com)",
-      "Bash(python:*)",
-      "Bash(where UnrealEditor)",
-      "Read(//c//**)"
+      "Bash(cmd /c:*)"
     ],
     "deny": [],
     "ask": []
