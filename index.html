@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=game/index.html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM VROOM - Redirecting...</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .loading {
+            font-size: 2em;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="loading">🚗 LOADING VROOM VROOM... 🚔</div>
+        <p style="margin-top: 20px;">If not redirected, <a href="game/index.html" style="color: #0f0;">click here</a></p>
+    </div>
+</body>
+</html>
