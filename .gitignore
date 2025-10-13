@@ -2,3 +2,6 @@ Intermediate/Build/
 Binaries/
 Saved/Logs/VroomVroom.log
 Saved/Logs/VroomVroom.log
+
+# Archive folder (5GB of old UE5 files)
+archive/

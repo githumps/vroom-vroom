@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cmd /c:*)"
+      "Bash(*)",
+      "Bash(cmd /c *)",
+      "Bash(powershell:*)",
+      "Bash(python:*)",
+      "Read(//**)",
+      "Write(//**)",
+      "Delete(//**)",
+      "WebSearch",
+      "WebFetch(domain:*)"
     ],
     "deny": [],
     "ask": []

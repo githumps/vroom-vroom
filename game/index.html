@@ -22,6 +22,10 @@
             width: 100%;
             height: 100%;
             display: block;
+            /* Disco Elysium style painterly effects */
+            filter: contrast(1.1) saturate(0.8) brightness(0.95);
+            /* Subtle vignette effect */
+            box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.3);
         }
 
         #ui {
@@ -164,6 +168,152 @@
             to { transform: translateY(-100%); }
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cinematic Transition System */
+        .cinematic-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .cinematic-overlay.active {
+            display: flex;
+        }
+
+        .cinematic-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            animation: kenBurnsZoom 8s ease-out forwards;
+        }
+
+        @keyframes kenBurnsZoom {
+            from {
+                transform: scale(1.3);
+                filter: blur(2px) brightness(0.7);
+            }
+            to {
+                transform: scale(1);
+                filter: blur(0) brightness(1);
+            }
+        }
+
+        .cinematic-art {
+            font-family: monospace;
+            font-size: 0.6em;
+            line-height: 0.7em;
+            color: #8B9DC3;
+            text-shadow: 0 0 20px rgba(139, 157, 195, 0.5), 0 0 40px rgba(139, 157, 195, 0.3);
+            white-space: pre;
+            animation: artFadeIn 2s ease-in, artBreath 4s ease-in-out infinite 2s;
+            text-align: center;
+            margin-bottom: 40px;
+            filter: contrast(1.2);
+        }
+
+        @keyframes artBreath {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.9; }
+        }
+
+        @keyframes artFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .cinematic-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #f00;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.4), 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin: 20px;
+            text-align: center;
+            animation: dramaticFade 3s ease-out, textPulse 2s ease-in-out infinite 3s;
+            max-width: 80%;
+            letter-spacing: 2px;
+        }
+
+        @keyframes dramaticFade {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+            20% { opacity: 1; transform: translateY(0) scale(1.05); }
+            40% { opacity: 1; transform: translateY(0) scale(1); }
+            80% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes textPulse {
+            0%, 100% { text-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.4), 2px 2px 4px rgba(0, 0, 0, 0.8); }
+            50% { text-shadow: 0 0 40px rgba(255, 0, 0, 1), 0 0 80px rgba(255, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.8); }
+        }
+
+        .cinematic-subtitle {
+            font-size: 1.3em;
+            color: #0f0;
+            margin: 10px;
+            text-align: center;
+            animation: subtitleFade 4s ease-out;
+            font-style: italic;
+            max-width: 70%;
+            line-height: 1.6em;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            30% { opacity: 0; transform: translateY(10px); }
+            50% { opacity: 0.7; transform: translateY(0); }
+            60% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .cinematic-vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+        }
+
+        .letterbox {
+            position: absolute;
+            width: 100%;
+            height: 15%;
+            background: #000;
+            z-index: 10000;
+        }
+
+        .letterbox-top {
+            top: 0;
+            border-bottom: 2px solid #333;
+        }
+
+        .letterbox-bottom {
+            bottom: 0;
+            border-top: 2px solid #333;
+        }
+
         .message-box {
             position: fixed;
             bottom: 20px;
@@ -238,6 +388,21 @@
         <div id="courtroom" class="screen">
             <h2>PAPERWORK SIMULATOR 3000</h2>
             <p style="margin: 20px; font-size: 1.1em;">You have been pulled over. Please complete ALL forms in triplicate.</p>
+
+            <!-- Judge Hardcastle Dialogue Box -->
+            <div id="judgeDialogue" class="form-container" style="max-width: 900px; margin-bottom: 20px; display: none;">
+                <h3 style="color: #f00; text-align: center; margin-bottom: 15px;">⚖️ JUDGE HARDCASTLE ⚖️</h3>
+                <div id="judgeCharges" style="margin: 15px 0; padding: 15px; border: 1px solid #f00; background: rgba(255, 0, 0, 0.05);">
+                    <strong style="color: #f00;">CHARGES:</strong>
+                    <ul id="chargesList" style="margin-top: 10px; padding-left: 20px;"></ul>
+                </div>
+                <div id="judgeStatement" style="margin: 15px 0; padding: 15px; border: 1px solid #f00; font-style: italic; line-height: 1.6;">
+                </div>
+                <div id="judgeMood" style="text-align: right; color: #f00; font-size: 0.9em; margin-top: 10px;">
+                    Mood: <span id="moodLevel">IRRITATED</span> | Patience: <span id="patienceLevel">100</span>%
+                </div>
+            </div>
+
             <div class="form-container">
                 <div class="form-field">
                     <label>FORM 27-B: Reason for Driving</label>
@@ -245,7 +410,7 @@
                 </div>
                 <div class="form-field">
                     <label>FORM 42-A: Description of Vehicle</label>
-                    <input type="text" id="vehicleDesc" placeholder="Color, make, model, emotional state...">
+                    <input type="text" id="vehicleDesc" placeholder="Color, make, model, year of manufacture...">
                 </div>
                 <div class="form-field">
                     <label>FORM 99-Z: Statement of Intent</label>
@@ -372,6 +537,18 @@
 
         <!-- MESSAGE BOX -->
         <div id="messageBox" class="message-box"></div>
+    </div>
+
+    <!-- CINEMATIC OVERLAY -->
+    <div id="cinematicOverlay" class="cinematic-overlay">
+        <div class="letterbox letterbox-top"></div>
+        <div class="cinematic-scene" id="cinematicScene">
+            <div class="cinematic-vignette"></div>
+            <div class="cinematic-art" id="cinematicArt"></div>
+            <div class="cinematic-text" id="cinematicText"></div>
+            <div class="cinematic-subtitle" id="cinematicSubtitle"></div>
+        </div>
+        <div class="letterbox letterbox-bottom"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

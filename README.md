@@ -1,174 +1,114 @@
 # 🚗 VROOM VROOM 🚔
 
-*A Definitely Normal Driving Simulator™*
+> *Drive. Get arrested. Fill out paperwork. Go to prison. Repeat.*
 
-## About
+## Play Now
 
-Welcome to Vroom Vroom, a driving simulator where the police presence is so absurdly high that getting arrested is not just likely—it's inevitable. What starts as a simple drive quickly escalates into arrests, courtroom paperwork, and an incredibly detailed prison simulation.
+Open `game/index.html` in your browser.
 
-### Key Features
+## What Is This?
 
-- 🚔 **EXCESSIVE POLICE PRESENCE**: 50+ police units active at all times
-- 🚗 **Open World Driving**: Drive freely... for about 3 minutes
-- 👮 **Instant Police Response**: They're EVERYWHERE
-- ⚖️ **Detailed Courtroom System**: Fill out ALL the paperwork
-- 🔒 **Prison Simulator**:
-  - Read books page by page
-  - Exercise with actual reps
-  - Eat meals one spoonful at a time
-  - Prison tattoo designer
-  - Cigarette economy
-  - Gang relationships
-- 🕐 **Real-Time Clock**: Sentences count down in real-world days
-- 💾 **Offline Progression**: Things happen while you're away
-
-## Current Implementation Status
-
-### ✅ Completed
-- Complete UE5 C++ project structure
-- Vehicle system with entry/exit mechanics
-- Police vehicles with pursuit AI
-- Character controller with full state machine
-- Save/load system with profile persistence
-- Main menu and credits UI
-- Game state transitions (Driving → Arrested → Court → Prison → Released)
-- Real-time clock synchronization
-- Prison activity framework
-- Vehicle spawning system
-
-### 🚧 Requires Blueprint/Asset Setup
-- 3D models for vehicles
-- Level design (roads, buildings)
-- UI widget layouts
-- Sound effects and music
-- Prison interior environment
-- Courtroom environment
-
-## Quick Start
-
-### Prerequisites
-- Windows 10/11 (64-bit)
-- Unreal Engine 5.6+ (tested with 5.6.1)
-- Visual Studio 2022 with C++ Game Development
-- 10GB free disk space
-
-### Building the Game
-
-#### Option 1: Using Unreal Editor (Recommended)
-1. Open `VroomVroom.uproject` in Unreal Engine 5.6.1
-2. When prompted about missing modules, click "Yes" to rebuild
-3. Follow the Blueprint setup in `BUILD_INSTRUCTIONS.md`
-4. File → Package Project → Windows → Windows (64-bit)
-
-#### Option 2: Using Build Script
-1. Edit `BuildGame.bat` to set your Unreal Engine path
-2. Run `BuildGame.bat`
-3. Find your build in `Builds/Windows/`
-
-### First-Time Setup
-See `BUILD_INSTRUCTIONS.md` for detailed step-by-step instructions on:
-- Creating required Blueprint classes
-- Setting up a test level
-- Configuring project settings
+An absurdist driving simulator where **driving is illegal**. You'll face:
+- Over-zealous police presence
+- Judge Hardcastle (who is very disappointed in you)
+- Excessive bureaucratic paperwork
+- Prison (with activities)
+- Melancholic Disco Elysium-inspired visuals
 
 ## Controls
 
-### On Foot
-- **WASD** - Move
-- **Mouse** - Look around
-- **Space** - Jump
-- **Shift** - Sprint (WARNING: Attracts police!)
-- **F** - Enter/Exit vehicle
-- **E** - Interact
+- **WASD/Arrows** - Drive (briefly)
+- **Space** - Pull over voluntarily
+- **Mouse** - Fill out forms, do prison activities
 
-### Driving
-- **W/S** - Accelerate/Reverse
-- **A/D** - Steer
-- **Space** - Brake
-- **C** - Change camera view
-- **H** - Horn (WARNING: Attracts police!)
-- **L** - Toggle lights
-- **F** - Exit vehicle
+## Features
 
-### Police Vehicle
-- **G** - Toggle siren
+✅ **Disco Elysium Art Style** - Painterly isometric view with muted colors
+✅ **Judge Hardcastle AI** - Increasingly snarky judge commentary as you fill forms
+✅ **Cinematic Transitions** - Ken Burns-style dramatic scene changes
+✅ **RPG Systems** - 12 skills across 4 attributes (Physical, Mental, Psyche, Motorics)
+✅ **Thought Cabinet** - 10 collectible thoughts that affect gameplay
+✅ **Prison Simulation** - 8 activities (weights, food, reading, tattoos, gangs, etc.)
+✅ **Save/Load System** - Your suffering persists across sessions
 
-## Game Flow
+## The Game Loop
 
-1. **Start** → Main Menu
-2. **New Game** → Spawn in open world with 50+ police units
-3. **Drive** → Get spotted immediately
-4. **Chase** → Multiple units join pursuit
-5. **Arrest** → Caught within minutes
-6. **Court** → Fill out excessive paperwork
-7. **Prison** → Serve real-time sentence
-8. **Release** → Back to driving (and immediate re-arrest)
+1. Create character
+2. **[CINEMATIC]** The road calls to you
+3. Drive for 5-15 seconds
+4. **[CINEMATIC]** Police arrest you (handcuffs, weapon drawn)
+5. Judge Hardcastle insults you as you fill forms
+6. **[CINEMATIC]** Gavel strikes, judge is disappointed
+7. **[CINEMATIC]** Prison gates close
+8. Do prison activities
+9. Eventually get released
+10. **[CINEMATIC]** Freedom (temporarily)
+11. Drive again
+
+## Technical Details
+
+**Built with:**
+- Three.js r128 (3D graphics)
+- Vanilla JavaScript (no frameworks)
+- CSS3 animations
+- LocalStorage saves
+
+**Features:**
+- Isometric camera (45° fixed angle)
+- Desaturated Disco Elysium color palette
+- Atmospheric fog and lighting
+- Judge AI with memory system
+- Dynamic charge generation
+- Skill checks (2d6 + modifiers)
 
 ## Project Structure
 
 ```
-vroom-vroom/
-├── Source/               # C++ source code
-│   └── VroomVroom/
-│       ├── Public/      # Header files
-│       └── Private/     # Implementation files
-├── Config/              # Game configuration
-├── Content/             # Game assets (create in editor)
-│   ├── Blueprints/     # Blueprint classes
-│   ├── Maps/           # Levels
-│   └── UI/             # UI widgets
-└── Builds/             # Packaged builds
+game/           - Playable game (index.html + game.js)
+src/            - Advanced systems (skills, thoughts, AI, shaders)
+docs/           - Status reports and documentation
+Inspiration/    - Disco Elysium art references
+archive/        - 80+ files from failed UE5 attempts
 ```
 
-## Code Architecture
+## Philosophy
 
-- **GameInstance**: Manages persistent game state and profile
-- **GameMode**: Controls game rules and police spawning
-- **Character**: First-person controller with vehicle interaction
-- **VehicleBase**: Base vehicle implementation
-- **PoliceVehicle**: AI-controlled pursuit vehicles
-- **SaveGame**: Profile persistence and offline progression
+Commentary on:
+- Bureaucratic absurdity
+- Over-policing
+- Prison-industrial complex
+- The criminalization of normal behavior
+- Why are you reading this? Just drive.
 
-## Performance Notes
+## Sample Dialogue
 
-The game intentionally spawns an excessive number of police vehicles. This is a feature, not a bug. If you experience performance issues:
-- Reduce `InitialPoliceVehicles` in the VehicleSpawner
-- Lower graphics settings
-- Remember: The lag adds to the oppressive atmosphere!
+**Judge Hardcastle:**
+> "You again. 5 times now. Are you mentally incapable of NOT driving?"
 
-## Known "Features"
+> "INCOMPLETE PAPERWORK? Do you think this is a JOKE?"
 
-- Police spawn constantly, even when arrested
-- Judge gets more irritated with each arrest
-- Prison sentences are served in real-time
-- You can't escape (they always catch you)
-- Honking attracts police attention
-- Standing still is suspicious
-- Breathing is a traffic violation
+**Prison:**
+> "You lift the bar. It is heavy, like the weight of bureaucracy."
 
-## Development
+> "Your cellmate: 'Five years for driving. FIVE YEARS.'"
 
-This project is built with:
-- Unreal Engine 5.3
-- C++ for core gameplay
-- Blueprints for visual scripting
-- Real-time clock synchronization
-- Persistent save system
+**Thought Cabinet:**
+> "Why Is Driving Illegal? - A fundamental question that haunts you."
 
-## License
+## Development History
 
-This game is a work of satire. Any resemblance to actual police density in any real location is purely coincidental and probably impossible.
+- **March 2024:** Attempted Unreal Engine 5.6 (80+ docs, extensive C++ code)
+- **October 2024:** Built web version in single session
+- **October 2024:** Enhanced with Disco Elysium art, Judge AI, RPG systems
+- **Now:** Fully playable, cinematic, melancholic masterpiece
 
 ## Credits
 
-Created by someone who thought "What if GTA, but you can't win?"
-
-Special thanks to:
-- Every police officer (all 50+ per square mile)
-- The judge who keeps seeing you
-- Your cellmate (sorry about the snoring)
-- Public domain book authors
+- **Concept:** Evan & Claude
+- **Development:** VROOM VROOM ENFORCER (Claude Code)
+- **Inspiration:** Disco Elysium, Papers Please, Kafka
+- **Special Thanks:** Everyone who's been pulled over for no reason
 
 ---
 
-**Remember**: The excessive police presence is intentional. This is not a bug. This is the entire point. You WILL be arrested. Repeatedly. Forever. Enjoy! 🚔👮‍♂️🚨
+*"NO EXCUSES WERE ACCEPTED IN THE MAKING OF THIS GAME"*
