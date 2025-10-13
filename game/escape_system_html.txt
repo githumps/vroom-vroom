@@ -1,0 +1,82 @@
+<!-- ESCAPE PLANNING MENU -->
+<div id="escapeMenu" class="screen">
+    <h2>ESCAPE PLANNING</h2>
+    <p style="margin: 20px; font-size: 1.1em; color: #ff0;">WARNING: If caught, your sentence will increase significantly.</p>
+    <p style="margin: 20px;">Time Served: <span id="escapeTimeServed">0</span> days | Sentence: <span id="escapeSentence">5</span> years</p>
+
+    <div style="max-width: 900px; margin: 0 auto;">
+        <!-- Tunnel Route -->
+        <div class="prison-activity" onclick="game.showEscapeRoute('tunnel')">
+            <h3>TUNNEL ESCAPE</h3>
+            <p>Dig your way to freedom. Classic. Requires: spoon, time, and patience.</p>
+            <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
+                Progress: <span id="tunnelProgress">0</span>% |
+                Items: <span id="tunnelItems">0</span>/3 |
+                Success Rate: <span id="tunnelRate">30</span>%
+            </div>
+        </div>
+
+        <!-- Bribe Route -->
+        <div class="prison-activity" onclick="game.showEscapeRoute('bribe')">
+            <h3>BRIBE A GUARD</h3>
+            <p>Money talks. Guards listen. You need cigarettes, favors, and leverage.</p>
+            <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
+                Progress: <span id="bribeProgress">0</span>% |
+                Items: <span id="bribeItems">0</span>/4 |
+                Success Rate: <span id="bribeRate">45</span>%
+            </div>
+        </div>
+
+        <!-- Transfer Route -->
+        <div class="prison-activity" onclick="game.showEscapeRoute('transfer')">
+            <h3>MANIPULATE TRANSFER</h3>
+            <p>Fake documents. Court order. Clerical "error". Bureaucracy is your weapon.</p>
+            <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
+                Progress: <span id="transferProgress">0</span>% |
+                Items: <span id="transferItems">0</span>/5 |
+                Success Rate: <span id="transferRate">55</span>%
+            </div>
+        </div>
+
+        <!-- Riot Route -->
+        <div class="prison-activity" onclick="game.showEscapeRoute('riot')">
+            <h3>INCITE A RIOT</h3>
+            <p>Chaos is a ladder. You need allies, weapons, and perfect timing.</p>
+            <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
+                Progress: <span id="riotProgress">0</span>% |
+                Allies: <span id="riotAllies">0</span>/6 |
+                Success Rate: <span id="riotRate">40</span>%
+            </div>
+        </div>
+
+        <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">BACK TO PRISON</button>
+    </div>
+</div>
+
+<!-- ESCAPE ROUTE DETAIL -->
+<div id="escapeRouteDetail" class="screen">
+    <h2 id="escapeRouteTitle">ESCAPE ROUTE</h2>
+    <div class="form-container" style="max-width: 900px;">
+        <div id="escapeRouteDescription" style="margin: 20px 0; padding: 20px; border: 1px solid #0f0; background: rgba(0, 255, 0, 0.05);"></div>
+
+        <div id="escapeRequirements" style="margin: 20px 0; padding: 20px; border: 1px solid #ff0; background: rgba(255, 255, 0, 0.05);">
+            <h3 style="color: #ff0; margin-bottom: 10px;">REQUIREMENTS</h3>
+            <ul id="escapeReqList" style="list-style: none; padding: 0;"></ul>
+        </div>
+
+        <div id="escapeActions" style="margin: 20px 0;">
+            <h3 style="color: #0f0; margin-bottom: 10px;">AVAILABLE ACTIONS</h3>
+            <div id="escapeActionButtons"></div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; border: 1px solid #f00; background: rgba(255, 0, 0, 0.05);">
+            <p style="color: #f00; font-weight: bold;">Success Rate: <span id="escapeSuccessRate">30</span>%</p>
+            <p style="color: #f00; margin-top: 10px;">If caught: +<span id="escapePenalty">10</span> years added to sentence</p>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button id="executeEscapeBtn" onclick="game.executeEscape()" style="background: #f00; border-color: #f00; color: #000;">ATTEMPT ESCAPE</button>
+            <button onclick="game.showScreen('escapeMenu')">BACK TO PLANNING</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,399 @@
+// GANG SYSTEM JAVASCRIPT
+// Add to VroomVroomGame constructor in player object:
+/*
+gangRep: { safedrivers: 0, turnsignals: 0, roadwarriors: 0 },
+currentGang: null,
+cigarettes: 0,
+gangEvents: []
+*/
+
+// Add to VroomVroomGame class after prisonActivity method:
+
+// GANG SYSTEM METHODS
+
+initializeGangSystem() {
+    // Initialize gang reputation if not exists
+    if (!this.player.gangRep) {
+        this.player.gangRep = { safedrivers: 0, turnsignals: 0, roadwarriors: 0 };
+    }
+    if (!this.player.currentGang) {
+        this.player.currentGang = null;
+    }
+    if (this.player.cigarettes === undefined) {
+        this.player.cigarettes = 0;
+    }
+    if (!this.player.gangEvents) {
+        this.player.gangEvents = [];
+    }
+}
+
+showGangSystem() {
+    this.initializeGangSystem();
+    this.updateGangUI();
+    this.showScreen('gangSystem');
+}
+
+updateGangUI() {
+    // Update player status
+    document.getElementById('playerCurrentGang').textContent =
+        this.player.currentGang ? this.getGangName(this.player.currentGang) : 'None';
+    document.getElementById('playerCigarettes').textContent = this.player.cigarettes;
+
+    // Update gang reputation bars
+    const gangs = ['safedrivers', 'turnsignals', 'roadwarriors'];
+    gangs.forEach(gang => {
+        const rep = this.player.gangRep[gang];
+        const normalizedRep = ((rep + 100) / 200) * 100; // Convert -100 to +100 range to 0-100%
+        document.getElementById(`rep_${gang}`).textContent = rep;
+        document.getElementById(`repbar_${gang}`).style.width = normalizedRep + '%';
+    });
+}
+
+getGangName(gangId) {
+    const names = {
+        safedrivers: 'Safe Drivers Club',
+        turnsignals: 'The Turn Signals',
+        roadwarriors: 'Road Warriors'
+    };
+    return names[gangId] || gangId;
+}
+
+getGangInfo(gangId) {
+    const gangInfo = {
+        safedrivers: {
+            name: 'Safe Drivers Club',
+            color: '#4A8BFF',
+            motto: 'We signaled our turns. We obeyed speed limits. And still, we ended up here.',
+            leader: 'Marcus "Signal" Patterson',
+            benefits: '+10% Commissary discounts, Library access, Meditation classes',
+            enemies: ['roadwarriors']
+        },
+        turnsignals: {
+            name: 'The Turn Signals',
+            color: '#FFB84A',
+            motto: 'Communication is everything. On the road. In here. Everywhere.',
+            leader: 'Jasmine "Blinker" Chen',
+            benefits: 'Information network, Extra yard time, Better cellmate assignments',
+            enemies: []
+        },
+        roadwarriors: {
+            name: 'Road Warriors',
+            color: '#FF4A4A',
+            motto: 'We drove fast. We drove free. No regrets. Ever.',
+            leader: 'Viktor "Redline" Volkov',
+            benefits: 'Protection, Gym privileges, Black market access',
+            enemies: ['safedrivers']
+        }
+    };
+    return gangInfo[gangId];
+}
+
+interactWithGang(gangId) {
+    this.currentInteractingGang = gangId;
+    const gang = this.getGangInfo(gangId);
+    const rep = this.player.gangRep[gangId];
+
+    let repStatus = '';
+    if (rep < -50) repStatus = 'HOSTILE';
+    else if (rep < -20) repStatus = 'UNFRIENDLY';
+    else if (rep < 20) repStatus = 'NEUTRAL';
+    else if (rep < 50) repStatus = 'FRIENDLY';
+    else repStatus = 'ALLIED';
+
+    const content = `
+        <h3 style="color: ${gang.color};">${gang.name}</h3>
+        <p style="font-style: italic; color: #ccc; margin: 15px 0;">"${gang.motto}"</p>
+
+        <div style="margin: 20px 0;">
+            <strong>Leader:</strong> ${gang.leader}<br>
+            <strong>Your Reputation:</strong> <span style="color: ${gang.color};">${rep}</span> / 100 (<span style="color: ${gang.color};">${repStatus}</span>)<br>
+            <strong>Benefits:</strong> ${gang.benefits}
+        </div>
+
+        <div style="padding: 15px; background: rgba(0, 255, 0, 0.05); border: 1px solid #0f0; margin: 20px 0;">
+            ${this.getGangDialogue(gangId, rep)}
+        </div>
+    `;
+
+    document.getElementById('gangInteractionTitle').textContent = gang.name;
+    document.getElementById('gangInteractionContent').innerHTML = content;
+    this.showScreen('gangInteraction');
+}
+
+getGangDialogue(gangId, rep) {
+    const gang = this.getGangInfo(gangId);
+    const isMember = this.player.currentGang === gangId;
+
+    if (isMember) {
+        const dialogues = {
+            safedrivers: [
+                `${gang.leader}: "Welcome back, friend. We have meditation at 3 PM."`,
+                `${gang.leader}: "Your dedication to safe driving is an inspiration to us all."`,
+                `${gang.leader}: "The library received new books. Traffic law amendments. Riveting."`
+            ],
+            turnsignals: [
+                `${gang.leader}: "I heard something interesting in the yard today. Let's talk later."`,
+                `${gang.leader}: "Communication is key. Always signal your intentions."`,
+                `${gang.leader}: "Your loyalty doesn't go unnoticed. We take care of our own."`
+            ],
+            roadwarriors: [
+                `${gang.leader}: "The gym is reserved for us tonight. Bring your anger."`,
+                `${gang.leader}: "Some supplies 'fell off a truck' in the commissary. Interested?"`,
+                `${gang.leader}: "We drive fast, we live fast. No regrets. Ever."`
+            ]
+        };
+        return dialogues[gangId][Math.floor(Math.random() * dialogues[gangId].length)];
+    }
+
+    if (rep < -50) {
+        return `${gang.leader}: "You're not welcome here. Leave. Now."`;
+    } else if (rep < -20) {
+        return `${gang.leader}: "What do you want? Make it quick."`;
+    } else if (rep < 20) {
+        return `${gang.leader}: "We don't know you. But we're listening."`;
+    } else if (rep < 50) {
+        return `${gang.leader}: "You've earned some respect. Keep it up."`;
+    } else {
+        return `${gang.leader}: "You're one of us in spirit. Perhaps it's time to make it official?"`;
+    }
+}
+
+gangAction(action) {
+    const gangId = this.currentInteractingGang;
+    const gang = this.getGangInfo(gangId);
+    const rep = this.player.gangRep[gangId];
+
+    switch (action) {
+        case 'talk':
+            this.gangActionTalk(gangId, rep);
+            break;
+        case 'share_cigarettes':
+            this.gangActionShareCigarettes(gangId);
+            break;
+        case 'trade':
+            this.gangActionTrade(gangId, rep);
+            break;
+        case 'join':
+            this.gangActionJoin(gangId, rep);
+            break;
+    }
+}
+
+gangActionTalk(gangId, rep) {
+    if (rep < -50) {
+        this.showMessage('They refuse to talk to you. Your reputation is too low.', 3000);
+        return;
+    }
+
+    this.player.prisonDays += 1;
+    document.getElementById('timeServed').textContent = this.player.prisonDays;
+
+    const repGain = Math.floor(Math.random() * 3) + 2; // 2-4 rep
+    this.adjustGangRep(gangId, repGain);
+
+    const dialogue = [
+        `You spend time talking with the ${this.getGangName(gangId)}. They appreciate the conversation. (+${repGain} reputation)`,
+        `You share stories about life on the road. They listen intently. (+${repGain} reputation)`,
+        `You discuss your shared experiences with traffic violations. Bonds form. (+${repGain} reputation)`
+    ];
+
+    this.showMessage(dialogue[Math.floor(Math.random() * dialogue.length)], 4000);
+    this.updateGangUI();
+    this.saveGame();
+
+    // Update interaction screen
+    setTimeout(() => {
+        this.interactWithGang(gangId);
+    }, 4000);
+}
+
+gangActionShareCigarettes(gangId) {
+    if (this.player.cigarettes < 5) {
+        this.showMessage('You need 5 cigarettes to share. You only have ' + this.player.cigarettes + '.', 3000);
+        return;
+    }
+
+    this.player.cigarettes -= 5;
+    this.player.prisonDays += 1;
+    document.getElementById('timeServed').textContent = this.player.prisonDays;
+
+    const repGain = Math.floor(Math.random() * 8) + 7; // 7-14 rep
+    this.adjustGangRep(gangId, repGain);
+
+    this.showMessage(`You share cigarettes with the ${this.getGangName(gangId)}. They're grateful. (+${repGain} reputation)`, 4000);
+    this.updateGangUI();
+    this.saveGame();
+
+    setTimeout(() => {
+        this.interactWithGang(gangId);
+    }, 4000);
+}
+
+gangActionTrade(gangId, rep) {
+    if (rep < 0) {
+        this.showMessage('They don\'t trust you enough to trade. Improve your reputation first.', 3000);
+        return;
+    }
+
+    this.player.prisonDays += 1;
+    document.getElementById('timeServed').textContent = this.player.prisonDays;
+
+    // Random trade event
+    const trades = [
+        { give: 'help with laundry', get: 3, item: 'cigarettes' },
+        { give: 'advice on traffic law', get: 5, item: 'cigarettes' },
+        { give: 'a favor', get: 2, item: 'cigarettes' },
+        { give: 'protection during yard time', get: 4, item: 'cigarettes' }
+    ];
+
+    const trade = trades[Math.floor(Math.random() * trades.length)];
+    this.player.cigarettes += trade.get;
+
+    const repGain = Math.floor(Math.random() * 3) + 1; // 1-3 rep
+    this.adjustGangRep(gangId, repGain);
+
+    this.showMessage(`You trade ${trade.give} for ${trade.get} ${trade.item}. (+${repGain} reputation)`, 4000);
+    this.updateGangUI();
+    this.saveGame();
+
+    setTimeout(() => {
+        this.interactWithGang(gangId);
+    }, 4000);
+}
+
+gangActionJoin(gangId, rep) {
+    if (this.player.currentGang === gangId) {
+        this.showMessage('You are already a member of this gang.', 3000);
+        return;
+    }
+
+    if (this.player.currentGang) {
+        this.showMessage('You must leave your current gang before joining another. This feature is not yet implemented.', 3000);
+        return;
+    }
+
+    if (rep < 50) {
+        this.showMessage(`Your reputation is too low to join. You need at least 50 reputation. Current: ${rep}`, 3000);
+        return;
+    }
+
+    // Check if player is enemy of this gang
+    const gang = this.getGangInfo(gangId);
+    for (let enemyId of gang.enemies) {
+        if (this.player.gangRep[enemyId] > 0) {
+            this.showMessage(`The ${this.getGangName(gangId)} won't accept you while you're friendly with their enemies.`, 3000);
+            return;
+        }
+    }
+
+    // Join the gang
+    this.player.currentGang = gangId;
+    this.player.gangMember = true;
+    this.player.prisonDays += 1;
+    document.getElementById('timeServed').textContent = this.player.prisonDays;
+
+    // Make enemies hostile
+    for (let enemyId of gang.enemies) {
+        this.adjustGangRep(enemyId, -50);
+    }
+
+    this.showMessage(`You have joined the ${this.getGangName(gangId)}! You are now part of something bigger.`, 5000);
+
+    // Trigger gang event
+    this.triggerGangEvent(gangId);
+
+    this.updateGangUI();
+    this.saveGame();
+
+    setTimeout(() => {
+        this.interactWithGang(gangId);
+    }, 5000);
+}
+
+adjustGangRep(gangId, amount) {
+    this.player.gangRep[gangId] = Math.max(-100, Math.min(100, this.player.gangRep[gangId] + amount));
+}
+
+triggerGangEvent(gangId) {
+    const events = {
+        safedrivers: [
+            'You attend your first meditation session. It\'s surprisingly peaceful.',
+            'The gang leader gives you a copy of "The Complete Vehicle Code, Annotated".',
+            'You discuss the philosophical implications of speed limits with your new brothers.'
+        ],
+        turnsignals: [
+            'You learn about the information network. Knowledge is power in here.',
+            'Someone shares a secret with you: "The guards change shift at 3 AM."',
+            'You\'re assigned better yard time. The view is slightly less depressing.'
+        ],
+        roadwarriors: [
+            'You\'re given access to the restricted gym equipment. Time to get stronger.',
+            'The black market dealer nods to you. You have access now.',
+            'Your new gang tattoo itches. It says "REDLINE" in gothic letters.'
+        ]
+    };
+
+    const eventTexts = events[gangId];
+    const event = {
+        gang: gangId,
+        text: eventTexts[Math.floor(Math.random() * eventTexts.length)],
+        day: this.player.prisonDays
+    };
+
+    this.player.gangEvents.push(event);
+    this.showMessage(event.text, 5000);
+}
+
+// Modify prisonActivity to handle gang activity
+// Add this case to the switch/if statement in prisonActivity:
+/*
+if (activity === 'gang') {
+    this.showGangSystem();
+    return;
+}
+*/
+
+// Random gang events - call this in prisonActivity randomly
+randomGangEvent() {
+    if (!this.player.currentGang) return;
+
+    if (Math.random() < 0.2) { // 20% chance
+        const gangId = this.player.currentGang;
+        const gang = this.getGangInfo(gangId);
+
+        const events = [
+            `A member of the ${this.getGangName(gangId)} nods at you in the yard. You belong.`,
+            `${gang.leader} asks for your help with something. You assist without question.`,
+            `You hear rumors about rival gangs. Your gang discusses strategy.`,
+            `Someone tries to mess with you. Your gang steps in. Protection feels good.`
+        ];
+
+        this.showMessage(events[Math.floor(Math.random() * events.length)], 3000);
+    }
+}
+
+// Cellmate gang affiliation
+getCellmateGangAffiliation() {
+    // Randomly assign cellmate to a gang
+    const gangs = ['safedrivers', 'turnsignals', 'roadwarriors', null];
+    return gangs[Math.floor(Math.random() * gangs.length)];
+}
+
+cellmateGangDialogue() {
+    const cellmateGang = this.getCellmateGangAffiliation();
+
+    if (!cellmateGang) {
+        return 'Your cellmate: "I keep my head down. No gangs for me."';
+    }
+
+    const isSameGang = this.player.currentGang === cellmateGang;
+    const gangName = this.getGangName(cellmateGang);
+
+    if (isSameGang) {
+        return `Your cellmate: "Good to have a fellow ${gangName} member as a cellmate. We look out for each other."`;
+    } else if (this.player.currentGang) {
+        return `Your cellmate: "I'm with the ${gangName}. You're with someone else. Let's just... stay civil."`;
+    } else {
+        return `Your cellmate: "I'm part of the ${gangName}. You should consider joining a gang. Protection matters in here."`;
+    }
+}

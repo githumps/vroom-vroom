@@ -1,0 +1,326 @@
+// ESCAPE SYSTEM IMPLEMENTATION
+// Add this code to game.js after the gang methods
+
+// Add escapeProgress to player constructor
+// player.escapeProgress = {
+//     tunnel: { progress: 0, items: [] },
+//     bribe: { progress: 0, items: [] },
+//     transfer: { progress: 0, items: [] },
+//     riot: { progress: 0, allies: [] }
+// };
+
+// Current escape route being viewed
+this.currentEscapeRoute = null;
+
+// Escape route data
+getEscapeRoutes() {
+    return {
+        tunnel: {
+            name: "TUNNEL ESCAPE",
+            description: "The classic escape. One spoon. One wall. Endless patience. You'll dig through concrete and rebar, one chip at a time. The Count of Monte Cristo did it. So can you. Probably.",
+            requirements: [
+                { id: "spoon", name: "Spoon from cafeteria", type: "item" },
+                { id: "blueprints", name: "Prison blueprints", type: "item" },
+                { id: "hideSpot", name: "Way to hide debris", type: "item" }
+            ],
+            actions: [
+                { id: "findSpoon", name: "Steal a spoon from cafeteria", days: 2, successRate: 70 },
+                { id: "getBlueprintsint", name: "Steal blueprints from maintenance", days: 3, successRate: 50 },
+                { id: "prepareHiding", name: "Prepare hiding spot for debris", days: 2, successRate: 80 },
+                { id: "digTunnel", name: "Dig the tunnel (takes time)", days: 5, successRate: 60, requiresAll: true }
+            ],
+            baseSuccessRate: 30,
+            penalty: 10,
+            contraband: ["file_in_cake", "map"]
+        },
+        bribe: {
+            name: "BRIBE A GUARD",
+            description: "Everyone has a price. Even the guards who swore an oath. Find the weak link. Offer cigarettes. Offer favors. Offer anything. Money talks. Desperation screams.",
+            requirements: [
+                { id: "cigarettes", name: "30 cigarettes", type: "currency" },
+                { id: "guard_info", name: "Information on corrupt guard", type: "item" },
+                { id: "leverage", name: "Leverage or blackmail material", type: "item" },
+                { id: "fake_id", name: "Fake ID for outside", type: "item" }
+            ],
+            actions: [
+                { id: "buySmokes", name: "Buy cigarettes from commissary", days: 1, successRate: 90 },
+                { id: "findGuard", name: "Identify vulnerable guard", days: 3, successRate: 60 },
+                { id: "findLeverage", name: "Find leverage on guard", days: 4, successRate: 40 },
+                { id: "getFakeID", name: "Get fake ID from forger", days: 3, successRate: 50 },
+                { id: "makeDeal", name: "Make the deal", days: 1, successRate: 55, requiresAll: true }
+            ],
+            baseSuccessRate: 45,
+            penalty: 12,
+            contraband: ["cigarettes", "photos"]
+        },
+        transfer: {
+            name: "MANIPULATE TRANSFER",
+            description: "Bureaucracy got you in. Bureaucracy can get you out. Forge a transfer order. Fake a court summons. Create a clerical error. The system is your weapon. Use it.",
+            requirements: [
+                { id: "blank_forms", name: "Blank transfer forms", type: "item" },
+                { id: "stamp", name: "Official stamp", type: "item" },
+                { id: "signature", name: "Forged signatures", type: "item" },
+                { id: "computer_access", name: "Computer access", type: "item" },
+                { id: "uniform", name: "Guard uniform or civilian clothes", type: "item" }
+            ],
+            actions: [
+                { id: "stealForms", name: "Steal blank forms from office", days: 3, successRate: 50 },
+                { id: "getStamp", name: "Acquire official stamp", days: 4, successRate: 35 },
+                { id: "forgeSign", name: "Practice forging signatures", days: 2, successRate: 70 },
+                { id: "hackSystem", name: "Get computer access", days: 5, successRate: 40 },
+                { id: "getUniform", name: "Obtain civilian clothes", days: 2, successRate: 60 },
+                { id: "executeTransfer", name: "Execute the transfer", days: 1, successRate: 50, requiresAll: true }
+            ],
+            baseSuccessRate: 55,
+            penalty: 15,
+            contraband: ["forms", "stamp", "pen"]
+        },
+        riot: {
+            name: "INCITE A RIOT",
+            description: "Chaos is a ladder. Start a fire. Start a fight. Start a revolution. When everyone's running, you run too. But in a different direction. Towards the exit. Violence optional. Recommended.",
+            requirements: [
+                { id: "ally1", name: "Recruit Safe Drivers Club", type: "ally" },
+                { id: "ally2", name: "Recruit cellblock leader", type: "ally" },
+                { id: "ally3", name: "Recruit kitchen staff", type: "ally" },
+                { id: "ally4", name: "Recruit 3 more inmates", type: "ally" },
+                { id: "weapon", name: "Makeshift weapon", type: "item" },
+                { id: "distraction", name: "Distraction plan", type: "item" }
+            ],
+            actions: [
+                { id: "recruitGang", name: "Recruit Safe Drivers Club", days: 2, successRate: 80 },
+                { id: "recruitLeader", name: "Recruit cellblock leader", days: 4, successRate: 50 },
+                { id: "recruitKitchen", name: "Recruit kitchen staff", days: 3, successRate: 60 },
+                { id: "recruitInmates", name: "Recruit 3 more inmates", days: 3, successRate: 70 },
+                { id: "makeWeapon", name: "Craft makeshift weapon", days: 2, successRate: 85 },
+                { id: "planDistraction", name: "Plan the distraction", days: 2, successRate: 75 },
+                { id: "startRiot", name: "Start the riot", days: 1, successRate: 45, requiresAll: true }
+            ],
+            baseSuccessRate: 40,
+            penalty: 20,
+            contraband: ["shiv", "lighter"]
+        }
+    };
+}
+
+// Initialize escape progress if not present
+initializeEscapeProgress() {
+    if (!this.player.escapeProgress) {
+        this.player.escapeProgress = {
+            tunnel: { progress: 0, items: [], completedActions: [] },
+            bribe: { progress: 0, items: [], completedActions: [] },
+            transfer: { progress: 0, items: [], completedActions: [] },
+            riot: { progress: 0, allies: [], completedActions: [] }
+        };
+    }
+}
+
+// Show escape menu with updated progress
+showEscapeMenu() {
+    this.initializeEscapeProgress();
+    this.showScreen('escapeMenu');
+
+    // Update time served and sentence
+    document.getElementById('escapeTimeServed').textContent = this.player.prisonDays;
+    document.getElementById('escapeSentence').textContent = this.player.sentence;
+
+    // Update progress for each route
+    const routes = this.getEscapeRoutes();
+    for (const [routeId, route] of Object.entries(routes)) {
+        const progress = this.player.escapeProgress[routeId];
+        const itemsCompleted = progress.completedActions.length;
+        const totalItems = route.requirements.length;
+        const progressPercent = Math.floor((itemsCompleted / totalItems) * 100);
+
+        // Calculate success rate based on progress
+        const successRate = route.baseSuccessRate + (progressPercent / 5);
+
+        // Update display
+        document.getElementById(`${routeId}Progress`).textContent = progressPercent;
+        document.getElementById(`${routeId}Items`).textContent = itemsCompleted;
+        document.getElementById(`${routeId}Rate`).textContent = Math.floor(successRate);
+    }
+
+    // Special handling for riot (allies instead of items)
+    const riotProgress = this.player.escapeProgress.riot;
+    document.getElementById('riotAllies').textContent = riotProgress.allies.length;
+}
+
+// Show detailed escape route
+showEscapeRoute(routeId) {
+    this.currentEscapeRoute = routeId;
+    const routes = this.getEscapeRoutes();
+    const route = routes[routeId];
+    const progress = this.player.escapeProgress[routeId];
+
+    this.showScreen('escapeRouteDetail');
+
+    // Update title and description
+    document.getElementById('escapeRouteTitle').textContent = route.name;
+    document.getElementById('escapeRouteDescription').innerHTML = `<p style="color: #0f0; line-height: 1.6;">${route.description}</p>`;
+
+    // Update requirements list
+    const reqList = document.getElementById('escapeReqList');
+    reqList.innerHTML = '';
+    route.requirements.forEach((req, index) => {
+        const completed = progress.items.includes(req.id) || progress.allies.includes(req.id);
+        const li = document.createElement('li');
+        li.style.margin = '10px 0';
+        li.style.color = completed ? '#0f0' : '#888';
+        li.innerHTML = `${completed ? '[✓]' : '[ ]'} ${req.name} ${completed ? '(COMPLETE)' : '(NEEDED)'}`;
+        reqList.appendChild(li);
+    });
+
+    // Update action buttons
+    const actionButtons = document.getElementById('escapeActionButtons');
+    actionButtons.innerHTML = '';
+    route.actions.forEach(action => {
+        const completed = progress.completedActions.includes(action.id);
+        const canDo = !action.requiresAll || progress.completedActions.length >= route.actions.length - 1;
+
+        const btn = document.createElement('button');
+        btn.textContent = `${action.name} (${action.days} days, ${action.successRate}% success)`;
+        btn.style.margin = '10px';
+        btn.style.width = 'calc(100% - 20px)';
+        btn.style.background = completed ? '#004400' : '#000';
+        btn.style.borderColor = completed ? '#00ff00' : '#0f0';
+        btn.style.color = completed ? '#00ff00' : '#0f0';
+        btn.disabled = completed || !canDo;
+        btn.onclick = () => this.planEscape(routeId, action.id);
+        actionButtons.appendChild(btn);
+    });
+
+    // Update success rate and penalty
+    const itemsCompleted = progress.completedActions.length;
+    const totalItems = route.actions.length;
+    const progressPercent = (itemsCompleted / totalItems) * 100;
+    const successRate = route.baseSuccessRate + (progressPercent / 5);
+
+    document.getElementById('escapeSuccessRate').textContent = Math.floor(successRate);
+    document.getElementById('escapePenalty').textContent = route.penalty;
+
+    // Enable/disable execute button
+    const executeBtn = document.getElementById('executeEscapeBtn');
+    const allRequirementsMet = progress.completedActions.length >= route.actions.length - 1;
+    executeBtn.disabled = !allRequirementsMet;
+    executeBtn.textContent = allRequirementsMet ? 'ATTEMPT ESCAPE' : 'COMPLETE PREPARATIONS FIRST';
+}
+
+// Plan escape - complete an action
+planEscape(routeId, actionId) {
+    const routes = this.getEscapeRoutes();
+    const route = routes[routeId];
+    const action = route.actions.find(a => a.id === actionId);
+    const progress = this.player.escapeProgress[routeId];
+
+    if (!action || progress.completedActions.includes(actionId)) {
+        return;
+    }
+
+    // Roll for success
+    const roll = Math.random() * 100;
+    const success = roll < action.successRate;
+
+    // Add time
+    this.player.prisonDays += action.days;
+    document.getElementById('timeServed').textContent = this.player.prisonDays;
+
+    if (success) {
+        progress.completedActions.push(actionId);
+
+        // Add corresponding item or ally
+        const req = route.requirements.find(r => r.id.includes(actionId) || actionId.includes(r.id));
+        if (req) {
+            if (req.type === 'ally') {
+                progress.allies.push(req.id);
+            } else {
+                progress.items.push(req.id);
+            }
+        }
+
+        this.showMessage(`SUCCESS: ${action.name} completed. ${action.days} days passed.`, 4000);
+
+        // Refresh the route display
+        setTimeout(() => this.showEscapeRoute(routeId), 1000);
+    } else {
+        this.showMessage(`FAILED: ${action.name} failed. You'll need to try again. ${action.days} days passed.`, 4000);
+    }
+
+    // Check if sentence complete
+    if (this.player.prisonDays >= this.player.sentence * 7) {
+        setTimeout(() => this.endPrison(), 2000);
+    }
+
+    this.saveGame();
+}
+
+// Execute escape attempt
+executeEscape() {
+    const routeId = this.currentEscapeRoute;
+    const routes = this.getEscapeRoutes();
+    const route = routes[routeId];
+    const progress = this.player.escapeProgress[routeId];
+
+    // Calculate final success rate
+    const itemsCompleted = progress.completedActions.length;
+    const totalItems = route.actions.length;
+    const progressPercent = (itemsCompleted / totalItems) * 100;
+    const successRate = route.baseSuccessRate + (progressPercent / 5);
+
+    // Add gang bonus if player is gang member
+    let finalSuccessRate = successRate;
+    if (this.player.gangMember) {
+        finalSuccessRate += 10;
+    }
+
+    // Roll for escape
+    const roll = Math.random() * 100;
+    const success = roll < finalSuccessRate;
+
+    if (success) {
+        // SUCCESS - FREEDOM!
+        this.showMessage('ESCAPE SUCCESSFUL! You are FREE!', 5000);
+
+        // Play escape cinematic
+        setTimeout(() => {
+            this.cinematics.play('release', () => {
+                // Return to driving
+                this.startDriving(true);
+            });
+        }, 2000);
+    } else {
+        // CAUGHT - Add penalty
+        this.player.sentence += route.penalty;
+        this.player.prisonDays = 0;
+
+        const messages = [
+            `ESCAPE ATTEMPT FAILED. You were caught. +${route.penalty} years added to your sentence.`,
+            `CAUGHT. The guards were waiting. Your sentence: now ${this.player.sentence} years.`,
+            `FAILED. They knew. They always know. +${route.penalty} years. Total: ${this.player.sentence} years.`,
+            `CAPTURED. The warden smiles. "Thought you could escape? Add ${route.penalty} years to the sentence."`
+        ];
+
+        this.showMessage(messages[Math.floor(Math.random() * messages.length)], 6000);
+
+        // Reset escape progress for this route
+        this.player.escapeProgress[routeId] = {
+            progress: 0,
+            items: [],
+            allies: [],
+            completedActions: []
+        };
+
+        // Return to prison menu
+        setTimeout(() => {
+            this.startPrison();
+        }, 6000);
+    }
+
+    this.saveGame();
+}
+
+// Add method to prison menu to access escape planning
+// Add this button to prisonMenu in index.html:
+// <div class="prison-activity" onclick="game.showEscapeMenu()">
+//     <h3>PLAN ESCAPE</h3>
+//     <p>Freedom. It's possible. Probably. Maybe. Worth a try.</p>
+// </div>
