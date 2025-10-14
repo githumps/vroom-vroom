@@ -16,6 +16,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.1] - 2025-10-14
+
+### Fixed
+- **Mobile Modal Visibility** - Critical mobile UX improvements
+  - Added comprehensive mobile styles for 480px breakpoint (phones)
+  - Fixed modal content sizing: 95% max-width, 90vh max-height on phones
+  - Reduced modal padding to 15px on phones (from 40px desktop)
+  - Scaled modal titles to 1.5em on phones (from 2em)
+  - Scaled modal text to 0.95em on phones (from 1.1em)
+  - Fixed modal buttons: 0.9em font, proper padding for touch
+  - Added scrollable overflow to modals and screens
+  - Fixed `.screen.active` centering on mobile (flex-start instead of center)
+  - Added smooth scrolling with `-webkit-overflow-scrolling: touch`
+- **Visual Manicure Canvas Mobile Support**
+  - Made canvas responsive: max 400px on mobile, scales to viewport
+  - Implemented scale factor system (canvas adapts 800px → device width)
+  - Scaled all hand/nail coordinates proportionally
+  - Scaled text sizes (title, instructions) based on canvas width
+  - Shortened instruction text on very small screens
+  - Fixed click detection with proper canvas scaling
+  - Palm positions scale correctly
+- **All Game Screens Mobile Optimized**
+  - Prison activity cards: reduced padding to 12px on phones
+  - Exploit buttons: reduced padding to 15px on phones
+  - Form containers: reduced padding to 15px on phones
+  - HUD stats: reduced to 0.9em font, 5px padding on phones
+  - All screens: max-height 100vh with auto overflow
+
+### Technical
+- Updated `index.html` mobile CSS (480px breakpoint):
+  - Added 13 new mobile-specific style rules
+  - Total mobile CSS: ~85 lines for phone optimization
+- Updated `guard-manicure-visual.js`:
+  - Added responsive canvas sizing logic
+  - Implemented `this.scale` factor for coordinate scaling
+  - Updated `startManicure()`, `generateHands()`, `render()`, `drawHand()`, `handleClick()`
+  - 67 lines changed (+40 insertions, -27 deletions)
+
+---
+
 ## [1.4.0] - 2025-10-14
 
 ### Added
@@ -481,7 +521,8 @@ Given a version number MAJOR.MINOR.PATCH:
 
 ---
 
-[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/githumps/vroom-vroom/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/githumps/vroom-vroom/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/githumps/vroom-vroom/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/githumps/vroom-vroom/compare/v1.1.0...v1.2.0

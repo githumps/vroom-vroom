@@ -106,9 +106,14 @@ class VisualManicureSystem {
         this.canvas = document.getElementById('manicureCanvas');
         this.ctx = this.canvas.getContext('2d');
 
-        // Set canvas size
-        this.canvas.width = 800;
-        this.canvas.height = 600;
+        // Set canvas size - responsive for mobile
+        const isMobile = window.innerWidth <= 768;
+        const maxWidth = isMobile ? Math.min(window.innerWidth - 30, 400) : 800;
+        this.canvas.width = maxWidth;
+        this.canvas.height = maxWidth * 0.75; // Maintain 4:3 aspect ratio
+
+        // Store scale factor for coordinate scaling
+        this.scale = this.canvas.width / 800;
 
         // Generate hand positions with nails
         this.generateHands();
@@ -127,22 +132,24 @@ class VisualManicureSystem {
 
     // Generate hand and nail positions
     generateHands() {
-        // Left hand - 5 fingers
+        const s = this.scale; // Shorthand for scale factor
+
+        // Left hand - 5 fingers (scaled for responsive canvas)
         this.hands.left.nails = [
-            { x: 120, y: 350, size: 35, angle: -15, cleaned: false, dirtSpots: this.generateDirtSpots(3) }, // Thumb
-            { x: 150, y: 270, size: 40, angle: -5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },  // Index
-            { x: 180, y: 240, size: 42, angle: 0, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Middle
-            { x: 210, y: 250, size: 38, angle: 5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Ring
-            { x: 235, y: 280, size: 32, angle: 10, cleaned: false, dirtSpots: this.generateDirtSpots(3) }   // Pinky
+            { x: 120 * s, y: 350 * s, size: 35 * s, angle: -15, cleaned: false, dirtSpots: this.generateDirtSpots(3) }, // Thumb
+            { x: 150 * s, y: 270 * s, size: 40 * s, angle: -5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },  // Index
+            { x: 180 * s, y: 240 * s, size: 42 * s, angle: 0, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Middle
+            { x: 210 * s, y: 250 * s, size: 38 * s, angle: 5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Ring
+            { x: 235 * s, y: 280 * s, size: 32 * s, angle: 10, cleaned: false, dirtSpots: this.generateDirtSpots(3) }   // Pinky
         ];
 
-        // Right hand - 5 fingers (mirrored)
+        // Right hand - 5 fingers (mirrored, scaled for responsive canvas)
         this.hands.right.nails = [
-            { x: 680, y: 350, size: 35, angle: 15, cleaned: false, dirtSpots: this.generateDirtSpots(3) },  // Thumb
-            { x: 650, y: 270, size: 40, angle: 5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Index
-            { x: 620, y: 240, size: 42, angle: 0, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Middle
-            { x: 590, y: 250, size: 38, angle: -5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },  // Ring
-            { x: 565, y: 280, size: 32, angle: -10, cleaned: false, dirtSpots: this.generateDirtSpots(3) }  // Pinky
+            { x: 680 * s, y: 350 * s, size: 35 * s, angle: 15, cleaned: false, dirtSpots: this.generateDirtSpots(3) },  // Thumb
+            { x: 650 * s, y: 270 * s, size: 40 * s, angle: 5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Index
+            { x: 620 * s, y: 240 * s, size: 42 * s, angle: 0, cleaned: false, dirtSpots: this.generateDirtSpots(3) },   // Middle
+            { x: 590 * s, y: 250 * s, size: 38 * s, angle: -5, cleaned: false, dirtSpots: this.generateDirtSpots(3) },  // Ring
+            { x: 565 * s, y: 280 * s, size: 32 * s, angle: -10, cleaned: false, dirtSpots: this.generateDirtSpots(3) }  // Pinky
         ];
     }
 
@@ -175,16 +182,17 @@ class VisualManicureSystem {
             this.wincePulse -= 0.05;
         }
 
-        // Draw title
+        // Draw title (scaled for responsive canvas)
         this.ctx.fillStyle = '#fff';
-        this.ctx.font = 'bold 24px monospace';
+        this.ctx.font = `bold ${Math.floor(24 * this.scale)}px monospace`;
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('GUARD MANICURE - CLEAN ALL NAILS', 400, 40);
+        this.ctx.fillText('GUARD MANICURE - CLEAN ALL NAILS', this.canvas.width / 2, 40 * this.scale);
 
-        // Draw instructions
-        this.ctx.font = '14px monospace';
+        // Draw instructions (scaled for responsive canvas)
+        this.ctx.font = `${Math.floor(14 * this.scale)}px monospace`;
         this.ctx.fillStyle = '#ff0';
-        this.ctx.fillText('Click on DIRTY SPOTS to clean nails. Don\'t click on skin or you\'ll hurt the guard!', 400, 70);
+        const instructionText = this.scale < 0.6 ? 'Click dirt spots. Don\'t hit skin!' : 'Click on DIRTY SPOTS to clean nails. Don\'t click on skin or you\'ll hurt the guard!';
+        this.ctx.fillText(instructionText, this.canvas.width / 2, 70 * this.scale);
 
         // Draw both hands
         this.drawHand('left');
@@ -210,12 +218,14 @@ class VisualManicureSystem {
         this.ctx.fillStyle = this.currentGuard.skin;
         this.ctx.beginPath();
 
+        const s = this.scale; // Shorthand for scale factor
+
         if (isLeft) {
-            // Left palm
-            this.ctx.ellipse(180, 360, 60, 80, 0, 0, Math.PI * 2);
+            // Left palm (scaled for responsive canvas)
+            this.ctx.ellipse(180 * s, 360 * s, 60 * s, 80 * s, 0, 0, Math.PI * 2);
         } else {
-            // Right palm
-            this.ctx.ellipse(620, 360, 60, 80, 0, 0, Math.PI * 2);
+            // Right palm (scaled for responsive canvas)
+            this.ctx.ellipse(620 * s, 360 * s, 60 * s, 80 * s, 0, 0, Math.PI * 2);
         }
         this.ctx.fill();
 
@@ -287,8 +297,11 @@ class VisualManicureSystem {
         if (this.guardInjured || this.isAnimating) return;
 
         const rect = this.canvas.getBoundingClientRect();
-        const clickX = event.clientX - rect.left;
-        const clickY = event.clientY - rect.top;
+        // Account for canvas display size vs internal size
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        const clickX = (event.clientX - rect.left) * scaleX;
+        const clickY = (event.clientY - rect.top) * scaleY;
 
         let hitSomething = false;
 
