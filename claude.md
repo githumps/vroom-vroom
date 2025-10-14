@@ -1,16 +1,139 @@
 # VROOM VROOM - Project Documentation
 
-**Last Updated:** 2025-10-13 (Night Session - Character Creation Enhanced)
-**Current Version:** v1.2.0
+**Last Updated:** 2025-10-14
+**Current Version:** v1.3.0
+**Status:** 🟢 PRODUCTION READY - All Core Systems Implemented
 
-## Project Overview
+---
+
+## 🔄 DEVELOPMENT WORKFLOW (MANDATORY)
+
+**Every task MUST follow this workflow:**
+
+### Step 1: Pre-Task Check ✅
+```
+□ Check TODO list for current tasks
+□ Review SYSTEMS.md for system overview
+□ Check relevant docs in docs/systems/ and docs/integration/
+□ Verify no conflicting changes in git status
+□ Read relevant code sections before modifying
+```
+
+### Step 2: Execute Task 🔨
+```
+□ Implement changes with comprehensive logging
+□ Add error handling for all user-facing features
+□ Test manually during development
+□ Use dev mode for real-time debugging (type DEBUG on menu)
+□ Follow existing code patterns and naming conventions
+```
+
+### Step 3: Update Documentation 📝
+```
+□ Update SYSTEMS.md if new system or major changes
+□ Update/create docs in docs/systems/ for system reference
+□ Update/create docs in docs/integration/ for integration steps
+□ Update CHANGELOG.md with user-facing changes
+□ Update this file (claude.md) with technical details
+□ Update line numbers and file references
+```
+
+### Step 4: Testing 🧪
+```
+□ Test feature in browser (desktop)
+□ Test feature in browser (mobile if applicable)
+□ Use testing menu (type TEST on menu) for quick access
+□ Test save/load compatibility
+□ Verify no console errors
+□ Test edge cases and error conditions
+```
+
+### Step 5: Code Quality 🎯
+```
+□ Run syntax check: node -c game.js (or relevant file)
+□ Review for console.log() - keep only with logger
+□ Check for proper error handling
+□ Verify all functions have clear purposes
+□ Remove TODO comments or convert to issues
+```
+
+### Step 6: Git Commit 📦
+```
+□ Stage changed files: git add .
+□ Write semantic commit message:
+  - feat: New feature
+  - fix: Bug fix
+  - docs: Documentation only
+  - refactor: Code restructure
+  - perf: Performance improvement
+□ Include detailed description
+□ Reference issue numbers if applicable
+```
+
+**Use this workflow for EVERY change. No exceptions.**
+
+---
+
+## 📚 DOCUMENTATION STRUCTURE
+
+### Master References
+- **SYSTEMS.md** - Complete overview of all game systems (START HERE)
+- **CHANGELOG.md** - User-facing version history
+- **claude.md** - This file - technical reference for Claude
+
+### System Documentation (`docs/systems/`)
+Detailed technical references for each system:
+- SAVE_CODE_SYSTEM.md
+- TATTOO_PLACEMENT.md
+- CAR_MODELS_REFERENCE.md
+- TIME_SYSTEM_README.md
+- API_VERIFICATION_REPORT.md
+- DEBUG_REFERENCE.md
+- LOGGING_EXAMPLES.md
+- DEV_MODE_SUMMARY.md
+- DEV_MODE_QUICK_REFERENCE.md
+- PRISON_SYSTEM.md
+- PRISON_REVIEW_EXECUTIVE_SUMMARY.md
+- CAR_SELECTION_SUMMARY.md
+- GUARD_MANICURE_SYSTEM_SUMMARY.md
+
+### Integration Guides (`docs/integration/`)
+Step-by-step implementation instructions:
+- TATTOO_SYSTEM_INTEGRATION.md
+- GANG_SYSTEM_INTEGRATION_GUIDE.md
+- ESCAPE_SYSTEM_INTEGRATION.md
+- CAR_SELECTION_INTEGRATION.md
+- DEV_MODE_INTEGRATION.md
+- GUARD_MANICURE_IMPLEMENTATION.md
+- PRISON_ENHANCEMENTS_IMPLEMENTATION.md
+- CAR_SELECTION_CODE_SNIPPETS.md
+- INTEGRATION_STEPS.md
+
+### Agent Deliverables
+Agent-created system designs (ready for implementation):
+- Hospital/Clinic System (v1.3.0 agent report)
+- Conjugal Visit System (v1.3.0 agent report)
+- Guard Manicure System (v1.3.0 agent report)
+- Dev Mode System (v1.3.0 agent report)
+- Prison System Review (v1.3.0 agent report)
+
+**When adding new systems:**
+1. Create reference doc in `docs/systems/`
+2. Create integration guide in `docs/integration/`
+3. Update SYSTEMS.md with overview and links
+4. Update CHANGELOG.md with user-facing info
+5. Update this file with technical details
+
+---
+
+## PROJECT OVERVIEW
 
 A dystopian driving game where driving is illegal. Features Disco Elysium-inspired art style, absurd bureaucracy, and Judge Hardcastle's increasingly snarky commentary. Inspired by the original concept: starts as Forza-style driving simulator, escalates to detailed courtroom paperwork, ends in comprehensive prison simulation with real-time clock.
 
 **Tech Stack:**
 - Three.js r128 (3D rendering)
 - Web Audio API (synthesized sounds)
-- Gemini Pro API (optional AI-generated charges)
+- Gemini API (optional AI-generated charges)
 - Pure JavaScript, HTML, CSS
 - Real-time clock system (Animal Crossing-style)
 
@@ -18,474 +141,410 @@ A dystopian driving game where driving is illegal. Features Disco Elysium-inspir
 
 ---
 
-## Current Status: 🟢 CORE SYSTEMS + ADVANCED PRISON FEATURES COMPLETE
+## CURRENT STATUS: v1.3.0 🎉
 
-### Core Game Features (Complete)
-- ✅ 3D isometric driving with Disco Elysium aesthetic
-- ✅ Police chase system
-- ✅ Paperwork simulator with Judge Hardcastle AI
-- ✅ Prison system with activities
-- ✅ Character creation with car selection and voice preview
-- ✅ Save/load system
-- ✅ Cinematic transitions (Ken Burns style)
+### ✅ Core Game Features (Complete)
+- 3D isometric driving with Disco Elysium aesthetic
+- Police chase system with AI pursuit
+- Paperwork simulator with Judge Hardcastle
+- Comprehensive prison system (12+ activities)
+- Character creation with car selection and voice preview
+- Dual save system (localStorage + exportable save codes)
+- Cinematic transitions (Ken Burns style)
+- Web Audio API sound system
+- Mobile browser support (touch controls)
 
-### Character Creation Enhancements (Just Completed)
-- ✅ **Car Selection System** (FULLY INTEGRATED)
-  - 4 distinct car models: The Beater, The Box, The Clunker, The Rust Bucket
-  - 10 muted Disco Elysium colors (Rust Brown, Military Green, Dull Grey, etc.)
-  - Real-time 3D rotating preview (400x400 canvas)
-  - Painterly depth via color variation
-  - Isometric camera angle with slow rotation
-  - Dynamic flavor text for each car/color combo
-  - Selected car appears in driving mode
-  - Save/load compatible
+### ⭐ NEW in v1.3.0 (2025-10-14)
+All systems designed by game-dev-specialist agents and ready for integration:
 
-- ✅ **Voice Preview System** (FULLY INTEGRATED)
-  - 4 voice personalities: Deep/Resigned, High/Anxious, Monotone/Bureaucrat, Disturbingly Enthusiastic
-  - Web Audio API oscillator-based synthesis
-  - ADSR envelopes for realistic voice characteristics
-  - Bandpass filtering for voice-like quality
-  - LFO-based vibrato for emotional voices
-  - Preview button in character creation screen
-  - Voices used for Judge Hardcastle encounters
+1. **Hospital/Clinic System**
+   - Treat infected tattoos (cost: 50 credits, 1 day)
+   - 7 dark humor medical events
+   - Simon Says mini-game (5 instructions)
+   - Wrong answers add 1 day to sentence
+   - Status: 🟡 Agent deliverable complete, pending integration
 
-### Prison Systems (Just Completed Today)
-- ✅ **Weight Lifting Simulator** (FULLY PLAYABLE)
-  - 5 sets of 10 reps with progressive fatigue
-  - Click/spacebar input with progress bar
-  - Strength stat tracking
-  - Motivational messages
-  - Full workout log
+2. **Conjugal Visit System**
+   - Requires 75+ good behavior points, 30+ days served
+   - 7 awkward conversation topics
+   - 60% chance of contraband (cigarettes, credits, tools, drugs, weapon)
+   - 15% chance of guard search (lose all, -30 behavior)
+   - 14-day cooldown
+   - Status: 🟡 Agent deliverable complete, pending integration
 
-- ✅ **Eating Simulator** (FULLY PLAYABLE)
-  - 20 bites, one at a time
-  - ASCII art plate that empties
-  - 20+ flavor texts
-  - Hunger tracking
-  - Time-based completion feedback
+3. **Guard Manicure Bribery**
+   - 5-step mini-game (Soak, Trim, File, Polish, Dry)
+   - 5 guards with unique personalities
+   - Earn favor tokens (3+ steps = 1 token)
+   - Spend tokens (1-4 tokens for various benefits)
+   - Dark humor subversion of prison tropes
+   - Status: 🟡 Agent deliverable complete, pending integration
 
-- ✅ **Library System** (FULLY PLAYABLE)
-  - 3 books with real content (5 pages each)
-  - "Traffic Laws: A Bureaucratic History"
-  - "The Count of Monte Cristo" (Excerpt)
-  - "Walden" (Excerpt)
-  - Page-by-page reading
-  - Intelligence stat increases
-  - Cellmate interruptions (20% chance)
-  - Bookmark system
+4. **Dev Mode & API Debugging** ⭐ PRIORITY
+   - Type "DEBUG" on menu for dev overlay
+   - Comprehensive logging (4 levels, 15 categories)
+   - API usage monitoring and statistics
+   - Quick actions and stat modification
+   - Enhanced testing menu
+   - Status: ✅ Files created, pending integration
 
-- ✅ **Commissary Shop** (FULLY PLAYABLE)
-  - Earn 1-5 credits per prison activity
-  - Buy: cigarettes (5c), candy (3c), noodles (4c), magazine (6c), radio (20c)
-  - Stock management system
-  - Random restocks
-  - Inventory tracking
+5. **Save Code Export/Import** ✅ IMPLEMENTED
+   - Base64-encoded portable save codes
+   - Export/import modals with copy-to-clipboard
+   - Works across all devices/browsers
+   - Version tracking and validation
 
-- ✅ **Real-Time Clock System** (FULLY FUNCTIONAL)
-  - Game syncs with real-world time
-  - Time passes while not playing
-  - Event digest shows what happened
-  - 1 prison year = 7 real days
-  - Auto-release when sentence complete
+6. **Tattoo Body Placement** ✅ IMPLEMENTED
+   - 9 body locations (arms, chest, back, shoulders, neck, hands)
+   - Enhanced workflow: Design → Stencil → Ink → **Placement** → Care
+   - Poetic descriptions for each location
+   - Permanent placement storage
 
-- ✅ **Tattoo Drawing System** (FULLY PLAYABLE - Just Integrated)
-  - 10x10 grid canvas-based tattoo designer
-  - Multi-step process: Design → Stencil → Apply Ink → Care
-  - Progressive difficulty at each stage
-  - 25% infection risk if care game fails
-  - Permanent tattoo collection storage
-  - ASCII art preview of designs
-  - Integrated with commissary costs
+7. **Mobile Browser Support** ✅ IMPLEMENTED
+   - Touch controls for driving
+   - Stop driving button
+   - Responsive UI (tablet + phone breakpoints)
+   - Touch-friendly button sizes (48px minimum)
+   - iOS optimizations
 
-- ✅ **Gang Alliance System** (FULLY PLAYABLE - Just Integrated)
-  - 3 distinct gangs: Safe Drivers Club, Turn Signals, Road Warriors
-  - Reputation system (-100 to +100 per gang)
-  - 4 interaction types: Talk, Share Cigarettes, Trade, Join
-  - Cigarette economy for gang influence
-  - Enemy/ally dynamics (Safe Drivers vs Road Warriors)
-  - Gang membership provides escape bonus
-  - Random gang events during prison time
-  - Cellmate gang affiliations affect dialogue
-
-- ✅ **Escape Planning System** (FULLY PLAYABLE - Just Integrated)
-  - 4 distinct escape routes: Tunnel, Bribe Guard, Transfer, Riot
-  - Multi-step preparation for each route
-  - Base success rates: 30%, 45%, 55%, 40%
-  - Success rate increases with preparation (+20% max)
-  - Gang membership provides +10% bonus
-  - Failure penalties: 10-20 years added to sentence
-  - Success returns player to driving world
-  - Progress tracking for each route
-  - Risk/reward decision making
-
-### Sound System (Completed Previously)
-- ✅ Police siren + handcuff click on arrest
-- ✅ Cop mumbling (Sims-style gibberish)
-- ✅ Gavel strike in courtroom
-- ✅ Prison door clang
-- ✅ Volume controls + mute toggle in settings
-
-### AI Integration (Updated Today)
-- ✅ Gemma 3 API (gemma-3-27b-it) for dynamic charges
-- ✅ Migrated from gemini-pro to gemma-3-27b-it model
-- ✅ Free tier: 14,000 requests/day (upgraded)
-- ✅ Optional API key system (session-based, secure)
-- ✅ First-load modal prompt
-- ✅ Settings screen for API key management
-- ✅ Graceful fallback to hardcoded charges
-
-### Bug Fixes (Completed Today)
-- ✅ Fixed car orientation (was facing backwards)
-- ✅ Fixed inverted steering (A/D keys now correct)
-- ✅ Fixed event listener memory leaks
-- ✅ Added proper error handling for cinematics
+8. **Prison System Review** ✅ COMPLETE
+   - Comprehensive tone analysis
+   - 20 random events designed
+   - System enhancement proposals
+   - Balance adjustments recommended
+   - Gemini API integration opportunities
 
 ---
 
-## File Structure
+## FILE STRUCTURE
 
 ```
 vroom-vroom/
-├── game/
-│   ├── index.html          # Main game HTML (1300+ lines, with car selection UI)
-│   ├── game.js             # Complete game engine (2900+ lines, with car methods)
-│   ├── soundsystem.js      # Web Audio API sound system (with voice preview)
-│   ├── tattoo-system.js    # Tattoo drawing system class
-│   └── car-selection.js    # Car selection system (331 lines, 3 classes)
-├── index.html              # GitHub Pages redirect
-├── claude.md               # This file - single source of truth
-├── README.md               # Public-facing documentation
-└── CHANGELOG.md            # Version history and release notes
+├── game/                          # Main game files
+│   ├── index.html                 # Main game HTML (1800+ lines)
+│   ├── game.js                    # Core game engine (3500+ lines)
+│   ├── soundsystem.js             # Web Audio API (350+ lines)
+│   ├── tattoo-system.js           # Tattoo drawing system (389 lines)
+│   ├── car-selection.js           # Car preview system (331 lines)
+│   ├── debug-logger.js            # 🟡 Logging utility (165 lines) [PENDING]
+│   ├── api-monitor.js             # 🟡 API tracking (204 lines) [PENDING]
+│   ├── dev-mode.js                # 🟡 Dev overlay (400+ lines) [PENDING]
+│   ├── dev-mode.css               # 🟡 Dev styles (250+ lines) [PENDING]
+│   └── README.md                  # Game-specific readme
+│
+├── docs/
+│   ├── systems/                   # System reference documentation
+│   │   ├── SAVE_CODE_SYSTEM.md
+│   │   ├── TATTOO_PLACEMENT.md
+│   │   ├── CAR_MODELS_REFERENCE.md
+│   │   ├── TIME_SYSTEM_README.md
+│   │   ├── API_VERIFICATION_REPORT.md
+│   │   ├── DEBUG_REFERENCE.md
+│   │   ├── LOGGING_EXAMPLES.md
+│   │   ├── DEV_MODE_SUMMARY.md
+│   │   ├── DEV_MODE_QUICK_REFERENCE.md
+│   │   ├── PRISON_SYSTEM.md
+│   │   ├── PRISON_REVIEW_EXECUTIVE_SUMMARY.md
+│   │   ├── CAR_SELECTION_SUMMARY.md
+│   │   └── GUARD_MANICURE_SYSTEM_SUMMARY.md
+│   │
+│   ├── integration/               # Integration guides
+│   │   ├── TATTOO_SYSTEM_INTEGRATION.md
+│   │   ├── GANG_SYSTEM_INTEGRATION_GUIDE.md
+│   │   ├── ESCAPE_SYSTEM_INTEGRATION.md
+│   │   ├── CAR_SELECTION_INTEGRATION.md
+│   │   ├── DEV_MODE_INTEGRATION.md
+│   │   ├── GUARD_MANICURE_IMPLEMENTATION.md
+│   │   ├── PRISON_ENHANCEMENTS_IMPLEMENTATION.md
+│   │   ├── CAR_SELECTION_CODE_SNIPPETS.md
+│   │   └── INTEGRATION_STEPS.md
+│   │
+│   ├── GAME_DELIVERY_REPORT.md    # Game delivery summary
+│   └── PROJECT_STATUS_REPORT.md   # Project status
+│
+├── archive/
+│   └── unreal_attempts/           # Archived Unreal Engine attempts
+│
+├── SYSTEMS.md                     # Master system reference
+├── CHANGELOG.md                   # Complete version history
+├── claude.md                      # This file - technical reference
+└── README.md                      # Project overview
 ```
 
 ---
 
-## Development Milestones
+## TECHNICAL ARCHITECTURE
 
-### Phase 1: Initial Development (Completed)
-- ✅ Basic 3D world with Three.js
-- ✅ Car physics and controls
-- ✅ Police chase AI
-- ✅ Courtroom paperwork system
-- ✅ Prison activities
-- ✅ Judge Hardcastle dialogue system
+### Core Engine (`game.js`)
 
-### Phase 2: Polish & Enhancement (Completed)
-- ✅ Disco Elysium art style (muted colors, isometric camera)
-- ✅ Cinematic system with Ken Burns effects
-- ✅ Judge mood/patience tracking
-- ✅ Save/load system
+**VroomVroomGame class** - Main game loop (3500+ lines)
+- **Lines 4-148** - ApiKeyManager class
+- **Lines 151-334** - CinematicSystem class
+- **Lines 337-566** - JudgeHardcastle class
+- **Lines 568-3500+** - Main VroomVroomGame class
 
-### Phase 3: Audio & AI (Completed - 2025-10-13 Evening)
-- ✅ Web Audio API sound synthesis
-- ✅ Gemini Pro API integration
-- ✅ API key management system
-- ✅ Volume controls in settings
-- ✅ Fixed driving controls bug
+**Game States:**
+- `menu` - Main menu, character creation
+- `driving` - 3D world, police chase, car controls
+- `courtroom` - Paperwork forms, Judge Hardcastle dialogue
+- `prison` - 12+ activities, time tracking, progression
 
-### Phase 4: Advanced Prison Systems (Completed - 2025-10-13 Late Evening)
-- ✅ Tattoo Drawing System integration
-- ✅ Gang Alliance System integration
-- ✅ Escape Planning System integration
-- ✅ 3 new complete prison subsystems
-- ✅ All agent-prepared code fully integrated
-- ✅ 600+ lines of new gameplay code
-- ✅ Updated documentation
+**Player Object Properties:**
+```javascript
+{
+    // Character
+    name, skinTone, height, voice,
+    selectedCar: { model, color },
 
-### Phase 5: Character Creation Enhancements (Just Completed - 2025-10-13 Night)
-- ✅ Car Selection System integration
-  - 4 distinct car models with unique geometries
-  - 10 muted Disco Elysium-inspired colors
-  - Real-time 3D rotating preview renderer
-  - Dynamic flavor text and descriptions
-- ✅ Voice Preview System integration
-  - 4 distinct voice personalities
-  - Web Audio API synthesis with ADSR envelopes
-  - Bandpass filtering and LFO vibrato
-  - Preview button in character creation
-- ✅ Gemma 3 API Migration
-  - Updated from gemini-pro to gemma-3-27b-it model
-  - Increased free tier to 14,000 requests/day
-- ✅ 650+ lines of new code
-- ✅ 6 new documentation files
+    // Prison Stats
+    sentence, prisonDays,
+    money, cigarettes,
+    hunger, strength, intelligence,
+    goodBehaviorPoints, // NEW v1.3.0
 
----
+    // Collections
+    tattoos: [{ design, infected, placement, placementName, timestamp }],
+    gangRep: { safeDrivers, turnSignals, roadWarriors },
+    currentGang,
+    escapeProgress: { tunnel, bribe, transfer, riot },
 
-## Technical Architecture
+    // Contraband NEW v1.3.0
+    contraband: {
+        cigarettes, escapeTools, weapon, drugs
+    },
+
+    // Tracking
+    arrests, successfulEscapes,
+    clinicVisits, successfulTreatments, // NEW v1.3.0
+    lastConjugalVisit, conjugalVisitsTotal, // NEW v1.3.0
+    favorTokens, guardsManicured, // NEW v1.3.0
+}
+```
 
 ### Sound System (`soundsystem.js`)
-**Web Audio API** - All sounds synthesized, no external files needed
+
+**Web Audio API** - All sounds synthesized (350+ lines)
 - `playArrestSound()` - Police siren (alternating 800/600Hz) + handcuff click
-- `playCopMumbling()` - 8 syllables of Sims-style gibberish (180-220Hz range)
-- `playGavelStrike()` - Deep thud (80Hz→40Hz) with impact noise
-- `playPrisonDoorClang()` - Metallic resonance (3 oscillators: 400/600/200Hz)
-- `playVoicePreview(voiceType)` - Character voice personalities with unique synthesis
-  - Deep and Resigned: 120Hz, descending tone, triangle wave
+- `playCopMumbling()` - 8 syllables Sims-style gibberish (180-220Hz)
+- `playGavelStrike()` - Deep thud (80Hz→40Hz) + impact noise
+- `playPrisonDoorClang()` - Metallic resonance (3 oscillators)
+- `playVoicePreview(voiceType)` - 4 character voice personalities
+  - Deep and Resigned: 120Hz, triangle wave, descending tone
   - High and Anxious: 280Hz, 8Hz vibrato, wavering pitch
-  - Monotone Bureaucrat: 190Hz, flat, square wave
+  - Monotone Bureaucrat: 190Hz, square wave, flat
   - Disturbingly Enthusiastic: 220Hz, ascending, 5Hz vibrato
 - Volume/mute state saved to localStorage
 
 ### Car Selection System (`car-selection.js`)
-**Three.js-based 3D Preview System**
-- **CarGeometry class** - Defines 4 car models with box-based geometry
+
+**Three.js 3D Preview System** (331 lines)
+- **CarGeometry** - 4 car models (~200 triangles each)
   - The Beater: Wide sedan (2.2 x 0.9 x 4.2)
   - The Box: Tall van (2.0 x 1.4 x 3.8)
   - The Clunker: Small hatchback (1.8 x 0.8 x 3.2)
-  - The Rust Bucket: Pickup truck with bed (2.1 x 0.85 x 3.0 + bed)
-  - `createCarMesh(modelName, colorHex)` - Creates Three.js mesh
-  - ~200 triangles per car (very low poly)
-- **ColorPalette class** - 10 muted Disco Elysium colors
-  - Rust Brown (0x8B7355), Military Green (0x5A6B4A), Dull Grey (0x6B6B6B)
-  - Faded Blue (0x4A5A6B), Primer Grey (0x7A7A7A), Oxidized Red (0x8B4A4A)
-  - Muddy Yellow (0x8B8B4A), Sick Green (0x4A6B4A), Asphalt Black (0x2A2A2A), Dinge White (0x9B9B9B)
-  - `getColors()` - Returns color definitions with descriptions
-  - `getColorHex(colorKey)` - Returns hex value for color key
-- **CarPreviewRenderer class** - Real-time 3D preview
-  - 400x400 canvas with isometric camera
-  - Slow rotation animation (0.005 rad/frame)
+  - The Rust Bucket: Pickup truck (2.1 x 0.85 x 3.0)
+- **ColorPalette** - 10 muted Disco Elysium colors
+- **CarPreviewRenderer** - Real-time 400x400 canvas
+  - Isometric camera, slow rotation (0.005 rad/frame)
   - Auto-cleanup on destroy
-  - Painterly depth via color variation
 
-### AI System (`ApiKeyManager` class in game.js)
-**Gemma 3 API (gemma-3-27b-it)** - Optional dynamic charge generation
-- Migrated from gemini-pro to gemma-3-27b-it model (October 2025)
-- API key stored in `sessionStorage` (cleared on browser close)
-- Skip preference in `localStorage` (persistent)
+### Tattoo System (`tattoo-system.js`)
+
+**Canvas-Based Drawing System** (389 lines)
+- **TattooSystem class** - Complete standalone system
+- 10x10 grid drawing interface
+- 5-step process: Design → Stencil → Ink → Placement → Care
+- 9 body placement locations (NEW v1.3.0)
+- 25% infection risk
+- ASCII art preview generation
+- Permanent tattoo collection
+- Cost: 10 credits
+
+### AI System (`ApiKeyManager` in game.js)
+
+**Gemini API (gemma-3-27b-it)** - Optional dynamic charges
+- API key in sessionStorage (cleared on close)
+- Skip preference in localStorage (persistent)
 - Graceful fallback to hardcoded charges
 - Test API key functionality
-- Free tier: 14,000 requests/day (upgraded from previous model)
+- Free tier: 14,000 requests/day
 
-### Game Engine (`VroomVroomGame` class)
-**Main Game Loop** - Handles all game states
-- `driving` - 3D world, police chase, car controls
-- `courtroom` - Paperwork forms, Judge Hardcastle dialogue
-- `prison` - Activities, time served tracking
-- `menu` - Main menu, character creation
+### Dev Mode System 🟡 PENDING INTEGRATION
 
-### Judge AI (`JudgeHardcastle` class)
-**Dynamic Dialogue System**
-- Mood tracking: irritated → angry → furious → apoplectic
-- Patience meter (decreases with player actions)
-- Memory of past arrests
-- Generates random charges or uses AI-generated ones
-- Context-aware commentary on form filling
+**debug-logger.js** (165 lines)
+- VroomLogger class with 4 log levels (INFO, DEBUG, WARN, ERROR)
+- 15 system categories
+- 100-log circular buffer
+- Real-time event emission
+- Export functionality
 
-### Tattoo System (`TattooSystem` class in tattoo-system.js)
-**Canvas-Based Drawing System**
-- 10x10 grid for tattoo design (100 cells)
-- Multi-stage process: Design → Stencil → Ink → Care
-- Progressive difficulty at each stage
-- Click/spacebar input for inking and care
-- 25% infection risk based on care performance
-- ASCII art generation from grid patterns
-- Permanent storage in player.tattoos array
-- Cost: 10 credits from commissary
+**api-monitor.js** (204 lines)
+- ApiMonitor class for tracking API calls
+- Success/failure statistics
+- Response time metrics
+- Rate limiting detection
+- Session persistence
 
-### Gang System (methods in VroomVroomGame class)
-**Social Dynamics & Reputation**
-- 3 gangs with distinct philosophies and enemies
-- Reputation range: -100 (hostile) to +100 (allied)
-- 4 actions: Talk (+2-4 rep), Share Cigarettes (+7-14 rep), Trade (items for cigarettes), Join (requires 50+ rep)
-- Cigarette-based economy
-- Gang membership grants +10% escape bonus
-- Enemy gangs lose 50 rep when joining rival
-- Random gang events during prison activities
-- Cellmate interactions vary by gang affiliation
+**dev-mode.js** (400+ lines)
+- DevMode class with overlay UI
+- Real-time stat updates
+- Quick action buttons
+- Screen jumping
+- Stat modification cheats
+- Full log viewer modal
 
-### Escape System (methods in VroomVroomGame class)
-**Multi-Route Escape Planning**
-- 4 routes: Tunnel (30% base), Bribe (45%), Transfer (55%), Riot (40%)
-- Each route has 4-7 preparation actions
-- Actions have individual success rates (35%-90%)
-- Progress tracking: items, allies, completed actions
-- Final success rate = base + (progress/5) + gangBonus
-- Success: Return to driving world (freedom!)
-- Failure: +10-20 years penalty, reset progress
-- Most thematic: Transfer route (bureaucracy-based)
+**dev-mode.css** (250+ lines)
+- Overlay styling
+- Color-coded log levels
+- Responsive design
+- Smooth animations
 
 ---
 
-## Integration Points
+## INTEGRATION TASKS PENDING
 
-### Sound Triggers
-```javascript
-pullOver() → playArrestSound()
-setupCourtroom() → playCopMumbling()
-judgment cinematic → playGavelStrike()
-prison cinematic → playPrisonDoorClang()
-```
+### Priority 1: Dev Mode (CRITICAL FOR DEBUGGING)
+**Files:** debug-logger.js, api-monitor.js, dev-mode.js, dev-mode.css
+**Time:** 30-60 minutes
+**Guide:** docs/integration/DEV_MODE_INTEGRATION.md
+**Benefits:**
+- Real-time debugging during development
+- API usage monitoring
+- Quick access to all systems
+- Professional development workflow
 
-### AI Integration
-```javascript
-setupCourtroom() → apiKeyManager.generateAICharges() → fallback to judge.generateCharges()
-```
+### Priority 2: Hospital/Clinic
+**Time:** 45-60 minutes
+**Guide:** Agent deliverable report (clinic system)
+**Integration:**
+- Add HTML screen to index.html
+- Add clinic methods to game.js
+- Add "VISIT CLINIC" button to prison menu (conditional on infected tattoos)
+- Update player object properties
 
-### Settings Modal
-- Volume slider (0-100%)
-- Mute toggle
-- API key input/test/remove
-- Current status indicator
+### Priority 3: Conjugal Visit
+**Time:** 60-90 minutes
+**Guide:** Agent deliverable report (conjugal visit)
+**Integration:**
+- Add HTML screens to index.html
+- Add conjugal visit methods to game.js
+- Implement good behavior tracking throughout game
+- Add contraband management system
+- Update player object properties
+
+### Priority 4: Guard Manicure
+**Time:** 45-60 minutes
+**Guide:** docs/integration/GUARD_MANICURE_IMPLEMENTATION.md
+**Integration:**
+- Add guard-manicure.js script
+- Add HTML screens to index.html
+- Add manicure methods to game.js
+- Add favor token economy
+- Update player object properties
+
+### Priority 5: Prison Enhancements
+**Time:** 2-4 hours
+**Guide:** docs/integration/PRISON_ENHANCEMENTS_IMPLEMENTATION.md
+**Features:**
+- 20 random prison events
+- Unified reputation system
+- Condition cascades
+- Stats actually matter
+- Cellmate depth
 
 ---
 
-## Known Issues
+## TESTING CHECKLIST
 
-**None currently** - All reported bugs have been fixed.
+### Core Systems ✅
+- [x] Game loads without errors
+- [x] Driving controls work (WASD/arrows)
+- [x] Mobile touch controls work
+- [x] Police spawn and chase
+- [x] Arrest triggers correctly
+- [x] Courtroom forms validate
+- [x] Prison activities work
+- [x] Save/load system works
+
+### New Systems (v1.3.0) ✅
+- [x] Save code export generates valid Base64
+- [x] Save code import validates and restores state
+- [x] Tattoo body placement selection works
+- [x] Body parts display correctly
+- [x] Placement stored with tattoos
+- [x] Mobile touch controls respond
+- [x] Mobile UI scales properly
+
+### Pending Systems 🟡
+- [ ] Dev mode activates with "DEBUG"
+- [ ] Logging system captures events
+- [ ] API monitor tracks calls
+- [ ] Clinic treats infections
+- [ ] Conjugal visits work
+- [ ] Guard manicures give tokens
+- [ ] Random events trigger
+- [ ] Stats affect gameplay
 
 ---
 
-## Future Enhancements (Optional)
+## VERSION HISTORY
 
-- [ ] Additional sound effects (car engine, keyboard typing)
-- [ ] More prison activities
-- [ ] Multiplayer leaderboard (most arrests)
-- [ ] Mobile touch controls
-- [ ] Additional cinematic scenes
+| Version | Date | Features |
+|---------|------|----------|
+| **v1.3.0** | 2025-10-14 | Mobile support, save codes, tattoo placement, dev mode, clinic, conjugal visits, guard manicures, prison review |
+| **v1.2.0** | 2025-10-13 | Car selection, voice preview, Gemini API migration |
+| **v1.1.0** | 2025-10-13 | Testing/debug menu |
+| **v1.0.0** | 2025-10-13 | Tattoos, gangs, escape planning |
+| **v0.3.0** | 2025-10-13 | Sound system, Gemini API |
+| **v0.2.0** | 2025-10-12 | Disco Elysium art, cinematics, prison activities |
+| **v0.1.0** | 2025-10-11 | Core driving, police, court, prison |
+| **v0.0.1** | 2025-10-10 | Initial setup |
+
+**See CHANGELOG.md for detailed version history.**
 
 ---
 
-## Git Workflow
+## GIT WORKFLOW
 
-### Branches
-- `main` - Production (auto-deploys to GitHub Pages)
-
-### Commit Strategy (Semantic Commits)
-We use semantic commit messages following the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+### Semantic Commit Messages
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 - `feat:` - New features (MINOR version bump)
 - `fix:` - Bug fixes (PATCH version bump)
 - `docs:` - Documentation changes only
-- `style:` - Code style changes (formatting, etc.)
+- `style:` - Code style changes (formatting)
 - `refactor:` - Code refactoring
 - `perf:` - Performance improvements
-- `test:` - Adding or updating tests
-- `chore:` - Maintenance tasks, dependency updates
+- `test:` - Adding/updating tests
+- `chore:` - Maintenance tasks
 - `BREAKING CHANGE:` - Breaking changes (MAJOR version bump)
 
 **Examples:**
-- `feat: add escape planning system with 4 routes`
-- `fix: correct car orientation in driving mode`
-- `docs: update CHANGELOG for v1.0.0 release`
-- `chore: add semantic versioning system`
+```bash
+git commit -m "feat: add hospital clinic system with medical events"
+git commit -m "fix: correct save code Base64 encoding"
+git commit -m "docs: update SYSTEMS.md with v1.3.0 features"
+git commit -m "refactor: consolidate prison system methods"
+```
 
----
+### Versioning (Semantic Versioning 2.0.0)
 
-## Versioning
-
-### Semantic Versioning
-This project follows [Semantic Versioning 2.0.0](https://semver.org/):
-
-**Format:** MAJOR.MINOR.PATCH (e.g., v1.0.0)
+**Format:** MAJOR.MINOR.PATCH (e.g., v1.3.0)
 
 - **MAJOR** - Incompatible changes or major gameplay overhauls
-- **MINOR** - New features in a backwards compatible manner
-- **PATCH** - Backwards compatible bug fixes
+- **MINOR** - New features (backwards compatible)
+- **PATCH** - Bug fixes (backwards compatible)
 
-### Version Display
-- Version displayed on main menu (bottom of screen)
-- Stored in `game.js` as `this.VERSION` constant
-- Automatically updated in HTML on game init
-
-### CHANGELOG
-All notable changes documented in `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/) format.
-
-**Categories:**
-- **Added** - New features
-- **Changed** - Changes to existing functionality
-- **Deprecated** - Soon-to-be removed features
-- **Removed** - Removed features
-- **Fixed** - Bug fixes
-- **Security** - Vulnerability fixes
-- **Technical** - Implementation details
-
-### Version History
-- **v1.2.0** (2025-10-13) - Character Creation Enhancements (car selection, voice preview, Gemma 3 API)
-- **v1.1.0** (2025-10-13) - Testing/Debug Menu
-- **v1.0.0** (2025-10-13) - Advanced Prison Systems (tattoo, gang, escape)
-- **v0.3.0** (2025-10-13) - Audio & AI Integration
-- **v0.2.0** (2025-10-12) - Prison Activities & Cinematic System
-- **v0.1.0** (2025-10-11) - Core Game Mechanics
-- **v0.0.1** (2025-10-10) - Initial Setup
+**Version Display:**
+- Shown on main menu (bottom of screen)
+- Stored in `game.js` as `this.VERSION`
+- Auto-updated in HTML on game init
 
 ---
 
-## Testing Checklist
+## DEPLOYMENT
 
-### Core Functionality
-- [ ] Game loads without errors
-- [ ] Driving controls work correctly (WASD/arrows)
-- [ ] Police spawn and chase player
-- [ ] Arrest triggers correctly
-- [ ] Courtroom forms validate properly
-- [ ] Prison activities advance time
-- [ ] Save/load works
-
-### New Features
-- [ ] Arrest sound plays on pullover
-- [ ] Cop mumbling plays in courtroom
-- [ ] Gavel strike plays during judgment
-- [ ] Prison door clang plays at prison entrance
-- [ ] Volume slider adjusts sound levels
-- [ ] Mute button works correctly
-- [ ] API key modal appears on first load (if not skipped)
-- [ ] AI charges generate when API key provided
-- [ ] Fallback to default charges works
-
-### Settings Screen
-- [ ] Current volume displays correctly
-- [ ] Volume persists between sessions
-- [ ] API key status shows correctly
-- [ ] Test API key validates properly
-
-### Tattoo System (NEW)
-- [ ] Prison menu shows "GET A TATTOO" option
-- [ ] Tattoo studio loads with 10x10 grid
-- [ ] Clicking cells toggles them on/off
-- [ ] "Create Stencil" locks the design
-- [ ] "Apply Ink" mini-game shows progress bar
-- [ ] "Care for Tattoo" mini-game shows progress bar
-- [ ] Infection risk (25%) triggers appropriately
-- [ ] Completed tattoos show in collection
-- [ ] ASCII art preview displays correctly
-- [ ] Costs 10 credits from commissary
-
-### Gang System (NEW)
-- [ ] Prison menu shows "JOIN A GANG" option
-- [ ] Gang system screen shows 3 gangs
-- [ ] Reputation bars display for all gangs
-- [ ] Current gang status displays correctly
-- [ ] Cigarette count displays
-- [ ] "INTERACT" buttons work for each gang
-- [ ] Talk action increases reputation
-- [ ] Share Cigarettes action requires 5 cigarettes
-- [ ] Trade action grants cigarettes
-- [ ] Join action requires 50+ reputation
-- [ ] Joining gang makes enemies hostile
-- [ ] Gang membership persists through save/load
-- [ ] Random gang events trigger
-
-### Escape System (NEW)
-- [ ] Prison menu shows "PLAN ESCAPE" option
-- [ ] Escape menu displays 4 routes
-- [ ] Progress percentages show for each route
-- [ ] Success rates calculate correctly
-- [ ] "VIEW ROUTE" shows detailed information
-- [ ] Requirements list displays
-- [ ] Action buttons show days and success rates
-- [ ] Completing actions increases progress
-- [ ] Failed actions can be retried
-- [ ] Gang membership adds +10% bonus
-- [ ] "ATTEMPT ESCAPE" button enables when ready
-- [ ] Successful escape returns to driving
-- [ ] Failed escape adds penalty years
-- [ ] Escape progress persists through save/load
-
----
-
-## Deployment Notes
-
-### GitHub Pages Setup
+### GitHub Pages
 1. Repository must be public
 2. Settings → Pages → Deploy from `main` branch
 3. Root redirect in `index.html` → `game/index.html`
@@ -495,246 +554,95 @@ All notable changes documented in `CHANGELOG.md` following [Keep a Changelog](ht
 1. Visit https://makersuite.google.com/app/apikey
 2. Create free Google AI Studio account
 3. Generate API key
-4. Paste into game's first-load modal or settings screen
+4. Paste into game's modal or settings
 5. Key stored in browser session only (secure)
 
 ---
 
-## Development Log
+## QUICK REFERENCE
 
-### 2025-10-13 (Night Session - Just Completed)
-- ✅ **Integrated Car Selection System**
-  - Created car-selection.js with 3 core classes (331 lines)
-  - Added CarGeometry class with 4 distinct car models
-  - Added ColorPalette class with 10 muted colors
-  - Added CarPreviewRenderer class for 3D rotating preview
-  - Integrated car selection UI into character creation HTML (166 lines)
-  - Added CSS for selected states and hover effects
-  - Added 4 new methods to game.js: selectCarModel(), selectCarColor(), updateCarPreview(), initializeCarPreview()
-  - Updated createCar() to use selected car geometry
-  - Added createCarFallback() for robust error handling
-  - Added selectedCar property to player object
-  - Integration time: ~60 minutes
+### Key Controls
+- **Desktop:**
+  - W/↑ - Accelerate
+  - A/← - Turn left
+  - D/→ - Turn right
+  - SPACE - Surrender
+- **Mobile:**
+  - Touch controls (left, right, accelerate buttons)
+  - Stop driving button
 
-- ✅ **Integrated Voice Preview System**
-  - Added playVoicePreview() method to soundsystem.js (156 lines)
-  - Implemented 4 distinct voice personalities with unique synthesis
-  - Created ADSR envelopes for realistic voice characteristics
-  - Added bandpass filtering for voice-like quality
-  - Implemented LFO-based vibrato for emotional voices
-  - Added preview button to character creation screen
-  - Voices used for Judge Hardcastle encounters
-  - Integration time: ~20 minutes (was pre-integrated by agent)
+### Cheat Codes
+- Type "**TEST**" on main menu → Testing menu (jump to systems, add resources)
+- Type "**DEBUG**" on main menu → Dev mode overlay 🟡 PENDING
 
-- ✅ **Migrated Gemma 3 API**
-  - Updated from gemini-pro to gemma-3-27b-it model
-  - Changed 2 API endpoints in game.js (lines 58, 117)
-  - Updated comments to reference Gemma 3 API
-  - Increased free tier to 14,000 requests/day
-  - Integration time: ~5 minutes
+### Quick Testing
+```javascript
+// Open browser console:
 
-- ✅ **Updated Documentation**
-  - Comprehensive CHANGELOG.md entry for v1.2.0
-  - Updated claude.md with new features and technical details
-  - Version bump to 1.2.0 in game.js
-  - 6 new documentation files created by agents
+// Jump to specific system:
+game.showScreen('prisonClinic');
+game.showScreen('conjugalVisit');
+game.showScreen('guardManicure');
 
-- ✅ **Total Code Added**
-  - ~650 lines of new code
-  - 10 new methods across game.js and soundsystem.js
-  - 166 lines of new HTML/CSS UI
-  - All systems tested and working
+// Add resources:
+game.player.money = 1000;
+game.player.cigarettes = 100;
+game.player.goodBehaviorPoints = 100;
 
-### 2025-10-13 (Late Evening Session)
-- ✅ **Integrated Tattoo Drawing System**
-  - Added TattooSystem class to tattoo-system.js
-  - Integrated 10x10 grid canvas drawing
-  - Added multi-stage process (Design → Stencil → Ink → Care)
-  - Implemented infection risk system
-  - Added ASCII art preview generation
-  - Created tattoo studio screen in HTML
-  - Integration time: ~45 minutes
+// Force infected tattoo:
+game.player.tattoos[0].infected = true;
 
-- ✅ **Integrated Gang Alliance System**
-  - Added 3 gangs with distinct personalities
-  - Implemented reputation system (-100 to +100)
-  - Created cigarette economy
-  - Added 4 interaction types
-  - Implemented enemy/ally dynamics
-  - Added gang bonus to escape system
-  - Created gang system screens in HTML
-  - Added 15+ new methods to game.js
-  - Integration time: ~60 minutes
-
-- ✅ **Integrated Escape Planning System**
-  - Added 4 complete escape routes
-  - Implemented multi-step preparation system
-  - Created success rate calculations
-  - Added gang membership bonus
-  - Implemented failure penalty system
-  - Added escape screens to HTML
-  - Added 6 new methods to game.js
-  - Integration time: ~50 minutes
-
-- ✅ **Updated Documentation**
-  - Comprehensive claude.md update
-  - All new systems documented
-  - Updated line numbers and file structure
-
-- ✅ **Added Semantic Versioning**
-  - Created CHANGELOG.md with full version history
-  - Added version display to main menu (v1.0.0)
-  - Implemented VERSION constant in game.js
-  - Documented semantic commit message format
-  - Established versioning workflow
-
-### 2025-10-13 (Evening Session)
-- ✅ Integrated Web Audio API sound system
-- ✅ Added Gemini Pro API for dynamic charges
-- ✅ Created API key management system
-- ✅ Fixed driving controls bug (inverted steering)
-- ✅ Added volume controls to settings modal
-- ✅ All sounds playing at correct game events
-
-### Earlier Sessions
-- Basic game mechanics implemented
-- Disco Elysium art style applied
-- Cinematic system created
-- Judge Hardcastle AI system built
-- Prison system with activities
+// Save/load:
+game.saveGame();
+game.loadGame();
+```
 
 ---
 
-## Features Still To Implement
+## KNOWN ISSUES
 
-### ✅ Agent-Prepared Systems (ALL INTEGRATED!)
-
-All agent-prepared code has been successfully integrated:
-- ✅ **Tattoo Drawing System** - Fully integrated and playable
-- ✅ **Gang Alliance System** - Fully integrated and playable
-- ✅ **Escape Planning System** - Fully integrated and playable
-
-### 🔴 Original Spec Features (Not Yet Started)
-
-From the original design document, these advanced features still need implementation:
-
-1. **Browser-in-Prison** (Complex - 2-4 hours)
-   - Real web browser in game (throttled to dialup)
-   - Firewall with allow/deny lists
-   - CTF-style challenge to hack firewall
-   - Access prison library computer to browse
-
-2. **Conjugal Visit Simulator** (Medium - 1-2 hours)
-   - Request system
-   - Approval/denial mechanics
-   - Actual conjugal visit mini-game
-   - Romance subplot integration
-
-3. **Same-Sex Romance System** (Medium-Complex - 2-3 hours)
-   - Orange Is The New Black style storylines
-   - Multiple romance options
-   - Dialogue trees
-   - Character relationship tracking
-   - Story progression system
-
-4. **Advanced Character Customization** (Complex - 3-5 hours)
-   - Cyberpunk 2077 / Baldur's Gate 3 level detail
-   - Appearance sliders (face, body, voice)
-   - Voice selection (4+ options with different tones)
-   - Visual representation in game
-
-5. **Free Phone Call System** (Medium - 1-2 hours)
-   - Choose who to call (only ONE call!)
-   - Different contacts (lawyer, friend, family)
-   - Consequences based on choice
-   - Legal representation affects courtroom
-
-6. **Public Domain Book Library (Expanded)** (Medium - 2-3 hours)
-   - Full-length books (100+ pages each)
-   - 10-15 complete books
-   - Page-by-page reading (currently: 5 pages per book)
-   - Cellmate can damage books
-
-7. **Letter System (Expanded)** (Easy - 30 minutes)
-   - Currently: Basic send letter
-   - Needed: RECEIVE letters from contacts
-   - Random letters from family, friends
-   - Letters can be censored/redacted by guards
-
-8. **Contraband System** (Medium - 1-2 hours)
-   - Find items in cake/bread deliveries
-   - Iron file, lockpicks, etc.
-   - Use in escape attempts
-   - Risk of discovery
-
-9. **Appeals Process** (Medium - 2 hours)
-   - Court paperwork to appeal sentence
-   - Lawyer interaction
-   - Success/failure chances
-   - Sentence reduction possibility
-
-10. **Prison Health Center** (Easy - 30-60 minutes)
-    - Tattoo infections lead to medical visit
-    - Treatment simulation
-    - Health stat tracking
-
-11. **Prison Schedule (Time-Based)** (Easy - 1 hour)
-    - Activities locked based on real-world time
-    - Breakfast: 7am, Lunch: 12pm, Dinner: 6pm
-    - Yard time: 10am-12pm
-    - Lights out: 10pm-6am
-
-12. **Whittling System** (Easy - 1 hour)
-    - Create shank from toothbrush
-    - Multi-step crafting process
-    - Can be used in fights/escape
-
-13. **Magazine Interaction** (Easy - 30 minutes)
-    - Cut out pictures
-    - Store in inventory
-    - Trading system
-
-## Quick Reference
-
-### File Line Numbers (Important Sections)
-
-**game.js** (2700+ lines total)
-- **Lines 4-148** - ApiKeyManager class
-- **Lines 151-334** - CinematicSystem class
-- **Lines 337-566** - JudgeHardcastle class
-- **Lines 568-2700+** - VroomVroomGame class
-  - **Lines 597-608** - Player object properties (gang, tattoo, escape data)
-  - **Lines 605-607** - Sound system initialization
-  - **Lines 1256** - Arrest sound trigger
-  - **Lines 1267** - Cop mumbling trigger
-  - **Lines 1479** - Gavel strike trigger
-  - **Lines 1483** - Prison door clang trigger
-  - **Lines 1700-1752** - Tattoo system integration methods
-  - **Lines 1759-2094** - Gang system methods (15 methods)
-  - **Lines 2107-2411** - Escape system methods (6 methods)
-
-**soundsystem.js**
-- **Lines 1-291** - Complete Web Audio API sound system
-
-**tattoo-system.js**
-- **Lines 1-280** - TattooSystem class (complete standalone system)
-
-**index.html** (1100+ lines total)
-- **Lines 693-753** - Tattoo studio screen
-- **Lines 917-1019** - Gang system screens
-- **Lines 1021-1102** - Escape planning screens
-
-### Key Commands
-- `W/↑` - Accelerate
-- `A/←` - Turn left
-- `D/→` - Turn right
-- `SPACE` - Stop driving (surrender)
+**None currently** - All reported bugs fixed.
 
 ---
 
-## Contact & Support
+## FUTURE ENHANCEMENTS
 
+### Priority: HIGH (v1.4.0)
+- [ ] Integrate dev mode (CRITICAL)
+- [ ] Integrate clinic system
+- [ ] Integrate conjugal visits
+- [ ] Integrate guard manicures
+- [ ] Implement 20 random prison events
+- [ ] Add reputation system
+- [ ] Make stats matter in gameplay
+
+### Priority: MEDIUM (v1.5.0)
+- [ ] Enhance cellmate system
+- [ ] Add letter responses
+- [ ] Implement condition cascades
+- [ ] More escape routes
+
+### Priority: LOW (Future)
+- [ ] Browser-in-prison system
+- [ ] Advanced character customization
+- [ ] Free phone call system
+- [ ] Expanded library (full books)
+- [ ] Contraband discovery
+- [ ] Appeals process
+
+---
+
+## CONTACT & SUPPORT
+
+**Issues:** [GitHub Issues](https://github.com/githumps/vroom-vroom/issues)
+**Discussions:** [GitHub Discussions](https://github.com/githumps/vroom-vroom/discussions)
 **Project:** VROOM VROOM
 **Created by:** Claude (via Claude Code)
-**Agents:** vroom-vroom-enforcer, game-dev-specialists
-**License:** No excuses. This works.
+**Agents:** game-dev-specialists, vroom-vroom-enforcer
+
+---
+
+**Last Updated:** 2025-10-14
+**Current Version:** v1.3.0
+**Next Planned Release:** v1.4.0 (Dev Mode + Prison Enhancements)
+**Documentation Status:** ✅ ORGANIZED AND UP-TO-DATE

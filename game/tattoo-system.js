@@ -7,9 +7,24 @@ class TattooSystem {
         this.currentDesign = Array(10).fill(0).map(() => Array(10).fill(0)); // 10x10 grid
         this.stencilCreated = false;
         this.inkApplied = false;
+        this.placementSelected = false;
+        this.selectedPlacement = null;
         this.careScore = 0;
         this.careSequence = ['clean', 'bandage', 'clean']; // Correct sequence
         this.currentCareStep = 0;
+
+        // Body placement options
+        this.bodyParts = {
+            'left-arm': { name: 'Left Arm', description: 'Visible. Bold.' },
+            'right-arm': { name: 'Right Arm', description: 'Mirror the left.' },
+            'chest': { name: 'Chest', description: 'Over your heart.' },
+            'back': { name: 'Back', description: 'What you leave behind.' },
+            'left-shoulder': { name: 'Left Shoulder', description: 'Carry the weight.' },
+            'right-shoulder': { name: 'Right Shoulder', description: 'Balance it out.' },
+            'neck': { name: 'Neck', description: 'Can\'t hide this.' },
+            'left-hand': { name: 'Left Hand', description: 'Every gesture shows it.' },
+            'right-hand': { name: 'Right Hand', description: 'Your working hand.' }
+        };
     }
 
     // Initialize tattoo studio
@@ -38,6 +53,8 @@ class TattooSystem {
         // Reset state
         this.stencilCreated = false;
         this.inkApplied = false;
+        this.placementSelected = false;
+        this.selectedPlacement = null;
         this.careScore = 0;
         this.currentCareStep = 0;
 
@@ -46,9 +63,11 @@ class TattooSystem {
         document.getElementById('tattooInstructions').textContent = 'Click cells to draw your tattoo design (10x10 grid)';
         document.getElementById('stencilButton').style.display = 'inline-block';
         document.getElementById('inkButton').style.display = 'none';
+        document.getElementById('placementButton').style.display = 'none';
         document.getElementById('careButton').style.display = 'none';
         document.getElementById('infectionStatus').style.display = 'none';
         document.getElementById('careGame').style.display = 'none';
+        document.getElementById('placementSelection').style.display = 'none';
 
         // Display existing tattoos
         this.displayTattooCollection();
@@ -134,17 +153,71 @@ class TattooSystem {
 
         // Update UI
         document.getElementById('tattooStep').textContent = 'INK APPLIED';
-        document.getElementById('tattooInstructions').textContent = 'Ink is permanent. Care for your tattoo to prevent infection.';
+        document.getElementById('tattooInstructions').textContent = 'Ink is permanent. Now choose where to place it on your body.';
         document.getElementById('inkButton').style.display = 'none';
-        document.getElementById('careButton').style.display = 'inline-block';
+        document.getElementById('placementButton').style.display = 'inline-block';
 
         this.game.showMessage('The needle bites. The ink seeps in. This is permanent. Forever.', 4000);
     }
 
-    // Start care mini-game (step 3)
-    startCareGame() {
+    // Select body placement (step 3)
+    selectBodyPlacement() {
         if (!this.inkApplied) {
             this.game.showMessage('Apply ink first!', 2000);
+            return;
+        }
+
+        // Show placement selection UI
+        document.getElementById('tattooStep').textContent = 'PLACEMENT';
+        document.getElementById('tattooInstructions').textContent = 'Choose where this tattoo will mark your body. This choice is permanent.';
+        document.getElementById('placementButton').style.display = 'none';
+        document.getElementById('placementSelection').style.display = 'block';
+
+        // Generate body part buttons
+        const container = document.getElementById('bodyPartButtons');
+        container.innerHTML = '';
+
+        Object.keys(this.bodyParts).forEach(partId => {
+            const part = this.bodyParts[partId];
+            const button = document.createElement('button');
+            button.className = 'body-part-btn';
+            button.onclick = () => this.choosePlacement(partId);
+            button.innerHTML = `
+                <strong>${part.name}</strong><br>
+                <span style="font-size: 0.8em; color: #888;">${part.description}</span>
+            `;
+            container.appendChild(button);
+        });
+
+        this.game.showMessage('Select where to place your tattoo. Each location tells a different story.', 4000);
+    }
+
+    // Choose specific placement
+    choosePlacement(partId) {
+        this.selectedPlacement = partId;
+        this.placementSelected = true;
+
+        const part = this.bodyParts[partId];
+
+        // Highlight selected button
+        document.querySelectorAll('.body-part-btn').forEach(btn => {
+            btn.style.border = '2px solid #444';
+            btn.style.background = '#000';
+        });
+        event.target.closest('.body-part-btn').style.border = '2px solid #0f0';
+        event.target.closest('.body-part-btn').style.background = 'rgba(0, 255, 0, 0.1)';
+
+        // Update UI to show care button
+        document.getElementById('tattooInstructions').textContent = `Placement: ${part.name}. Now care for your tattoo to prevent infection.`;
+        document.getElementById('careButton').style.display = 'inline-block';
+
+        this.game.showMessage(`${part.name}. ${part.description} This mark will stay here forever.`, 4000);
+    }
+
+    // Start care mini-game (step 4)
+    startCareGame() {
+        if (!this.placementSelected) {
+            this.game.showMessage('Select body placement first!', 2000);
             return;
         }
 
@@ -195,7 +268,9 @@ class TattooSystem {
         const tattooData = {
             design: this.currentDesign.map(row => [...row]), // Deep copy
             timestamp: Date.now(),
-            infected: infected
+            infected: infected,
+            placement: this.selectedPlacement,
+            placementName: this.bodyParts[this.selectedPlacement].name
         };
 
         this.game.player.tattoos.push(tattooData);
@@ -243,6 +318,7 @@ class TattooSystem {
         this.game.player.tattoos.forEach((tattoo, index) => {
             const date = new Date(tattoo.timestamp).toLocaleDateString();
             const status = tattoo.infected ? '<span style="color: #f00;">[INFECTED]</span>' : '<span style="color: #0f0;">[CLEAN]</span>';
+            const placement = tattoo.placementName || 'Unknown Location';
 
             // Generate ASCII preview
             let preview = '';
@@ -255,8 +331,9 @@ class TattooSystem {
 
             html += `
                 <div style="margin: 15px 0; padding: 15px; border: 1px solid #0f0; background: rgba(0, 255, 0, 0.05);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap;">
                         <strong style="color: #0f0;">TATTOO #${index + 1}</strong>
+                        <span style="color: #ff0;">📍 ${placement}</span>
                         <span style="color: #0f0;">${date}</span>
                         ${status}
                     </div>
@@ -273,6 +350,8 @@ class TattooSystem {
         this.currentDesign = Array(10).fill(0).map(() => Array(10).fill(0));
         this.stencilCreated = false;
         this.inkApplied = false;
+        this.placementSelected = false;
+        this.selectedPlacement = null;
         this.careScore = 0;
         this.currentCareStep = 0;
 
@@ -281,8 +360,10 @@ class TattooSystem {
         document.getElementById('tattooInstructions').textContent = 'Click cells to draw your tattoo design (10x10 grid)';
         document.getElementById('stencilButton').style.display = 'inline-block';
         document.getElementById('inkButton').style.display = 'none';
+        document.getElementById('placementButton').style.display = 'none';
         document.getElementById('careButton').style.display = 'none';
         document.getElementById('infectionStatus').style.display = 'none';
+        document.getElementById('placementSelection').style.display = 'none';
         document.getElementById('clearButton').disabled = false;
 
         // Reset grid

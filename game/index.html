@@ -508,6 +508,192 @@
         .color-swatch:hover {
             border-color: #888 !important;
         }
+
+        /* Tattoo Body Placement Styles */
+        .body-part-btn {
+            background: #000;
+            color: #0f0;
+            border: 2px solid #444;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .body-part-btn:hover {
+            border-color: #0f0;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .body-part-btn.selected {
+            border-color: #0f0 !important;
+            background: rgba(0, 255, 0, 0.1) !important;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        /* Guard Manicure Step Styles */
+        .step-pending {
+            background: #000;
+            color: #444;
+            border-color: #444 !important;
+        }
+
+        .step-active {
+            background: rgba(255, 255, 0, 0.1);
+            color: #ff0;
+            border-color: #ff0 !important;
+            box-shadow: 0 0 10px #ff0;
+        }
+
+        .step-complete {
+            background: rgba(0, 255, 0, 0.1);
+            color: #0f0;
+            border-color: #0f0 !important;
+        }
+
+        .step-failed {
+            background: rgba(255, 0, 0, 0.1);
+            color: #f00;
+            border-color: #f00 !important;
+        }
+
+        /* Mobile Touch Controls */
+        #mobileControls {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            pointer-events: all;
+            z-index: 1000;
+        }
+
+        #mobileControls.active {
+            display: flex;
+        }
+
+        .touch-control {
+            flex: 1;
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: #0f0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .touch-control:active {
+            background: rgba(0, 255, 0, 0.4);
+        }
+
+        .touch-control.left {
+            border-right: 1px solid #0f0;
+        }
+
+        .touch-control.right {
+            border-left: 1px solid #0f0;
+        }
+
+        .touch-stop {
+            position: fixed;
+            bottom: 260px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 0, 0.8);
+            border: 3px solid #f00;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            color: #fff;
+            border-radius: 10px;
+            z-index: 1001;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            button {
+                padding: 12px 24px;
+                font-size: 1em;
+                min-height: 48px;
+            }
+
+            .form-container {
+                padding: 20px;
+                max-width: 100%;
+            }
+
+            .modal-content {
+                padding: 20px;
+                max-width: 90%;
+            }
+
+            .car-model-btn {
+                flex: 1 1 100% !important;
+                min-width: 100% !important;
+            }
+
+            .color-swatch {
+                width: 70px !important;
+                height: 55px !important;
+            }
+
+            #carPreviewCanvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            .screen {
+                padding: 20px;
+            }
+
+            .hud {
+                font-size: 1em;
+                top: 10px;
+                left: 10px;
+            }
+
+            .prison-activity {
+                padding: 15px;
+            }
+
+            input, select, textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.2em;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            .color-swatch {
+                width: 60px !important;
+                height: 50px !important;
+                font-size: 0.6em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -521,6 +707,8 @@
             <p style="font-size: 0.9em; color: #888; margin-bottom: 30px;">Version <span id="gameVersion">1.0.0</span></p>
             <button onclick="game.startNewGame()">NEW GAME</button>
             <button onclick="game.loadGame()">LOAD GAME</button>
+            <button onclick="game.exportSaveCode()">EXPORT SAVE CODE</button>
+            <button onclick="game.showImportModal()">IMPORT SAVE CODE</button>
             <button onclick="game.showModal('settingsModal')">SETTINGS</button>
             <button onclick="game.showScreen('credits')">CREDITS</button>
         </div>
@@ -799,6 +987,17 @@
                     <p>The "Safe Drivers Club" is recruiting.</p>
                 </div>
 
+                <div class="prison-activity" onclick="game.prisonActivity('manicure')">
+                    <h3>GIVE MANICURE TO GUARD</h3>
+                    <p>Earn favor tokens through the ancient art of nail care. Guards love this.</p>
+                    <p style="font-size: 0.9em; color: #ff0;">Favor Tokens: <span id="favorTokensDisplay">0</span></p>
+                </div>
+
+                <div class="prison-activity" onclick="game.showGuardFavorsMenu()">
+                    <h3>SPEND GUARD FAVORS</h3>
+                    <p>Cash in your favor tokens for privileges, contraband, and rule violations.</p>
+                </div>
+
                 <div class="prison-activity" onclick="game.showEscapeMenu()">
                     <h3>PLAN ESCAPE</h3>
                     <p>Freedom. It's possible. Probably. Maybe. Worth a try.</p>
@@ -890,8 +1089,20 @@
                     <button id="clearButton" onclick="game.clearTattooDesign()">CLEAR DESIGN</button>
                     <button id="stencilButton" onclick="game.createStencil()">CREATE STENCIL</button>
                     <button id="inkButton" onclick="game.applyInk()" style="display: none;">APPLY INK</button>
+                    <button id="placementButton" onclick="game.selectBodyPlacement()" style="display: none;">SELECT PLACEMENT</button>
                     <button id="careButton" onclick="game.startCareGame()" style="display: none;">CARE FOR TATTOO</button>
                     <button id="backButton" onclick="game.cancelTattoo()">BACK TO MENU</button>
+                </div>
+
+                <!-- Body Placement Selection -->
+                <div id="placementSelection" style="display: none; margin-top: 30px; padding: 20px; border: 2px solid #ff0; background: rgba(255, 255, 0, 0.05);">
+                    <h3 style="color: #ff0; text-align: center; margin-bottom: 20px;">CHOOSE BODY PLACEMENT</h3>
+                    <p style="color: #0f0; text-align: center; margin-bottom: 20px; font-style: italic;">
+                        This tattoo will mark your body forever. Choose wisely.
+                    </p>
+                    <div id="bodyPartButtons" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <!-- Body part buttons generated by JavaScript -->
+                    </div>
                 </div>
 
                 <!-- Infection Status -->
@@ -1263,6 +1474,199 @@
             </div>
         </div>
 
+        <!-- GUARD MANICURE MINI-GAME -->
+        <div id="guardManicure" class="screen">
+            <h2>PRISON SPA: GUARD MANICURE SERVICE</h2>
+            <p style="margin: 20px; font-size: 1.1em; color: #888; font-style: italic;">
+                The guards love manicures. It's weird. But it works.
+            </p>
+
+            <div style="max-width: 1000px; margin: 0 auto;">
+                <!-- Guard Info -->
+                <div class="form-container" style="margin-bottom: 20px;">
+                    <h3 style="color: #ff0; text-align: center; margin-bottom: 15px;">
+                        <span id="guardName">GUARD</span>
+                    </h3>
+                    <p id="guardGreeting" style="font-style: italic; text-align: center; margin-bottom: 15px; color: #0ff;">
+                        Greeting text
+                    </p>
+                    <div style="background: rgba(0, 255, 0, 0.05); border: 1px solid #0f0; padding: 15px; margin-top: 15px;">
+                        <p style="color: #0f0; font-style: italic;" id="guardChatBox">
+                            Chat line
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div style="display: flex; justify-content: space-around; margin-bottom: 30px;">
+                    <div id="step1" class="step-pending" style="border: 2px solid #444; padding: 15px 25px; flex: 1; margin: 0 5px; text-align: center;">SOAK</div>
+                    <div id="step2" class="step-pending" style="border: 2px solid #444; padding: 15px 25px; flex: 1; margin: 0 5px; text-align: center;">TRIM</div>
+                    <div id="step3" class="step-pending" style="border: 2px solid #444; padding: 15px 25px; flex: 1; margin: 0 5px; text-align: center;">FILE</div>
+                    <div id="step4" class="step-pending" style="border: 2px solid #444; padding: 15px 25px; flex: 1; margin: 0 5px; text-align: center;">POLISH</div>
+                    <div id="step5" class="step-pending" style="border: 2px solid #444; padding: 15px 25px; flex: 1; margin: 0 5px; text-align: center;">DRY</div>
+                </div>
+
+                <!-- Mini-Game Area -->
+                <div class="form-container" style="min-height: 400px;">
+                    <h3 id="miniGameTitle" style="color: #0f0; text-align: center; margin-bottom: 15px;">
+                        MANICURE MINI-GAME
+                    </h3>
+                    <p id="miniGameInstructions" style="text-align: center; margin-bottom: 25px;">
+                        Instructions will appear here
+                    </p>
+
+                    <!-- STEP 1: Soak Game -->
+                    <div id="soakGame" style="display: none;">
+                        <div style="background: #000; border: 2px solid #0f0; height: 40px; margin: 30px 0;">
+                            <div id="soakTimerBar" style="background: #f00; height: 100%; width: 0%; transition: none;"></div>
+                        </div>
+                        <div style="text-align: center;">
+                            <button onclick="game.manicureSystem.stopSoakTimer()" style="font-size: 1.5em; padding: 20px 50px;">
+                                STOP TIMER
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Trim Game -->
+                    <div id="trimGame" style="display: none;">
+                        <p style="text-align: center; margin-bottom: 20px;">
+                            Nails Remaining: <span id="nailsRemaining" style="color: #ff0; font-size: 1.5em;">5</span>
+                        </p>
+                        <div style="text-align: center;">
+                            <canvas id="trimCanvas" width="400" height="300"
+                                    onclick="game.manicureSystem.handleTrimClick(event)"
+                                    style="border: 2px solid #0f0; background: #000; cursor: crosshair;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: File Game -->
+                    <div id="fileGame" style="display: none;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <p style="margin-bottom: 15px;">Pattern to Match:</p>
+                            <div id="filePatternDisplay" style="font-size: 2em; margin-bottom: 30px; color: #ff0;">
+                                ⬅ ➡ ⬆ ⬇
+                            </div>
+                            <p style="margin-bottom: 15px;">Your Input:</p>
+                            <div id="filePlayerInput" style="font-size: 2em; margin-bottom: 30px; color: #0f0; min-height: 50px;">
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <button onclick="game.manicureSystem.fileInput('⬅')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬅ LEFT</button>
+                            <button onclick="game.manicureSystem.fileInput('➡')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">➡ RIGHT</button>
+                            <button onclick="game.manicureSystem.fileInput('⬆')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬆ UP</button>
+                            <button onclick="game.manicureSystem.fileInput('⬇')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬇ DOWN</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Polish Game -->
+                    <div id="polishGame" style="display: none;">
+                        <p id="guardPreferredColor" style="text-align: center; margin-bottom: 25px; color: #ff0;"></p>
+                        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+                            <button onclick="game.manicureSystem.selectPolishColor('red')"
+                                    style="background: #8B0000; color: #fff; padding: 30px 40px; font-size: 1.2em;">
+                                RED POLISH
+                            </button>
+                            <button onclick="game.manicureSystem.selectPolishColor('clear')"
+                                    style="background: #E8E8E8; color: #000; padding: 30px 40px; font-size: 1.2em;">
+                                CLEAR POLISH
+                            </button>
+                            <button onclick="game.manicureSystem.selectPolishColor('black')"
+                                    style="background: #1A1A1A; color: #fff; padding: 30px 40px; font-size: 1.2em;">
+                                BLACK POLISH
+                            </button>
+                            <button onclick="game.manicureSystem.selectPolishColor('pink')"
+                                    style="background: #FFB6C1; color: #000; padding: 30px 40px; font-size: 1.2em;">
+                                PINK POLISH
+                            </button>
+                            <button onclick="game.manicureSystem.selectPolishColor('blue')"
+                                    style="background: #4169E1; color: #fff; padding: 30px 40px; font-size: 1.2em;">
+                                BLUE POLISH
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5: Dry Game -->
+                    <div id="dryGame" style="display: none;">
+                        <div id="dryGameArea" style="background: rgba(255, 0, 0, 0.05); border: 2px solid #f00; padding: 50px; text-align: center;">
+                            <p style="font-size: 3em; color: #f00; margin-bottom: 30px;">
+                                <span id="dryCountdown">5</span>
+                            </p>
+                            <p style="font-size: 1.2em; color: #ff0;">
+                                DO NOT MOVE YOUR MOUSE
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div id="manicureResult" style="display: none; text-align: center; margin-top: 30px;">
+                        <p id="guardFinalMessage" style="font-size: 1.3em; font-style: italic; color: #0ff; margin-bottom: 25px;">
+                            Guard reaction
+                        </p>
+                        <div id="manicureOutcome" style="padding: 20px; border: 2px solid #0f0;">
+                            Outcome details
+                        </div>
+                        <button onclick="game.manicureSystem.returnToPrison()" style="margin-top: 25px; font-size: 1.2em; padding: 20px 40px;">
+                            RETURN TO PRISON
+                        </button>
+                    </div>
+
+                    <!-- Step Result Feedback -->
+                    <div id="stepResult" style="display: none; margin-top: 25px; padding: 15px; border: 2px solid #0f0; text-align: center; font-size: 1.1em;">
+                        Result message
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUARD FAVORS SPENDING MENU -->
+        <div id="guardFavorsMenu" class="screen">
+            <h2>GUARD FAVORS EXCHANGE</h2>
+            <p style="margin: 20px; font-size: 1.1em;">
+                Favor Tokens Available: <span id="favorTokenCount" style="color: #ff0; font-size: 1.3em;">0</span>
+            </p>
+            <p style="margin: 10px 20px; font-size: 0.9em; color: #888; font-style: italic;">
+                Cash in those manicure favors for actual benefits. The guards owe you.
+            </p>
+
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div class="form-container">
+                    <h3 style="margin-bottom: 20px;">AVAILABLE FAVORS</h3>
+
+                    <div class="prison-activity" onclick="game.spendFavorToken('ignore')">
+                        <h3>IGNORE MINOR VIOLATION - 1 Token</h3>
+                        <p>Guard pretends not to see your next rule violation. One-time use.</p>
+                        <p style="font-size: 0.9em; color: #888;">Examples: Contraband possession, cell after hours, sass</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.spendFavorToken('cigarettes')">
+                        <h3>SMUGGLE CIGARETTES (20-PACK) - 2 Tokens</h3>
+                        <p>Guard looks the other way while you get a 20-pack of cigarettes.</p>
+                        <p style="font-size: 0.9em; color: #888;">Prison currency. Trade value. Gang relationships.</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.spendFavorToken('contraband')">
+                        <h3>GET CONTRABAND ITEM - 3 Tokens</h3>
+                        <p>Guard sneaks you an item of your choice from the outside.</p>
+                        <p style="font-size: 0.9em; color: #888;">Phone, tools, magazine, snacks, or other useful items</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.spendFavorToken('escape')">
+                        <h3>LOOK AWAY DURING ESCAPE PREP - 3 Tokens</h3>
+                        <p>Guard conveniently ignores your escape planning activities for one day.</p>
+                        <p style="font-size: 0.9em; color: #888;">+15% success rate to current escape route</p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.spendFavorToken('reduce')">
+                        <h3>REDUCE SENTENCE BY 7 DAYS - 4 Tokens</h3>
+                        <p>Guard "adjusts" your paperwork. Clerical error. Totally legitimate.</p>
+                        <p style="font-size: 0.9em; color: #888;">Shaves 7 days off your sentence. Stackable.</p>
+                    </div>
+                </div>
+
+                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
+            </div>
+        </div>
+
         <!-- TESTING MENU (Hidden Easter Egg) -->
         <div id="testingMenu" class="screen">
             <h2 style="color: #ff0;">⚙️ TESTING / DEBUG MENU ⚙️</h2>
@@ -1460,6 +1864,49 @@
         </div>
     </div>
 
+    <!-- SAVE CODE EXPORT MODAL -->
+    <div id="saveCodeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Export Save Code</div>
+            <div class="modal-text">
+                Your save code has been generated! Copy this code and store it safely.
+                You can use this code to restore your game progress on any device.
+            </div>
+            <textarea id="saveCodeDisplay" class="modal-input" readonly style="min-height: 150px; font-size: 0.9em; word-break: break-all;"></textarea>
+            <div class="privacy-notice">
+                <strong>Important:</strong><br>
+                - Store this code somewhere safe (notepad, email, etc.)<br>
+                - The code contains your entire game progress<br>
+                - You can use it to resume your game on any browser
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button" onclick="navigator.clipboard.writeText(document.getElementById('saveCodeDisplay').value); game.showMessage('Copied to clipboard!', 2000);">COPY TO CLIPBOARD</button>
+                <button class="modal-button" onclick="game.closeModal('saveCodeModal')">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAVE CODE IMPORT MODAL -->
+    <div id="importCodeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Import Save Code</div>
+            <div class="modal-text">
+                Paste your save code below to restore your game progress.
+            </div>
+            <textarea id="importCodeInput" class="modal-input" placeholder="Paste your save code here..." style="min-height: 150px; font-size: 0.9em; word-break: break-all;"></textarea>
+            <div class="privacy-notice">
+                <strong>Warning:</strong><br>
+                - This will overwrite your current game progress<br>
+                - Make sure you have a valid save code<br>
+                - Invalid codes will be rejected
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button" onclick="game.importFromModal()">IMPORT SAVE</button>
+                <button class="modal-button" onclick="game.closeModal('importCodeModal')">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
     <!-- CINEMATIC OVERLAY -->
     <div id="cinematicOverlay" class="cinematic-overlay">
         <div class="letterbox letterbox-top"></div>
@@ -1472,10 +1919,27 @@
         <div class="letterbox letterbox-bottom"></div>
     </div>
 
+    <!-- Mobile Touch Controls -->
+    <div id="mobileControls">
+        <div class="touch-control left" id="touchLeft">
+            <span>◄<br>LEFT</span>
+        </div>
+        <div class="touch-control" id="touchAccelerate">
+            <span>▲<br>DRIVE</span>
+        </div>
+        <div class="touch-control right" id="touchRight">
+            <span>►<br>RIGHT</span>
+        </div>
+    </div>
+    <button class="touch-stop" id="touchStop" style="display: none;">
+        STOP DRIVING
+    </button>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="soundsystem.js"></script>
     <script src="tattoo-system.js"></script>
     <script src="car-selection.js"></script>
+    <script src="guard-manicure.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

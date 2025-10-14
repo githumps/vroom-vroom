@@ -1,0 +1,243 @@
+/* VROOM VROOM - Dev Mode Overlay Styles */
+
+#devModeOverlay {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 2px solid #0f0;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    z-index: 99998;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    pointer-events: all;
+}
+
+#devModeContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.dev-header {
+    background: #0f0;
+    color: #000;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    border-bottom: 2px solid #0f0;
+}
+
+.dev-title {
+    flex: 1;
+    font-size: 1.1em;
+    letter-spacing: 2px;
+}
+
+.dev-btn-small {
+    background: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+    padding: 2px 8px;
+    margin-left: 5px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.dev-btn-small:hover {
+    background: #0f0;
+    color: #000;
+}
+
+#devExpandableContent {
+    padding: 12px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.dev-section {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.dev-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.dev-section-api {
+    background: rgba(0, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 3px;
+}
+
+.dev-label {
+    color: #0f0;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dev-value {
+    color: #fff;
+    font-size: 0.95em;
+    margin-bottom: 3px;
+}
+
+.dev-sub-value {
+    color: #888;
+    font-size: 0.85em;
+    margin-top: 3px;
+}
+
+.dev-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.9em;
+}
+
+.dev-logs {
+    background: #000;
+    border: 1px solid #333;
+    padding: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 0.8em;
+}
+
+.dev-log-entry {
+    color: #0f0;
+    margin: 3px 0;
+    padding: 2px 0;
+    border-bottom: 1px solid #111;
+    line-height: 1.3;
+}
+
+.dev-log-entry:last-child {
+    border-bottom: none;
+}
+
+.dev-log-info {
+    color: #0ff;
+}
+
+.dev-log-debug {
+    color: #0f0;
+}
+
+.dev-log-warn {
+    color: #ff0;
+}
+
+.dev-log-error {
+    color: #f00;
+}
+
+.dev-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.dev-btn {
+    background: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    transition: all 0.2s;
+}
+
+.dev-btn:hover {
+    background: #0f0;
+    color: #000;
+    box-shadow: 0 0 8px #0f0;
+}
+
+.dev-select {
+    width: 100%;
+    background: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+    padding: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.dev-select:focus {
+    outline: none;
+    box-shadow: 0 0 5px #0f0;
+}
+
+/* Scrollbar styling for dev overlay */
+#devExpandableContent::-webkit-scrollbar,
+.dev-logs::-webkit-scrollbar {
+    width: 8px;
+}
+
+#devExpandableContent::-webkit-scrollbar-track,
+.dev-logs::-webkit-scrollbar-track {
+    background: #000;
+}
+
+#devExpandableContent::-webkit-scrollbar-thumb,
+.dev-logs::-webkit-scrollbar-thumb {
+    background: #0f0;
+    border: 1px solid #000;
+}
+
+#devExpandableContent::-webkit-scrollbar-thumb:hover,
+.dev-logs::-webkit-scrollbar-thumb:hover {
+    background: #0ff;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    #devModeOverlay {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    #devExpandableContent {
+        max-height: 400px;
+    }
+
+    .dev-actions {
+        flex-direction: column;
+    }
+
+    .dev-btn {
+        width: 100%;
+    }
+}
+
+/* Animation for new log entries */
+@keyframes logFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.dev-log-entry {
+    animation: logFadeIn 0.3s ease-out;
+}

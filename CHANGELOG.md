@@ -7,6 +7,105 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### In Development
+- **Hospital/Clinic System** - Medical treatment for infected tattoos (designed, pending integration)
+- **Conjugal Visit System** - Good behavior rewards with contraband mechanics (designed, pending integration)
+- **Guard Manicure Bribery** - Favor token economy via manicures (designed, pending integration)
+- **Dev Mode & Debugging** - Comprehensive logging and API monitoring (files created, pending integration)
+- **20 Random Prison Events** - Daily events for replayability (designed, pending integration)
+- **Reputation System** - Guards, inmates, warden, legend tracking (designed, pending integration)
+
+---
+
+## [1.3.0] - 2025-10-14
+
+### Added
+- **Mobile Browser Support** - Full touch controls for mobile devices
+  - Touch-based driving controls (left, right, accelerate)
+  - Stop driving button for mobile users
+  - Automatic mobile device detection
+  - Responsive UI layout for tablets and phones
+  - Touch-friendly button sizes (min 48px)
+  - iOS-specific optimizations (16px input font to prevent zoom)
+- **Tattoo Body Placement System** - Choose where tattoos appear on your body
+  - 9 body placement locations: Left Arm, Right Arm, Chest, Back, Left Shoulder, Right Shoulder, Neck, Left Hand, Right Hand
+  - Enhanced tattoo workflow: Design → Stencil → Ink → **Placement** → Care
+  - Body part selection UI with descriptions and flavors
+  - Placement stored permanently with each tattoo
+  - Tattoo collection display shows placement location
+  - Each body part has unique descriptive text
+- **Save Code Export/Import System** - Portable game state management
+  - Generate Base64-encoded save codes from game state
+  - Export save codes via modal with copy-to-clipboard functionality
+  - Import save codes from any device/browser
+  - Session-independent save code system (works across devices)
+  - Main menu buttons for export/import access
+  - Automatic state restoration (prison/driving) on import
+  - Version tracking in save codes
+  - Invalid code detection and error handling
+  - Privacy notices and usage instructions in UI
+  - Overwrite warnings before import
+
+### Technical
+- Added `isMobile()` detection method to Game class
+- Added `initMobileTouchControls()` method with touch event listeners
+- Mobile controls show/hide automatically in driving mode
+- CSS media queries for 768px (tablet) and 480px (phone) breakpoints
+- Touch controls use semi-transparent green aesthetic matching game theme
+- Viewport meta tag already present for proper mobile scaling
+- Total mobile code: ~100 lines of JavaScript, ~140 lines of CSS
+- Modified `tattoo-system.js` with body placement features (~120 lines):
+  - Added `bodyParts` object with 9 body locations and descriptions
+  - Added `selectBodyPlacement()` method - Shows placement selection UI
+  - Added `choosePlacement()` method - Handles body part selection
+  - Modified `applyInk()`, `completeTattoo()`, `displayTattooCollection()`, `resetForNewTattoo()`
+  - Added `placementSelected` and `selectedPlacement` state tracking
+  - Dynamic body part button generation from `bodyParts` object
+- Added 6 save code methods to game.js (~110 lines):
+  - `generateSaveCode()` - Base64 encodes player state to portable string
+  - `importSaveCode(code)` - Decodes and validates save code, restores state
+  - `exportSaveCode()` - Generates code and displays export modal
+  - `showSaveCodeModal(code)` - Renders save code with copy functionality
+  - `showImportModal()` - Shows import dialog with paste area
+  - `importFromModal()` - Handles import button click with validation
+- Added save code UI to index.html (~80 lines):
+  - Two modal dialogs (export and import) with green terminal aesthetic
+  - Copy-to-clipboard button using Clipboard API
+  - Main menu buttons for export/import access
+  - Privacy notices and overwrite warnings
+- Save code format: `{v: VERSION, p: player}` encoded as Base64 URI string
+- Total new code: ~310 lines (tattoo placement + save codes)
+- Reorganized all documentation:
+  - Created `SYSTEMS.md` master reference (1000+ lines) documenting all game systems
+  - Created `docs/systems/` directory for system reference documentation (13 files)
+  - Created `docs/integration/` directory for integration guides (9 files)
+  - Moved all scattered .md files to organized structure
+  - Cleaned up 15+ obsolete documentation files
+  - Updated `claude.md` with mandatory development workflow
+  - Added structured workflow: Pre-Task Check → Execute → Document → Test → Code Quality → Git Commit
+- Game-dev-specialist agents created 5 complete system designs:
+  - Hospital/Clinic System (complete specs, ready for integration)
+  - Conjugal Visit System (complete specs, ready for integration)
+  - Guard Manicure System (complete specs, ready for integration)
+  - Dev Mode System (files created: debug-logger.js, api-monitor.js, dev-mode.js, dev-mode.css)
+  - Prison System Comprehensive Review (20 random events designed, balance analysis)
+
+### Documentation
+- **New Master Documentation:** SYSTEMS.md (comprehensive overview of all systems)
+- **System References (docs/systems/):**
+  - SAVE_CODE_SYSTEM.md, TATTOO_PLACEMENT.md, CAR_MODELS_REFERENCE.md
+  - TIME_SYSTEM_README.md, API_VERIFICATION_REPORT.md
+  - DEBUG_REFERENCE.md, LOGGING_EXAMPLES.md
+  - DEV_MODE_SUMMARY.md, DEV_MODE_QUICK_REFERENCE.md
+  - PRISON_SYSTEM.md, PRISON_REVIEW_EXECUTIVE_SUMMARY.md
+  - CAR_SELECTION_SUMMARY.md, GUARD_MANICURE_SYSTEM_SUMMARY.md
+- **Integration Guides (docs/integration/):**
+  - TATTOO_SYSTEM_INTEGRATION.md, GANG_SYSTEM_INTEGRATION_GUIDE.md
+  - ESCAPE_SYSTEM_INTEGRATION.md, CAR_SELECTION_INTEGRATION.md
+  - DEV_MODE_INTEGRATION.md, GUARD_MANICURE_IMPLEMENTATION.md
+  - PRISON_ENHANCEMENTS_IMPLEMENTATION.md, CAR_SELECTION_CODE_SNIPPETS.md
+  - INTEGRATION_STEPS.md
+
 ## [1.2.0] - 2025-10-13
 
 ### Added
@@ -294,7 +393,8 @@ Given a version number MAJOR.MINOR.PATCH:
 
 ---
 
-[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/githumps/vroom-vroom/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/githumps/vroom-vroom/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/githumps/vroom-vroom/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/githumps/vroom-vroom/compare/v0.3.0...v1.0.0

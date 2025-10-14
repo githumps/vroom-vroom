@@ -739,6 +739,9 @@ class VroomVroomGame {
         // Initialize cheat code listener for testing menu
         this.initCheatCodeListener();
 
+        // Initialize mobile touch controls if on mobile device
+        this.initMobileTouchControls();
+
         // Start render loop
         this.animate();
     }
@@ -951,6 +954,68 @@ class VroomVroomGame {
         policeGroup.position.set(0, 0.2, -50);
         this.policecar = policeGroup;
         this.scene.add(policeGroup);
+    }
+
+    // Mobile device detection
+    isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+            || (window.innerWidth <= 768);
+    }
+
+    // Initialize mobile touch controls
+    initMobileTouchControls() {
+        if (!this.isMobile()) {
+            return; // Only initialize on mobile devices
+        }
+
+        const touchLeft = document.getElementById('touchLeft');
+        const touchRight = document.getElementById('touchRight');
+        const touchAccelerate = document.getElementById('touchAccelerate');
+        const touchStop = document.getElementById('touchStop');
+
+        // Left turn control
+        touchLeft.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.keys['a'] = true;
+            this.keys['arrowleft'] = true;
+        });
+        touchLeft.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.keys['a'] = false;
+            this.keys['arrowleft'] = false;
+        });
+
+        // Right turn control
+        touchRight.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.keys['d'] = true;
+            this.keys['arrowright'] = true;
+        });
+        touchRight.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.keys['d'] = false;
+            this.keys['arrowright'] = false;
+        });
+
+        // Accelerate control
+        touchAccelerate.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.keys['w'] = true;
+            this.keys['arrowup'] = true;
+        });
+        touchAccelerate.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.keys['w'] = false;
+            this.keys['arrowup'] = false;
+        });
+
+        // Stop driving button
+        touchStop.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (this.gameState === 'driving') {
+                this.pullOver();
+            }
+        });
     }
 
     onKeyDown(e) {
@@ -1241,6 +1306,115 @@ class VroomVroomGame {
         this.showMessage('Game saved!');
     }
 
+    // Generate save code (Base64 encoded JSON of player state)
+    generateSaveCode() {
+        try {
+            // Create a compact save object with only essential data
+            const saveData = {
+                v: this.VERSION, // Version
+                p: this.player // Player data
+            };
+
+            // Convert to JSON and encode in Base64
+            const jsonString = JSON.stringify(saveData);
+            const encoded = btoa(encodeURIComponent(jsonString));
+
+            return encoded;
+        } catch (error) {
+            console.error('Failed to generate save code:', error);
+            this.showMessage('Error generating save code!', 3000);
+            return null;
+        }
+    }
+
+    // Import game from save code
+    importSaveCode(code) {
+        try {
+            // Decode from Base64 and parse JSON
+            const jsonString = decodeURIComponent(atob(code));
+            const saveData = JSON.parse(jsonString);
+
+            // Verify save data structure
+            if (!saveData.p || !saveData.v) {
+                throw new Error('Invalid save code format');
+            }
+
+            // Load player data
+            this.player = saveData.p;
+
+            // Save to localStorage for persistence
+            localStorage.setItem('vroomVroomSave', JSON.stringify(this.player));
+
+            this.showMessage(`Game loaded from code! (v${saveData.v})`, 3000);
+
+            // Start in appropriate state
+            if (this.player.prisonDays > 0 && this.player.prisonDays < this.player.sentence * 7) {
+                this.startPrison();
+            } else {
+                this.startDriving();
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Failed to import save code:', error);
+            this.showMessage('Invalid save code! Please check and try again.', 4000);
+            return false;
+        }
+    }
+
+    // Export save code to clipboard
+    async exportSaveCode() {
+        const code = this.generateSaveCode();
+        if (!code) return;
+
+        try {
+            await navigator.clipboard.writeText(code);
+            this.showMessage('Save code copied to clipboard!', 3000);
+
+            // Also show in modal
+            this.showSaveCodeModal(code);
+        } catch (error) {
+            console.error('Clipboard failed, showing modal instead:', error);
+            this.showSaveCodeModal(code);
+        }
+    }
+
+    // Show save code in modal
+    showSaveCodeModal(code) {
+        const modal = document.getElementById('saveCodeModal');
+        const codeDisplay = document.getElementById('saveCodeDisplay');
+
+        if (modal && codeDisplay) {
+            codeDisplay.value = code;
+            modal.classList.add('active');
+        }
+    }
+
+    // Show import modal
+    showImportModal() {
+        const modal = document.getElementById('importCodeModal');
+        if (modal) {
+            modal.classList.add('active');
+            document.getElementById('importCodeInput').value = '';
+        }
+    }
+
+    // Import from modal input
+    importFromModal() {
+        const input = document.getElementById('importCodeInput');
+        const code = input.value.trim();
+
+        if (!code) {
+            this.showMessage('Please enter a save code!', 2000);
+            return;
+        }
+
+        const success = this.importSaveCode(code);
+        if (success) {
+            this.closeModal('importCodeModal');
+        }
+    }
+
     finishCharacterCreation() {
         const name = document.getElementById('charName').value.trim();
         if (!name) {
@@ -1416,6 +1590,12 @@ class VroomVroomGame {
                 el.disabled = false;
             });
 
+            // Show mobile controls if on mobile device
+            if (this.isMobile()) {
+                document.getElementById('mobileControls').classList.add('active');
+                document.getElementById('touchStop').style.display = 'block';
+            }
+
             this.showMessage('You are now driving. The police are watching. They are always watching.', 4000);
         };
 
@@ -1514,6 +1694,12 @@ class VroomVroomGame {
     pullOver() {
         this.gameState = 'courtroom';
         document.getElementById('drivingHUD').style.display = 'none';
+
+        // Hide mobile controls
+        if (this.isMobile()) {
+            document.getElementById('mobileControls').classList.remove('active');
+            document.getElementById('touchStop').style.display = 'none';
+        }
 
         // Play arrest sound (siren + handcuff click)
         this.soundSystem.playArrestSound();
@@ -1891,6 +2077,13 @@ class VroomVroomGame {
     applyInk() {
         if (this.tattooSystem) {
             this.tattooSystem.applyInk();
+        }
+    }
+
+    // Select body placement
+    selectBodyPlacement() {
+        if (this.tattooSystem) {
+            this.tattooSystem.selectBodyPlacement();
         }
     }
 
