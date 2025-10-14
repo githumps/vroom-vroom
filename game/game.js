@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.2.0';
+        this.VERSION = '1.4.0';
 
         this.scene = null;
         this.camera = null;
@@ -613,7 +613,12 @@ class VroomVroomGame {
                 bribe: { progress: 0, items: [], completedActions: [] },
                 transfer: { progress: 0, items: [], completedActions: [] },
                 riot: { progress: 0, allies: [], completedActions: [] }
-            }
+            },
+            // Guard manicure system
+            favorTokens: 0,
+            guardManicures: {},
+            guardFavors: { ignoreViolation: false },
+            goodBehavior: 100
         };
 
         // Commissary shop inventory
@@ -648,6 +653,9 @@ class VroomVroomGame {
 
         // Initialize Tattoo System (lazy initialization)
         this.tattooSystem = null;
+
+        // Initialize Guard Manicure System (lazy initialization)
+        this.manicureSystem = null;
 
         // Current escape route being viewed
         this.currentEscapeRoute = null;
@@ -2009,6 +2017,10 @@ class VroomVroomGame {
             this.showScreen('tattooStudio');
             this.initTattooSystem();
             return; // Don't add prison day yet, handled in tattoo completion
+        } else if (activity === 'manicure') {
+            this.initManicureSystem();
+            this.manicureSystem.startManicure();
+            return; // Don't add prison day yet, handled in manicure completion
         } else if (activity === 'gang') {
             this.showGangSystem();
             return; // Don't show generic message for gang system
@@ -2754,6 +2766,111 @@ class VroomVroomGame {
     }
 
     // ==================== END ESCAPE SYSTEM ====================
+
+    // ==================== GUARD MANICURE SYSTEM ====================
+
+    // Initialize manicure system (lazy initialization)
+    initManicureSystem() {
+        if (!this.manicureSystem) {
+            this.manicureSystem = new VisualManicureSystem(this);
+        }
+    }
+
+    // Show guard favors menu
+    showGuardFavorsMenu() {
+        const tokens = this.player.favorTokens || 0;
+        document.getElementById('favorTokenCount').textContent = tokens;
+        this.showScreen('guardFavorsMenu');
+    }
+
+    // Spend favor tokens
+    spendFavorToken(type) {
+        const tokens = this.player.favorTokens || 0;
+
+        const costs = {
+            ignore: 1,
+            cigarettes: 2,
+            contraband: 3,
+            escape: 3,
+            reduce: 4
+        };
+
+        const cost = costs[type];
+
+        if (tokens < cost) {
+            this.showMessage(`Not enough favor tokens! Need ${cost}, have ${tokens}.`, 3000);
+            return;
+        }
+
+        // Deduct tokens
+        this.player.favorTokens -= cost;
+
+        // Apply benefit
+        switch(type) {
+            case 'ignore':
+                if (!this.player.guardFavors) {
+                    this.player.guardFavors = {};
+                }
+                this.player.guardFavors.ignoreViolation = true;
+                this.showMessage('Guard will ignore your next minor violation.', 3000);
+                break;
+
+            case 'cigarettes':
+                if (!this.player.inventory) {
+                    this.player.inventory = {};
+                }
+                this.player.inventory.cigarettes = (this.player.inventory.cigarettes || 0) + 20;
+                this.player.cigarettes = (this.player.cigarettes || 0) + 20;
+                this.showMessage('Received 20 cigarettes! Guard looked the other way.', 3000);
+                break;
+
+            case 'contraband':
+                const contrabandItems = ['phone', 'screwdriver', 'magazine', 'chocolate', 'map'];
+                const randomItem = contrabandItems[Math.floor(Math.random() * contrabandItems.length)];
+                if (!this.player.inventory) {
+                    this.player.inventory = {};
+                }
+                this.player.inventory[randomItem] = (this.player.inventory[randomItem] || 0) + 1;
+                this.showMessage(`Received contraband: ${randomItem}! Don't get caught.`, 3000);
+                break;
+
+            case 'escape':
+                // Boost escape success rate
+                if (this.player.escapeProgress) {
+                    Object.keys(this.player.escapeProgress).forEach(route => {
+                        if (this.player.escapeProgress[route].progress !== undefined) {
+                            this.player.escapeProgress[route].progress += 15;
+                        }
+                    });
+                }
+                this.showMessage('Guard looked away during escape prep. +15% success rate!', 3000);
+                break;
+
+            case 'reduce':
+                this.player.prisonDays = Math.max(0, this.player.prisonDays - 7);
+                this.showMessage('Paperwork "adjusted". Sentence reduced by 7 days!', 3000);
+
+                // Update prison UI if method exists
+                if (typeof this.updatePrisonUI === 'function') {
+                    this.updatePrisonUI();
+                }
+
+                // Update time served display
+                if (document.getElementById('timeServed')) {
+                    document.getElementById('timeServed').textContent = Math.floor(this.player.prisonDays);
+                }
+                break;
+        }
+
+        // Update display and save
+        document.getElementById('favorTokenCount').textContent = this.player.favorTokens;
+        if (document.getElementById('favorTokensDisplay')) {
+            document.getElementById('favorTokensDisplay').textContent = this.player.favorTokens;
+        }
+        this.saveGame();
+    }
+
+    // ==================== END GUARD MANICURE SYSTEM ====================
 
     // Weight Lifting Simulator Methods
     initializeWeightLifting() {

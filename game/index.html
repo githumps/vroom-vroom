@@ -694,6 +694,31 @@
                 font-size: 0.6em;
             }
         }
+
+        /* Visual Manicure Exploit Buttons */
+        .exploit-button {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 2px solid #444;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            text-align: left;
+            border-radius: 5px;
+        }
+
+        .exploit-button:hover {
+            background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+            border-color: #ff0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 0, 0.2);
+        }
+
+        .exploit-button:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -1667,6 +1692,59 @@
             </div>
         </div>
 
+        <!-- VISUAL MANICURE MINI-GAME -->
+        <div id="visualManicure" class="screen">
+            <h2>GUARD MANICURE - VISUAL SPA EXPERIENCE</h2>
+
+            <div style="text-align: center; margin: 20px;">
+                <p id="visualGuardName" style="font-size: 1.3em; color: #ff0; margin: 10px 0;"></p>
+                <p id="visualGuardGreeting" style="font-size: 1.1em; color: #888; font-style: italic; margin: 10px 0;"></p>
+            </div>
+
+            <div style="text-align: center; margin: 20px;">
+                <p style="font-size: 1.1em;">
+                    Nails Cleaned: <span id="nailsCleaned" style="color: #0f0;">0</span> / <span id="totalNails">10</span>
+                    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    Mistakes: <span id="mistakeCount" style="color: #f00;">0</span> / <span id="maxMistakes">3</span>
+                </p>
+            </div>
+
+            <div style="text-align: center; margin: 20px;">
+                <canvas id="manicureCanvas" style="border: 2px solid #333; background: #1a1a1a; max-width: 100%;"></canvas>
+            </div>
+
+            <div style="text-align: center; margin: 20px;">
+                <p style="color: #888; font-size: 0.9em;">
+                    Click on DIRT SPOTS to clean nails. Be careful not to click on the guard's skin!
+                </p>
+            </div>
+        </div>
+
+        <!-- CLINIC EXPLOITATION SCREEN -->
+        <div id="clinicExploit" class="screen">
+            <h2>PRISON MEDICAL BAY</h2>
+
+            <div style="text-align: center; margin: 30px;">
+                <p style="font-size: 1.3em; color: #ff0;">The injured guard is here, heavily medicated...</p>
+                <p id="injuredGuardName" style="font-size: 1.1em; color: #888; margin: 15px 0;"></p>
+                <p style="font-size: 1em; color: #aaa; font-style: italic;">
+                    They're on morphine. They won't remember much. This is your chance.
+                </p>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <h3 style="margin: 30px 0 20px 0; color: #f00;">WHAT DO YOU DO?</h3>
+
+                <div id="exploitOptions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0;">
+                    <!-- Options generated dynamically -->
+                </div>
+
+                <div id="exploitResult" style="margin: 30px 0; min-height: 60px; font-size: 1.2em; text-align: center;">
+                    <!-- Result message -->
+                </div>
+            </div>
+        </div>
+
         <!-- TESTING MENU (Hidden Easter Egg) -->
         <div id="testingMenu" class="screen">
             <h2 style="color: #ff0;">⚙️ TESTING / DEBUG MENU ⚙️</h2>
@@ -1940,6 +2018,7 @@
     <script src="tattoo-system.js"></script>
     <script src="car-selection.js"></script>
     <script src="guard-manicure.js"></script>
+    <script src="guard-manicure-visual.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # VROOM VROOM - COMPLETE SYSTEMS DOCUMENTATION
 
-**Version:** 1.3.0
+**Version:** 1.4.0
 **Last Updated:** 2025-10-14
 **Game:** Dystopian prison driving simulator with Disco Elysium aesthetic
 
@@ -269,16 +269,27 @@ Prison is the core gameplay hub with 12+ activities.
 **Status:** ✅ New in v1.3.0
 **Cost:** 25 credits, 2 hours
 
-#### 12. **Guard Manicure Bribery** ⭐ NEW
-- Give manicures to guards for favor tokens
-- 5-step mini-game process:
-  1. Soak (timing game)
-  2. Trim (precision game)
-  3. File (pattern matching)
-  4. Polish (guard preference)
-  5. Dry (patience game)
-- 5 guards with unique personalities
-- 3+ successful steps = 1 favor token
+#### 12. **Guard Manicure Bribery** ⭐ NEW - VISUAL MINI-GAME
+- **Canvas-based visual nail cleaning game**
+- Top-down view of guard's hands (10 nails total)
+- Click on dirt spots to clean each nail
+- Risk: Click on skin = hurt guard (3 strikes max)
+- Injured guards sent to medical bay
+- **Clinic Exploitation:** Exploit drugged guards for extra rewards
+
+**Gameplay Mechanics:**
+- Clean all 10 nails without 3 mistakes = success (+1 favor token)
+- Each nail has 3 dirt spots to clean
+- Miss and hit skin = guard winces, mistake counter increases
+- 3 mistakes = guard injured, sent to clinic
+- In clinic: Exploit opportunities (keys, intel, favor tokens, or mercy)
+
+**5 Guards with Unique Personalities:**
+- Guard Jenkins (nervousness: 0.7, strict)
+- Guard Martinez (nervousness: 0.3, perfectionist)
+- Guard Chen (nervousness: 0.9, impatient)
+- Guard Thompson (nervousness: 0.5, chatty)
+- Guard Rodriguez (nervousness: 0.6, paranoid)
 
 **Favor Token Uses:**
 - Ignore violation (1 token)
@@ -287,8 +298,14 @@ Prison is the core gameplay hub with 12+ activities.
 - Escape assistance (3 tokens)
 - Reduce sentence (4 tokens)
 
+**Clinic Exploitation Rewards:**
+- Steal Keys (70% risk) = Master key
+- Get Future Favor (30% risk) = +2 favor tokens
+- Extract Intel (50% risk) = +20% escape success
+- Show Mercy (0% risk) = +10 good behavior
+
 **Documentation:** [docs/integration/GUARD_MANICURE_IMPLEMENTATION.md](docs/integration/GUARD_MANICURE_IMPLEMENTATION.md)
-**Status:** ✅ New in v1.3.0
+**Status:** ✅ Enhanced v1.4.0 (visual mini-game + clinic exploitation)
 **Cost:** 30 minutes
 
 ### Prison Stats Tracked
@@ -496,6 +513,9 @@ vroom-vroom/
 │   ├── tattoo-system.js           # Tattoo drawing system
 │   ├── soundsystem.js             # Web Audio API
 │   ├── car-selection.js           # Car preview
+│   ├── guard-manicure.js          # Guard manicure (text-based)
+│   ├── guard-manicure-visual.js   # ⭐ NEW: Visual manicure mini-game
+│   ├── test-suite.js              # ⭐ NEW: Unit test suite
 │   ├── debug-logger.js            # ⭐ NEW: Logging utility
 │   ├── api-monitor.js             # ⭐ NEW: API tracking
 │   ├── dev-mode.js                # ⭐ NEW: Dev overlay
@@ -662,8 +682,8 @@ logger.error('API', 'API call failed');
 ---
 
 **Last Updated:** 2025-10-14
-**Current Version:** 1.3.0
-**Next Planned Release:** 1.4.0 (Random Events & Reputation System)
+**Current Version:** 1.4.0
+**Next Planned Release:** 1.5.0 (Random Events & Reputation System)
 
 **Status:** ✅ ALL CORE SYSTEMS IMPLEMENTED
 **Production Ready:** ✅ YES

@@ -10,10 +10,98 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### In Development
 - **Hospital/Clinic System** - Medical treatment for infected tattoos (designed, pending integration)
 - **Conjugal Visit System** - Good behavior rewards with contraband mechanics (designed, pending integration)
-- **Guard Manicure Bribery** - Favor token economy via manicures (designed, pending integration)
 - **Dev Mode & Debugging** - Comprehensive logging and API monitoring (files created, pending integration)
 - **20 Random Prison Events** - Daily events for replayability (designed, pending integration)
 - **Reputation System** - Guards, inmates, warden, legend tracking (designed, pending integration)
+
+---
+
+## [1.4.0] - 2025-10-14
+
+### Added
+- **Visual Guard Manicure Mini-Game** - Canvas-based interactive nail cleaning
+  - Top-down view of guard's hands with realistic rendering
+  - 10 individual nails to clean (5 per hand)
+  - Click on dirt spots to clean each nail (3 spots per nail)
+  - Risk mechanic: Clicking on skin hurts the guard
+  - Guard wincing animation with screen shake effect
+  - 3 strikes system: 3 mistakes = guard injured
+  - 5 guards with unique personalities and nervousness levels
+  - Guard skin tone and nail color variation
+  - Sparkle effect on cleaned nails
+  - Real-time stats tracking (nails cleaned, mistakes)
+- **Clinic Exploitation System** - Exploit injured guards on pain meds
+  - Injured guards sent to medical bay (heavily medicated)
+  - 4 exploitation options with risk/reward mechanics:
+    - Steal Keys (70% risk) = Master key (opens any door)
+    - Get Future Favor (30% risk) = +2 favor tokens
+    - Extract Intel (50% risk) = +20% escape success rate
+    - Show Mercy (0% risk) = +10 good behavior
+  - Success/failure outcomes with consequences
+  - Failed exploitation = -15 good behavior
+  - Narrative consequences for each choice
+- **Unit Test Suite** - Comprehensive automated testing
+  - Custom TestRunner class with assertion methods
+  - 12 test suites covering all game systems:
+    - Core Game State, Save/Load, Prison Economy, Good Behavior
+    - Tattoo System, Gang System, Contraband, Favor Tokens
+    - Stats/Progression, Escape System, Time System, Character Creation
+  - 60+ individual tests
+  - MockGame class for browser-independent testing
+  - Exit codes for CI/CD integration
+  - Run with: `node test-suite.js`
+
+### Fixed
+- **Favor Token Spending Bug** - Critical integration issue resolved
+  - Added `spendFavorToken()` method to game.js (was missing)
+  - Added `showGuardFavorsMenu()` method to game.js
+  - Integrated favor token properties into player object
+  - Added manicure activity handler to `prisonActivity()` method
+  - Favor tokens now properly deduct when spending
+  - All 5 favor token benefits now functional:
+    - Ignore violation (1 token)
+    - Smuggle cigarettes (2 tokens)
+    - Get contraband (3 tokens)
+    - Escape assistance (3 tokens)
+    - Reduce sentence by 7 days (4 tokens)
+
+### Changed
+- Guard manicure system upgraded from text-based to visual canvas game
+- Manicure mini-game now uses VisualManicureSystem class
+- Enhanced manicure with injury mechanics and clinic integration
+
+### Technical
+- Added `guard-manicure-visual.js` (670 lines) - VisualManicureSystem class:
+  - Canvas-based rendering with requestAnimationFrame loop
+  - Hand/finger/nail geometry generation
+  - Click detection with coordinate transformation
+  - Dirt spot generation and tracking
+  - Guard injury mechanics with animation
+  - Clinic exploitation mini-game
+- Added `test-suite.js` (500+ lines) - Comprehensive test framework:
+  - TestRunner class with 8 assertion methods
+  - MockGame class for testing
+  - 12 test suites with 60+ tests
+- Updated game.js:
+  - Added favor token properties to player object (favorTokens, guardManicures, guardFavors, goodBehavior)
+  - Added `initManicureSystem()` method
+  - Added `spendFavorToken(type)` method (~105 lines)
+  - Added `showGuardFavorsMenu()` method
+  - Added manicure case to `prisonActivity()` method
+  - Changed manicure system to use VisualManicureSystem
+- Updated index.html:
+  - Added visualManicure screen with canvas and stats display
+  - Added clinicExploit screen with dynamic option generation
+  - Added CSS for exploit-button class with hover effects
+  - Added script tag for guard-manicure-visual.js
+- Total new code: ~1,300 lines
+
+### Documentation
+- Updated SYSTEMS.md to v1.4.0
+- Updated Guard Manicure section with visual mini-game details
+- Added clinic exploitation mechanics documentation
+- Added test-suite.js to file organization
+- Updated version references (1.3.0 → 1.4.0)
 
 ---
 
@@ -393,7 +481,8 @@ Given a version number MAJOR.MINOR.PATCH:
 
 ---
 
-[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/githumps/vroom-vroom/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/githumps/vroom-vroom/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/githumps/vroom-vroom/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/githumps/vroom-vroom/compare/v1.0.0...v1.1.0
