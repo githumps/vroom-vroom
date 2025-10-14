@@ -46,7 +46,7 @@ class ApiKeyManager {
         }
     }
 
-    // Test API key with Gemini API
+    // Test API key with Gemma 3 API
     async testApiKey(apiKey) {
         const key = apiKey || this.getApiKey();
         if (!key) {
@@ -55,7 +55,7 @@ class ApiKeyManager {
 
         try {
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${key}`,
                 {
                     method: 'POST',
                     headers: {
@@ -88,7 +88,7 @@ class ApiKeyManager {
         }
     }
 
-    // Generate AI charges using Gemini API
+    // Generate AI charges using Gemma 3 API (14,000 free requests/day)
     async generateAICharges(drivingData, arrestCount) {
         const apiKey = this.getApiKey();
         if (!apiKey) {
@@ -114,7 +114,7 @@ Return ONLY a JSON array of charge strings, nothing else. Example format:
 
         try {
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: {
@@ -568,19 +568,24 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.1.0';
+        this.VERSION = '1.2.0';
 
         this.scene = null;
         this.camera = null;
         this.renderer = null;
         this.car = null;
         this.policecar = null;
+        this.carPreview = null;
         this.gameState = 'menu'; // menu, character, driving, courtroom, prison
         this.player = {
             name: '',
             skinTone: 2,
             height: 175,
             voice: 'deep',
+            selectedCar: {
+                model: 'beater',
+                color: 0x8B7355  // rust brown default
+            },
             wantedLevel: 0,
             speed: 0,
             drivingTime: 0,
@@ -815,12 +820,29 @@ class VroomVroomGame {
     }
 
     createCar() {
+        // Use selected car from character creation
+        const selectedModel = this.player.selectedCar?.model || 'beater';
+        const selectedColor = this.player.selectedCar?.color || 0x8B7355;
+
+        // Create car using CarGeometry system
+        this.car = CarGeometry.createCarMesh(selectedModel, selectedColor);
+        if (this.car) {
+            this.car.position.set(0, 0.2, 0);
+            this.scene.add(this.car);
+        } else {
+            // Fallback to default if something goes wrong
+            console.warn('CarGeometry failed, using fallback');
+            this.createCarFallback();
+        }
+    }
+
+    createCarFallback() {
+        // Original car creation code as fallback
         const carGroup = new THREE.Group();
 
-        // Car body - Desaturated red (Disco Elysium palette)
         const bodyGeometry = new THREE.BoxGeometry(2, 1, 4);
         const bodyMaterial = new THREE.MeshStandardMaterial({
-            color: 0x9B4A4A, // Muted red
+            color: 0x9B4A4A,
             roughness: 0.7,
             metalness: 0.3
         });
@@ -828,10 +850,9 @@ class VroomVroomGame {
         body.position.y = 0.5;
         carGroup.add(body);
 
-        // Car top
         const topGeometry = new THREE.BoxGeometry(1.8, 0.8, 2);
         const topMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8B3A3A, // Darker muted red
+            color: 0x8B3A3A,
             roughness: 0.7,
             metalness: 0.3
         });
@@ -840,7 +861,6 @@ class VroomVroomGame {
         top.position.z = -0.3;
         carGroup.add(top);
 
-        // Wheels
         const wheelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 16);
         const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
 
@@ -858,7 +878,6 @@ class VroomVroomGame {
             carGroup.add(wheel);
         });
 
-        // Rotate car 180 degrees so it faces the correct direction
         carGroup.rotation.y = Math.PI;
         carGroup.position.set(0, 0.2, 0);
         this.car = carGroup;
@@ -1157,6 +1176,7 @@ class VroomVroomGame {
 
     startNewGame() {
         this.showScreen('characterCreation');
+        this.initializeCarPreview();
     }
 
     loadGame() {
@@ -1233,6 +1253,12 @@ class VroomVroomGame {
         this.player.height = parseInt(document.getElementById('height').value);
         this.player.voice = document.getElementById('voice').value;
 
+        // Clean up car preview renderer
+        if (this.carPreview) {
+            this.carPreview.destroy();
+            this.carPreview = null;
+        }
+
         this.showMessage('Welcome, ' + name + '. Get ready to drive.', 2000);
 
         // Show dramatic driving start cinematic
@@ -1241,6 +1267,121 @@ class VroomVroomGame {
                 this.startDriving();
             });
         }, 2000);
+    }
+
+    // Preview selected voice personality
+    previewVoice() {
+        // Initialize sound system if needed
+        if (!this.soundSystem.initialized) {
+            this.soundSystem.init();
+        }
+
+        // Get selected voice type
+        const voiceSelect = document.getElementById('voice');
+        const voiceType = voiceSelect.value;
+
+        // Update button text to show playing state
+        const previewBtn = document.getElementById('previewVoiceBtn');
+        const originalText = previewBtn.textContent;
+        previewBtn.textContent = 'PLAYING...';
+        previewBtn.disabled = true;
+
+        // Play voice preview
+        this.soundSystem.playVoicePreview(voiceType);
+
+        // Reset button after duration (longest voice is 1.5s, add buffer)
+        setTimeout(() => {
+            previewBtn.textContent = originalText;
+            previewBtn.disabled = false;
+        }, 2000);
+    }
+
+    // CAR SELECTION METHODS
+    selectCarModel(modelName) {
+        // Update player selection
+        this.player.selectedCar.model = modelName;
+
+        // Update UI - highlight selected button
+        document.querySelectorAll('.car-model-btn').forEach(btn => {
+            if (btn.dataset.model === modelName) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+
+        // Update preview
+        this.updateCarPreview();
+
+        // Update description
+        const models = CarGeometry.getCarModels();
+        const model = models[modelName];
+        const colors = ColorPalette.getColors();
+        const colorKey = Object.keys(colors).find(k => colors[k].hex === this.player.selectedCar.color) || 'rustbrown';
+        const colorInfo = colors[colorKey];
+
+        document.getElementById('carDescription').innerHTML =
+            `<strong>${model.name}</strong> - ${colorInfo.name}<br>${colorInfo.desc}`;
+    }
+
+    selectCarColor(colorKey) {
+        // Update player selection
+        this.player.selectedCar.color = ColorPalette.getColorHex(colorKey);
+
+        // Update UI - highlight selected swatch
+        document.querySelectorAll('.color-swatch').forEach(btn => {
+            if (btn.dataset.color === colorKey) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+
+        // Update preview
+        this.updateCarPreview();
+
+        // Update description
+        const colors = ColorPalette.getColors();
+        const colorInfo = colors[colorKey];
+        const models = CarGeometry.getCarModels();
+        const model = models[this.player.selectedCar.model];
+
+        document.getElementById('carDescription').innerHTML =
+            `<strong>${model.name}</strong> - ${colorInfo.name}<br>${colorInfo.desc}`;
+    }
+
+    updateCarPreview() {
+        // Initialize preview renderer if not exists
+        if (!this.carPreview) {
+            this.carPreview = new CarPreviewRenderer('carPreviewCanvas');
+        }
+
+        // Update with selected car and color
+        this.carPreview.updateCar(
+            this.player.selectedCar.model,
+            this.player.selectedCar.color
+        );
+    }
+
+    initializeCarPreview() {
+        // Called when character creation screen is shown
+        // Set defaults and initialize preview
+        this.player.selectedCar = {
+            model: 'beater',
+            color: 0x8B7355 // rust brown
+        };
+
+        // Highlight default selections in UI
+        setTimeout(() => {
+            document.querySelector('.car-model-btn[data-model="beater"]')?.classList.add('selected');
+            document.querySelector('.color-swatch[data-color="rustbrown"]')?.classList.add('selected');
+            this.updateCarPreview();
+
+            const models = CarGeometry.getCarModels();
+            const colors = ColorPalette.getColors();
+            document.getElementById('carDescription').innerHTML =
+                `<strong>${models.beater.name}</strong> - ${colors.rustbrown.name}<br>${colors.rustbrown.desc}`;
+        }, 100);
     }
 
     startDriving(showCinematic = false) {

@@ -487,6 +487,27 @@
             color: #f00;
             border-color: #f00;
         }
+
+        /* Car Selection Styles */
+        .car-model-btn.selected {
+            border-color: #0f0 !important;
+            background: rgba(0, 255, 0, 0.1) !important;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .car-model-btn:hover {
+            border-color: #0f0 !important;
+            background: rgba(0, 255, 0, 0.05) !important;
+        }
+
+        .color-swatch.selected {
+            border-color: #0f0 !important;
+            box-shadow: 0 0 15px #0f0;
+        }
+
+        .color-swatch:hover {
+            border-color: #888 !important;
+        }
     </style>
 </head>
 <body>
@@ -529,7 +550,142 @@
                         <option value="monotone">Monotone Bureaucrat</option>
                         <option value="enthusiastic">Disturbingly Enthusiastic</option>
                     </select>
+                    <button id="previewVoiceBtn" onclick="game.previewVoice()" style="margin-top: 10px; font-size: 0.9em; padding: 10px 20px;">
+                        PREVIEW VOICE
+                    </button>
                 </div>
+
+                <!-- CAR SELECTION UI SECTION -->
+                <div class="form-field">
+                    <label>Select Your Ride:</label>
+                    <p style="font-size: 0.9em; color: #888; margin: 10px 0;">
+                        Every criminal needs a getaway car. These are yours. They're terrible.
+                    </p>
+
+                    <!-- Car Model Selection Buttons -->
+                    <div id="carModelSelection" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
+                        <button type="button" class="car-model-btn" data-model="beater"
+                                onclick="game.selectCarModel('beater')"
+                                style="flex: 1 1 45%; min-width: 200px; padding: 15px; text-align: left; background: #000; border: 2px solid #444;">
+                            <div style="font-weight: bold; color: #0f0; margin-bottom: 5px;">THE BEATER</div>
+                            <div style="font-size: 0.85em; color: #888;">Beat-up sedan. Wide, low, barely functional.</div>
+                        </button>
+
+                        <button type="button" class="car-model-btn" data-model="box"
+                                onclick="game.selectCarModel('box')"
+                                style="flex: 1 1 45%; min-width: 200px; padding: 15px; text-align: left; background: #000; border: 2px solid #444;">
+                            <div style="font-weight: bold; color: #0f0; margin-bottom: 5px;">THE BOX</div>
+                            <div style="font-size: 0.85em; color: #888;">Boxy van/wagon. Tall, square, utilitarian.</div>
+                        </button>
+
+                        <button type="button" class="car-model-btn" data-model="clunker"
+                                onclick="game.selectCarModel('clunker')"
+                                style="flex: 1 1 45%; min-width: 200px; padding: 15px; text-align: left; background: #000; border: 2px solid #444;">
+                            <div style="font-weight: bold; color: #0f0; margin-bottom: 5px;">THE CLUNKER</div>
+                            <div style="font-size: 0.85em; color: #888;">Compact hatchback. Small, round, pitiful.</div>
+                        </button>
+
+                        <button type="button" class="car-model-btn" data-model="rustbucket"
+                                onclick="game.selectCarModel('rustbucket')"
+                                style="flex: 1 1 45%; min-width: 200px; padding: 15px; text-align: left; background: #000; border: 2px solid #444;">
+                            <div style="font-weight: bold; color: #0f0; margin-bottom: 5px;">THE RUST BUCKET</div>
+                            <div style="font-size: 0.85em; color: #888;">Pickup truck. Long bed, flat, depressing.</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label>Select Your Color:</label>
+                    <p style="font-size: 0.9em; color: #888; margin: 10px 0;">
+                        Muted. Faded. Appropriately dystopian.
+                    </p>
+
+                    <!-- Color Swatches -->
+                    <div id="colorSwatches" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0;">
+                        <button type="button" class="color-swatch" data-color="rustbrown"
+                                onclick="game.selectCarColor('rustbrown')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #8B7355; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Rust Brown</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="militarygreen"
+                                onclick="game.selectCarColor('militarygreen')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #5A6B4A; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Military</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="dullgrey"
+                                onclick="game.selectCarColor('dullgrey')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #6B6B6B; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Dull Grey</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="fadedblue"
+                                onclick="game.selectCarColor('fadedblue')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #4A5A6B; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Faded Blue</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="primergrey"
+                                onclick="game.selectCarColor('primergrey')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #7A7A7A; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Primer</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="oxidizedred"
+                                onclick="game.selectCarColor('oxidizedred')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #8B4A4A; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Oxidized Red</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="muddyyellow"
+                                onclick="game.selectCarColor('muddyyellow')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #8B8B4A; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Muddy Yellow</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="sickgreen"
+                                onclick="game.selectCarColor('sickgreen')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #4A6B4A; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Sick Green</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="asphaltblack"
+                                onclick="game.selectCarColor('asphaltblack')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #2A2A2A; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Asphalt</div>
+                        </button>
+
+                        <button type="button" class="color-swatch" data-color="dingewhite"
+                                onclick="game.selectCarColor('dingewhite')"
+                                style="width: 80px; height: 60px; border: 2px solid #444; cursor: pointer; padding: 5px; background: #000; position: relative;">
+                            <div style="background-color: #9B9B9B; width: 100%; height: 60%; margin-bottom: 5px;"></div>
+                            <div style="font-size: 0.7em; color: #888;">Dinge White</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Car Preview Canvas -->
+                <div class="form-field">
+                    <label>Your Ride:</label>
+                    <div style="text-align: center; margin: 15px 0;">
+                        <canvas id="carPreviewCanvas" width="400" height="400"
+                                style="border: 2px solid #0f0; background: #000; max-width: 100%;"></canvas>
+                        <p id="carDescription" style="font-size: 0.9em; color: #888; margin-top: 10px; font-style: italic;">
+                            Select a car and color to preview your ride.
+                        </p>
+                    </div>
+                </div>
+
                 <button onclick="game.finishCharacterCreation()">BEGIN YOUR JOURNEY</button>
             </div>
         </div>
@@ -1319,6 +1475,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="soundsystem.js"></script>
     <script src="tattoo-system.js"></script>
+    <script src="car-selection.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

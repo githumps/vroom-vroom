@@ -288,4 +288,160 @@ class SoundSystem {
         noise.start(startTime);
         noise.stop(startTime + 0.1);
     }
+
+    // VOICE PREVIEW SYSTEM - Character voice personality samples
+    playVoicePreview(voiceType) {
+        if (!this.initialized) this.init();
+        if (!this.initialized) return;
+
+        const now = this.audioContext.currentTime;
+
+        // Voice configurations for each personality type
+        const voiceConfigs = {
+            deep: {
+                // Deep and Resigned: Low frequency, slow, descending tone
+                baseFreq: 120,
+                freqRange: 30,
+                duration: 1.5,
+                waveType: 'triangle',
+                filterFreq: 400,
+                filterQ: 3,
+                pitchCurve: 'down', // Descending
+                vibrato: false,
+                attack: 0.15,
+                decay: 0.4,
+                sustain: 0.3,
+                release: 0.6,
+                gain: 0.25
+            },
+            high: {
+                // High and Anxious: High frequency, rapid, wavering/vibrato
+                baseFreq: 280,
+                freqRange: 70,
+                duration: 1.2,
+                waveType: 'sine',
+                filterFreq: 1200,
+                filterQ: 4,
+                pitchCurve: 'wavy',
+                vibrato: true,
+                vibratoRate: 8, // Hz - rapid tremolo
+                vibratoDepth: 15, // Hz
+                attack: 0.05,
+                decay: 0.1,
+                sustain: 0.4,
+                release: 0.25,
+                gain: 0.2
+            },
+            monotone: {
+                // Monotone Bureaucrat: Mid frequency, flat, no variation
+                baseFreq: 190,
+                freqRange: 0, // No variation
+                duration: 1.3,
+                waveType: 'square',
+                filterFreq: 600,
+                filterQ: 2,
+                pitchCurve: 'flat',
+                vibrato: false,
+                attack: 0.08,
+                decay: 0.05,
+                sustain: 0.7,
+                release: 0.2,
+                gain: 0.22
+            },
+            enthusiastic: {
+                // Disturbingly Enthusiastic: Mid-high, ascending, energetic
+                baseFreq: 220,
+                freqRange: 60,
+                duration: 1.4,
+                waveType: 'sawtooth',
+                filterFreq: 900,
+                filterQ: 5,
+                pitchCurve: 'up', // Ascending
+                vibrato: true,
+                vibratoRate: 5, // Hz - moderate
+                vibratoDepth: 8,
+                attack: 0.03,
+                decay: 0.08,
+                sustain: 0.5,
+                release: 0.3,
+                gain: 0.23
+            }
+        };
+
+        const config = voiceConfigs[voiceType];
+        if (!config) return;
+
+        // Main voice oscillator
+        const voice = this.audioContext.createOscillator();
+        voice.type = config.waveType;
+
+        // LFO for vibrato (if enabled)
+        let lfo = null;
+        let lfoGain = null;
+        if (config.vibrato) {
+            lfo = this.audioContext.createOscillator();
+            lfo.frequency.value = config.vibratoRate;
+            lfoGain = this.audioContext.createGain();
+            lfoGain.gain.value = config.vibratoDepth;
+            lfo.connect(lfoGain);
+            lfoGain.connect(voice.frequency);
+        }
+
+        // Set pitch envelope based on personality
+        const startFreq = config.baseFreq;
+        const endFreq = startFreq + config.freqRange;
+
+        switch (config.pitchCurve) {
+            case 'down':
+                // Descending for resigned
+                voice.frequency.setValueAtTime(startFreq, now);
+                voice.frequency.linearRampToValueAtTime(startFreq - config.freqRange, now + config.duration);
+                break;
+            case 'up':
+                // Ascending for enthusiastic
+                voice.frequency.setValueAtTime(startFreq, now);
+                voice.frequency.linearRampToValueAtTime(endFreq, now + config.duration * 0.7);
+                voice.frequency.linearRampToValueAtTime(endFreq * 1.05, now + config.duration);
+                break;
+            case 'wavy':
+                // Anxious wavering
+                voice.frequency.setValueAtTime(startFreq, now);
+                voice.frequency.linearRampToValueAtTime(startFreq + 30, now + 0.3);
+                voice.frequency.linearRampToValueAtTime(startFreq - 20, now + 0.6);
+                voice.frequency.linearRampToValueAtTime(startFreq + 40, now + 0.9);
+                voice.frequency.linearRampToValueAtTime(startFreq + 10, now + config.duration);
+                break;
+            case 'flat':
+                // Monotone
+                voice.frequency.setValueAtTime(startFreq, now);
+                break;
+        }
+
+        // Bandpass filter for voice-like quality
+        const voiceFilter = this.audioContext.createBiquadFilter();
+        voiceFilter.type = 'bandpass';
+        voiceFilter.frequency.value = config.filterFreq;
+        voiceFilter.Q.value = config.filterQ;
+
+        // ADSR Envelope
+        const voiceGain = this.audioContext.createGain();
+        voiceGain.gain.setValueAtTime(0, now);
+        voiceGain.gain.linearRampToValueAtTime(config.gain, now + config.attack); // Attack
+        voiceGain.gain.linearRampToValueAtTime(config.gain * config.sustain, now + config.attack + config.decay); // Decay
+        voiceGain.gain.setValueAtTime(config.gain * config.sustain, now + config.duration - config.release); // Sustain
+        voiceGain.gain.linearRampToValueAtTime(0, now + config.duration); // Release
+
+        // Connect audio graph
+        voice.connect(voiceFilter);
+        voiceFilter.connect(voiceGain);
+        voiceGain.connect(this.masterGain);
+
+        // Start playback
+        voice.start(now);
+        if (lfo) lfo.start(now);
+
+        // Stop playback
+        voice.stop(now + config.duration);
+        if (lfo) lfo.stop(now + config.duration);
+    }
 }

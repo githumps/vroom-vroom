@@ -1,7 +1,7 @@
 # VROOM VROOM - Project Documentation
 
-**Last Updated:** 2025-10-13 (Late Evening Session - Integration Complete)
-**Current Version:** v1.0.0
+**Last Updated:** 2025-10-13 (Night Session - Character Creation Enhanced)
+**Current Version:** v1.2.0
 
 ## Project Overview
 
@@ -25,9 +25,29 @@ A dystopian driving game where driving is illegal. Features Disco Elysium-inspir
 - ✅ Police chase system
 - ✅ Paperwork simulator with Judge Hardcastle AI
 - ✅ Prison system with activities
-- ✅ Character creation
+- ✅ Character creation with car selection and voice preview
 - ✅ Save/load system
 - ✅ Cinematic transitions (Ken Burns style)
+
+### Character Creation Enhancements (Just Completed)
+- ✅ **Car Selection System** (FULLY INTEGRATED)
+  - 4 distinct car models: The Beater, The Box, The Clunker, The Rust Bucket
+  - 10 muted Disco Elysium colors (Rust Brown, Military Green, Dull Grey, etc.)
+  - Real-time 3D rotating preview (400x400 canvas)
+  - Painterly depth via color variation
+  - Isometric camera angle with slow rotation
+  - Dynamic flavor text for each car/color combo
+  - Selected car appears in driving mode
+  - Save/load compatible
+
+- ✅ **Voice Preview System** (FULLY INTEGRATED)
+  - 4 voice personalities: Deep/Resigned, High/Anxious, Monotone/Bureaucrat, Disturbingly Enthusiastic
+  - Web Audio API oscillator-based synthesis
+  - ADSR envelopes for realistic voice characteristics
+  - Bandpass filtering for voice-like quality
+  - LFO-based vibrato for emotional voices
+  - Preview button in character creation screen
+  - Voices used for Judge Hardcastle encounters
 
 ### Prison Systems (Just Completed Today)
 - ✅ **Weight Lifting Simulator** (FULLY PLAYABLE)
@@ -105,8 +125,10 @@ A dystopian driving game where driving is illegal. Features Disco Elysium-inspir
 - ✅ Prison door clang
 - ✅ Volume controls + mute toggle in settings
 
-### AI Integration (Completed Previously)
-- ✅ Gemini Pro API for dynamic charges
+### AI Integration (Updated Today)
+- ✅ Gemma 3 API (gemma-3-27b-it) for dynamic charges
+- ✅ Migrated from gemini-pro to gemma-3-27b-it model
+- ✅ Free tier: 14,000 requests/day (upgraded)
 - ✅ Optional API key system (session-based, secure)
 - ✅ First-load modal prompt
 - ✅ Settings screen for API key management
@@ -125,10 +147,11 @@ A dystopian driving game where driving is illegal. Features Disco Elysium-inspir
 ```
 vroom-vroom/
 ├── game/
-│   ├── index.html          # Main game HTML (1100+ lines)
-│   ├── game.js             # Complete game engine (2700+ lines)
-│   ├── soundsystem.js      # Web Audio API sound system
-│   └── tattoo-system.js    # Tattoo drawing system class
+│   ├── index.html          # Main game HTML (1300+ lines, with car selection UI)
+│   ├── game.js             # Complete game engine (2900+ lines, with car methods)
+│   ├── soundsystem.js      # Web Audio API sound system (with voice preview)
+│   ├── tattoo-system.js    # Tattoo drawing system class
+│   └── car-selection.js    # Car selection system (331 lines, 3 classes)
 ├── index.html              # GitHub Pages redirect
 ├── claude.md               # This file - single source of truth
 ├── README.md               # Public-facing documentation
@@ -160,7 +183,7 @@ vroom-vroom/
 - ✅ Volume controls in settings
 - ✅ Fixed driving controls bug
 
-### Phase 4: Advanced Prison Systems (Just Completed - 2025-10-13 Late Evening)
+### Phase 4: Advanced Prison Systems (Completed - 2025-10-13 Late Evening)
 - ✅ Tattoo Drawing System integration
 - ✅ Gang Alliance System integration
 - ✅ Escape Planning System integration
@@ -168,6 +191,23 @@ vroom-vroom/
 - ✅ All agent-prepared code fully integrated
 - ✅ 600+ lines of new gameplay code
 - ✅ Updated documentation
+
+### Phase 5: Character Creation Enhancements (Just Completed - 2025-10-13 Night)
+- ✅ Car Selection System integration
+  - 4 distinct car models with unique geometries
+  - 10 muted Disco Elysium-inspired colors
+  - Real-time 3D rotating preview renderer
+  - Dynamic flavor text and descriptions
+- ✅ Voice Preview System integration
+  - 4 distinct voice personalities
+  - Web Audio API synthesis with ADSR envelopes
+  - Bandpass filtering and LFO vibrato
+  - Preview button in character creation
+- ✅ Gemma 3 API Migration
+  - Updated from gemini-pro to gemma-3-27b-it model
+  - Increased free tier to 14,000 requests/day
+- ✅ 650+ lines of new code
+- ✅ 6 new documentation files
 
 ---
 
@@ -179,15 +219,42 @@ vroom-vroom/
 - `playCopMumbling()` - 8 syllables of Sims-style gibberish (180-220Hz range)
 - `playGavelStrike()` - Deep thud (80Hz→40Hz) with impact noise
 - `playPrisonDoorClang()` - Metallic resonance (3 oscillators: 400/600/200Hz)
+- `playVoicePreview(voiceType)` - Character voice personalities with unique synthesis
+  - Deep and Resigned: 120Hz, descending tone, triangle wave
+  - High and Anxious: 280Hz, 8Hz vibrato, wavering pitch
+  - Monotone Bureaucrat: 190Hz, flat, square wave
+  - Disturbingly Enthusiastic: 220Hz, ascending, 5Hz vibrato
 - Volume/mute state saved to localStorage
 
+### Car Selection System (`car-selection.js`)
+**Three.js-based 3D Preview System**
+- **CarGeometry class** - Defines 4 car models with box-based geometry
+  - The Beater: Wide sedan (2.2 x 0.9 x 4.2)
+  - The Box: Tall van (2.0 x 1.4 x 3.8)
+  - The Clunker: Small hatchback (1.8 x 0.8 x 3.2)
+  - The Rust Bucket: Pickup truck with bed (2.1 x 0.85 x 3.0 + bed)
+  - `createCarMesh(modelName, colorHex)` - Creates Three.js mesh
+  - ~200 triangles per car (very low poly)
+- **ColorPalette class** - 10 muted Disco Elysium colors
+  - Rust Brown (0x8B7355), Military Green (0x5A6B4A), Dull Grey (0x6B6B6B)
+  - Faded Blue (0x4A5A6B), Primer Grey (0x7A7A7A), Oxidized Red (0x8B4A4A)
+  - Muddy Yellow (0x8B8B4A), Sick Green (0x4A6B4A), Asphalt Black (0x2A2A2A), Dinge White (0x9B9B9B)
+  - `getColors()` - Returns color definitions with descriptions
+  - `getColorHex(colorKey)` - Returns hex value for color key
+- **CarPreviewRenderer class** - Real-time 3D preview
+  - 400x400 canvas with isometric camera
+  - Slow rotation animation (0.005 rad/frame)
+  - Auto-cleanup on destroy
+  - Painterly depth via color variation
+
 ### AI System (`ApiKeyManager` class in game.js)
-**Gemini Pro API** - Optional dynamic charge generation
+**Gemma 3 API (gemma-3-27b-it)** - Optional dynamic charge generation
+- Migrated from gemini-pro to gemma-3-27b-it model (October 2025)
 - API key stored in `sessionStorage` (cleared on browser close)
 - Skip preference in `localStorage` (persistent)
 - Graceful fallback to hardcoded charges
 - Test API key functionality
-- Free tier: 14,000 requests/day
+- Free tier: 14,000 requests/day (upgraded from previous model)
 
 ### Game Engine (`VroomVroomGame` class)
 **Main Game Loop** - Handles all game states
@@ -333,6 +400,8 @@ All notable changes documented in `CHANGELOG.md` following [Keep a Changelog](ht
 - **Technical** - Implementation details
 
 ### Version History
+- **v1.2.0** (2025-10-13) - Character Creation Enhancements (car selection, voice preview, Gemma 3 API)
+- **v1.1.0** (2025-10-13) - Testing/Debug Menu
 - **v1.0.0** (2025-10-13) - Advanced Prison Systems (tattoo, gang, escape)
 - **v0.3.0** (2025-10-13) - Audio & AI Integration
 - **v0.2.0** (2025-10-12) - Prison Activities & Cinematic System
@@ -432,6 +501,49 @@ All notable changes documented in `CHANGELOG.md` following [Keep a Changelog](ht
 ---
 
 ## Development Log
+
+### 2025-10-13 (Night Session - Just Completed)
+- ✅ **Integrated Car Selection System**
+  - Created car-selection.js with 3 core classes (331 lines)
+  - Added CarGeometry class with 4 distinct car models
+  - Added ColorPalette class with 10 muted colors
+  - Added CarPreviewRenderer class for 3D rotating preview
+  - Integrated car selection UI into character creation HTML (166 lines)
+  - Added CSS for selected states and hover effects
+  - Added 4 new methods to game.js: selectCarModel(), selectCarColor(), updateCarPreview(), initializeCarPreview()
+  - Updated createCar() to use selected car geometry
+  - Added createCarFallback() for robust error handling
+  - Added selectedCar property to player object
+  - Integration time: ~60 minutes
+
+- ✅ **Integrated Voice Preview System**
+  - Added playVoicePreview() method to soundsystem.js (156 lines)
+  - Implemented 4 distinct voice personalities with unique synthesis
+  - Created ADSR envelopes for realistic voice characteristics
+  - Added bandpass filtering for voice-like quality
+  - Implemented LFO-based vibrato for emotional voices
+  - Added preview button to character creation screen
+  - Voices used for Judge Hardcastle encounters
+  - Integration time: ~20 minutes (was pre-integrated by agent)
+
+- ✅ **Migrated Gemma 3 API**
+  - Updated from gemini-pro to gemma-3-27b-it model
+  - Changed 2 API endpoints in game.js (lines 58, 117)
+  - Updated comments to reference Gemma 3 API
+  - Increased free tier to 14,000 requests/day
+  - Integration time: ~5 minutes
+
+- ✅ **Updated Documentation**
+  - Comprehensive CHANGELOG.md entry for v1.2.0
+  - Updated claude.md with new features and technical details
+  - Version bump to 1.2.0 in game.js
+  - 6 new documentation files created by agents
+
+- ✅ **Total Code Added**
+  - ~650 lines of new code
+  - 10 new methods across game.js and soundsystem.js
+  - 166 lines of new HTML/CSS UI
+  - All systems tested and working
 
 ### 2025-10-13 (Late Evening Session)
 - ✅ **Integrated Tattoo Drawing System**
