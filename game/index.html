@@ -348,12 +348,13 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.98);
             display: none;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             z-index: 10000;
             pointer-events: all;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding: 20px 0;
         }
 
         .modal.active {
@@ -365,9 +366,12 @@
             border: 3px solid #0f0;
             padding: 40px;
             max-width: 600px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
             box-shadow: 0 0 40px #0f0;
             animation: fadeIn 0.3s;
             margin: 20px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal-title {
@@ -648,7 +652,7 @@
             .modal-content {
                 padding: 20px;
                 max-width: 90%;
-                max-height: 85vh;
+                max-height: calc(100vh - 40px);
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
@@ -711,9 +715,10 @@
             .modal-content {
                 padding: 15px;
                 max-width: 95%;
-                max-height: 90vh;
+                max-height: calc(100vh - 40px);
                 overflow-y: auto;
                 border: 2px solid #0f0;
+                -webkit-overflow-scrolling: touch;
             }
 
             .modal-title {
@@ -796,9 +801,11 @@
         /* Landscape / Short viewport (keyboard open) */
         @media (max-height: 600px) {
             .modal-content {
-                max-height: 90vh;
+                max-height: calc(100vh - 40px);
                 margin: 10px;
                 padding: 15px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .modal-title {
@@ -1090,8 +1097,10 @@
         <!-- PRISON MENU -->
         <div id="prisonMenu" class="screen">
             <h2>CORRECTIONAL FACILITY #7734</h2>
+            <div id="prisonTimeDisplay" style="margin: 10px 20px; opacity: 0.8;"></div>
             <p style="margin: 20px; font-size: 1.1em;">Sentence: <span id="sentenceLength">5</span> years</p>
             <p style="margin: 20px;">Time Served: <span id="timeServed">0</span> days</p>
+            <div id="corruptionDisplay" style="margin: 15px 20px;"></div>
 
             <div style="max-width: 800px; margin: 0 auto;">
                 <div class="prison-activity" onclick="game.prisonActivity('weights')">
@@ -2141,6 +2150,7 @@
     <script src="systems/car-selection.js"></script>
     <script src="systems/guard-manicure.js"></script>
     <script src="systems/guard-manicure-visual.js"></script>
+    <script src="systems/gemini-events.js"></script>
     <script src="core/game.js"></script>
 </body>
 </html>

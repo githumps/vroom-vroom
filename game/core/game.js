@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.4.2';
+        this.VERSION = '1.5.0-alpha';
 
         this.scene = null;
         this.camera = null;
@@ -618,7 +618,9 @@ class VroomVroomGame {
             favorTokens: 0,
             guardManicures: {},
             guardFavors: { ignoreViolation: false },
-            goodBehavior: 100
+            goodBehavior: 100,
+            // Corruption system
+            corruption: 0
         };
 
         // Commissary shop inventory
@@ -650,6 +652,13 @@ class VroomVroomGame {
 
         // Initialize Sound System
         this.soundSystem = new SoundSystem();
+
+        // Initialize Gemini Random Events System
+        this.geminiEvents = new GeminiRandomEventGenerator(this.apiKeyManager);
+        this.ambientTimer = new AmbientEventTimer(this.geminiEvents, this.soundSystem);
+        this.guardDialogue = new GuardDialogueSystem(this.geminiEvents);
+        this.corruptionTracker = new CorruptionTracker();
+        this.timedEvents = new TimedEventSystem(this.geminiEvents);
 
         // Initialize Tattoo System (lazy initialization)
         this.tattooSystem = null;
@@ -1054,14 +1063,28 @@ class VroomVroomGame {
     }
 
     showScreen(screenId) {
+        // Stop ambient timer if leaving prison menu
+        if (this.currentScreen === 'prisonMenu' && screenId !== 'prisonMenu') {
+            this.ambientTimer.stop();
+        }
+
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
+        this.currentScreen = screenId;
 
         if (screenId === 'credits') {
             // Restart animation
             const scroll = document.querySelector('.credits-scroll');
             scroll.style.animation = 'none';
             setTimeout(() => scroll.style.animation = '', 10);
+        }
+
+        // Start ambient timer and update displays if entering prison menu
+        if (screenId === 'prisonMenu') {
+            this.ambientTimer.start();
+            this.corruptionTracker.initialize(this.player);
+            this.updatePrisonTimeDisplay();
+            this.updateCorruptionDisplay();
         }
     }
 
@@ -1070,6 +1093,41 @@ class VroomVroomGame {
         box.textContent = text;
         box.classList.add('active');
         setTimeout(() => box.classList.remove('active'), duration);
+    }
+
+    // Update prison time display
+    updatePrisonTimeDisplay() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+
+        const timeDisplay = document.getElementById('prisonTimeDisplay');
+        if (timeDisplay) {
+            timeDisplay.innerHTML = `
+                <div style="color: #0f0; font-size: 1.1em; margin-bottom: 5px;">
+                    ${hours}:${minutes} - Cell Block C
+                </div>
+            `;
+        }
+    }
+
+    // Update corruption display
+    updateCorruptionDisplay() {
+        const status = this.corruptionTracker.getCorruptionStatus();
+        const level = this.corruptionTracker.corruptionLevel;
+
+        const corruptionDisplay = document.getElementById('corruptionDisplay');
+        if (corruptionDisplay) {
+            corruptionDisplay.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="color: ${status.color}; font-size: 0.9em;">CORRUPTION</div>
+                    <div style="width: 120px; height: 10px; background: #222; border: 1px solid ${status.color};">
+                        <div style="width: ${level}%; height: 100%; background: ${status.color};"></div>
+                    </div>
+                    <div style="color: ${status.color}; font-size: 0.9em;">${level}</div>
+                </div>
+            `;
+        }
     }
 
     // Modal Management
@@ -1093,7 +1151,7 @@ class VroomVroomGame {
     }
 
     // API Key Management - First Load Modal
-    useApiKey() {
+    async useApiKey() {
         const apiKey = document.getElementById('apiKeyInput').value.trim();
         const dontAskAgain = document.getElementById('dontAskAgain').checked;
 
@@ -1102,18 +1160,30 @@ class VroomVroomGame {
             return;
         }
 
-        // Save API key
-        if (this.apiKeyManager.saveApiKey(apiKey)) {
-            this.showMessage('API key saved! AI features enabled.', 3000);
+        this.showMessage('Testing API key...', 2000);
+
+        // Test the API key first
+        const testResult = await this.apiKeyManager.testApiKey(apiKey);
+
+        if (testResult.success) {
+            this.apiKeyManager.saveApiKey(apiKey);
+            this.showMessage('✓ API key validated! AI features enabled.', 4000);
             this.updateAIStatus();
             this.closeModal('apiKeyModal');
+
+            // Generate initial event pool in background
+            if (this.geminiEvents) {
+                setTimeout(() => {
+                    this.geminiEvents.generateEventPool();
+                }, 2000);
+            }
 
             // Set skip preference
             if (dontAskAgain) {
                 this.apiKeyManager.setSkipPrompt(true);
             }
         } else {
-            this.showMessage('Invalid API key', 3000);
+            this.showMessage(`✗ ${testResult.message}`, 5000);
         }
     }
 
@@ -1131,7 +1201,7 @@ class VroomVroomGame {
     }
 
     // API Key Management - Settings Modal
-    saveApiKeyFromSettings() {
+    async saveApiKeyFromSettings() {
         const apiKey = document.getElementById('settingsApiKeyInput').value.trim();
 
         if (!apiKey) {
@@ -1139,15 +1209,28 @@ class VroomVroomGame {
             return;
         }
 
-        if (this.apiKeyManager.saveApiKey(apiKey)) {
-            this.showMessage('API key saved! AI features enabled.', 3000);
+        this.showMessage('Testing API key...', 2000);
+
+        // Test the API key before saving
+        const testResult = await this.apiKeyManager.testApiKey(apiKey);
+
+        if (testResult.success) {
+            this.apiKeyManager.saveApiKey(apiKey);
+            this.showMessage('✓ API key validated and saved!', 4000);
             this.updateAIStatus();
             this.updateSettingsStatus();
 
             // Clear input field
             document.getElementById('settingsApiKeyInput').value = '';
+
+            // Generate initial event pool in background
+            if (this.geminiEvents) {
+                setTimeout(() => {
+                    this.geminiEvents.generateEventPool();
+                }, 2000);
+            }
         } else {
-            this.showMessage('Invalid API key', 3000);
+            this.showMessage(`✗ ${testResult.message}`, 5000);
         }
     }
 
