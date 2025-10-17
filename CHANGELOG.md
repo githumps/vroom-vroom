@@ -16,6 +16,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.2] - 2025-10-15
+
+### Fixed
+- **Mobile Modal Visibility Improvements** - Comprehensive modal accessibility fixes
+  - Added `max-height: 85vh` and `overflow-y: auto` to tablet breakpoint (768px)
+  - Added `-webkit-overflow-scrolling: touch` for smooth iOS scrolling
+  - Added `overflow-y: auto` to base `.modal` class for keyboard handling
+  - Added `margin: 20px` to `.modal-content` for safe spacing
+  - Added landscape/short viewport media query (`max-height: 600px`)
+    - Optimized modal spacing when keyboard is open
+    - Reduced padding and margins for tight spaces
+    - Scaled down font sizes (title: 1.3em, text: 0.9em)
+  - Enhanced viewport meta tag with `maximum-scale=1.0`, `user-scalable=no`, `viewport-fit=cover`
+  - Added iOS web app capability meta tags
+  - Added iOS safe area insets to body element
+    - `padding-top: env(safe-area-inset-top)`
+    - `padding-bottom: env(safe-area-inset-bottom)`
+    - `padding-left: env(safe-area-inset-left)`
+    - `padding-right: env(safe-area-inset-right)`
+
+### Technical
+- Updated `index.html` mobile CSS:
+  - Modified tablet breakpoint (768px) modal styles (5 lines)
+  - Modified base modal class (2 lines)
+  - Modified base modal-content class (1 line)
+  - Added landscape/short viewport breakpoint (23 lines)
+  - Updated viewport meta tag (1 line)
+  - Added 2 web app meta tags
+  - Updated body CSS with safe area support (4 lines)
+- All modals now properly scrollable on mobile devices
+- Settings modal, save code modals, API key modal all tested and working
+- Keyboard appearance no longer hides modal content
+- Proper support for iOS notches and home indicators
+
+---
+
 ## [1.4.1] - 2025-10-14
 
 ### Fixed
@@ -521,7 +557,8 @@ Given a version number MAJOR.MINOR.PATCH:
 
 ---
 
-[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/githumps/vroom-vroom/compare/v1.4.2...HEAD
+[1.4.2]: https://github.com/githumps/vroom-vroom/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/githumps/vroom-vroom/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/githumps/vroom-vroom/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/githumps/vroom-vroom/compare/v1.2.0...v1.3.0

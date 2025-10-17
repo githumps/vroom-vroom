@@ -1,76 +1,140 @@
 # VROOM VROOM - Project Documentation
 
-**Last Updated:** 2025-10-14
-**Current Version:** v1.3.0
+**Last Updated:** 2025-10-15
+**Current Version:** v1.4.2
 **Status:** 🟢 PRODUCTION READY - All Core Systems Implemented
 
 ---
 
-## 🔄 DEVELOPMENT WORKFLOW (MANDATORY)
+## ⚡ MODERN DEVELOPMENT WORKFLOW (MANDATORY)
 
-**Every task MUST follow this workflow:**
+**Every session and every task MUST follow this workflow. No exceptions.**
+
+### 🤖 Agent-First Development
+
+**IMPORTANT:** For complex tasks, use specialized agents in the optimal order:
+
+1. **Use `Task` tool with `general-purpose` agent** for:
+   - Researching existing code patterns
+   - Searching for files and code references
+   - Planning multi-step implementations
+   - Understanding system architecture
+
+2. **Use `Task` tool with `game-dev-specialist` agent** for:
+   - Implementing new game features
+   - Designing game systems
+   - Creating game mechanics
+   - 3D rendering tasks
+   - UI/UX design for game screens
+
+**When to use agents:**
+- Task involves 5+ files
+- Need to search/understand unfamiliar codebase
+- Implementing complete new systems
+- Researching integration patterns
+
+**Example workflow:**
+```javascript
+// 1. Research phase (general-purpose agent)
+Task: "Search codebase for tattoo system implementation and identify integration points"
+
+// 2. Implementation phase (game-dev-specialist agent)
+Task: "Implement hospital clinic system with medical events following the tattoo system pattern"
+
+// 3. Documentation phase (do yourself)
+Update SYSTEMS.md, CHANGELOG.md, claude.md
+```
+
+---
+
+## 📋 MANDATORY 7-STEP WORKFLOW
+
+**Follow this for EVERY change:**
 
 ### Step 1: Pre-Task Check ✅
 ```
-□ Check TODO list for current tasks
+□ Check TODO list for current tasks (use TodoWrite tool)
 □ Review SYSTEMS.md for system overview
 □ Check relevant docs in docs/systems/ and docs/integration/
-□ Verify no conflicting changes in git status
+□ Verify no conflicting changes: git status
 □ Read relevant code sections before modifying
+□ Consider if agents needed (complex/multi-file tasks)
 ```
 
 ### Step 2: Execute Task 🔨
 ```
+□ Use agents for complex tasks (see Agent-First Development)
 □ Implement changes with comprehensive logging
 □ Add error handling for all user-facing features
 □ Test manually during development
-□ Use dev mode for real-time debugging (type DEBUG on menu)
 □ Follow existing code patterns and naming conventions
+□ Design for BOTH desktop AND mobile (always responsive)
 ```
 
-### Step 3: Update Documentation 📝
+### Step 3: Linting & Syntax Check 🔍 **MANDATORY**
 ```
-□ Update SYSTEMS.md if new system or major changes
-□ Update/create docs in docs/systems/ for system reference
-□ Update/create docs in docs/integration/ for integration steps
-□ Update CHANGELOG.md with user-facing changes
-□ Update this file (claude.md) with technical details
-□ Update line numbers and file references
+□ Run syntax check on ALL modified JavaScript files:
+  node -c game/game.js
+  node -c game/guard-manicure-visual.js
+  node -c game/test-suite.js
+  (add more as needed)
+□ Verify no syntax errors before proceeding
+□ Check for proper semicolons, braces, etc.
 ```
 
-### Step 4: Testing 🧪
+### Step 4: Unit Testing 🧪 **MANDATORY**
 ```
+□ Run unit test suite: node game/test-suite.js
+□ Verify all tests pass (97%+ pass rate required)
+□ Add new tests for new features
 □ Test feature in browser (desktop)
-□ Test feature in browser (mobile if applicable)
+□ Test feature in browser (mobile - critical!)
 □ Use testing menu (type TEST on menu) for quick access
 □ Test save/load compatibility
 □ Verify no console errors
 □ Test edge cases and error conditions
 ```
 
-### Step 5: Code Quality 🎯
+### Step 5: Update Documentation 📝 **MANDATORY**
 ```
-□ Run syntax check: node -c game.js (or relevant file)
+□ Update game VERSION in game.js (this.VERSION)
+□ Update SYSTEMS.md if new system or major changes
+□ Update/create docs in docs/systems/ for system reference
+□ Update/create docs in docs/integration/ for integration steps
+□ Update CHANGELOG.md with user-facing changes (new version section)
+□ Update this file (claude.md) current version and status
+□ Update line numbers and file references
+□ Update version comparison links in CHANGELOG.md
+```
+
+### Step 6: Code Quality Review 🎯
+```
 □ Review for console.log() - keep only with logger
 □ Check for proper error handling
 □ Verify all functions have clear purposes
 □ Remove TODO comments or convert to issues
+□ Check mobile responsiveness (modals, screens, canvas)
+□ Verify all text readable on small screens
 ```
 
-### Step 6: Git Commit 📦
+### Step 7: Git Commit 📦
 ```
-□ Stage changed files: git add .
+□ Stage changed files: git add <files>
 □ Write semantic commit message:
-  - feat: New feature
-  - fix: Bug fix
+  - feat: New feature (MINOR version bump)
+  - fix: Bug fix (PATCH version bump)
   - docs: Documentation only
   - refactor: Code restructure
   - perf: Performance improvement
+  - BREAKING CHANGE: Major version bump
 □ Include detailed description
+□ Include technical summary (files changed, lines added)
+□ Add "🤖 Generated with Claude Code" footer
+□ Add "Co-Authored-By: Claude <noreply@anthropic.com>" footer
 □ Reference issue numbers if applicable
 ```
 
-**Use this workflow for EVERY change. No exceptions.**
+**NEVER skip steps. This workflow ensures quality and prevents bugs.**
 
 ---
 
@@ -642,7 +706,7 @@ game.loadGame();
 
 ---
 
-**Last Updated:** 2025-10-14
-**Current Version:** v1.3.0
-**Next Planned Release:** v1.4.0 (Dev Mode + Prison Enhancements)
+**Last Updated:** 2025-10-15
+**Current Version:** v1.4.2
+**Next Planned Release:** v1.5.0 (Dev Mode + Prison Enhancements)
 **Documentation Status:** ✅ ORGANIZED AND UP-TO-DATE
