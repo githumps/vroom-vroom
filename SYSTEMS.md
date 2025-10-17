@@ -141,6 +141,63 @@ Rust Brown, Military Green, Dull Grey, Faded Blue, Primer Grey, Oxidized Red, Mu
 **Status:** ✅ Fully Implemented
 **AI Integration:** ✅ Optional (v0.3.0)
 
+### Ace Attorney Visual Novel Courtroom ⭐ DESIGN READY (v1.5.0)
+Transform the text-based courtroom into an **immersive visual novel experience** with Ace Attorney-style presentation and Darkest Dungeon atmosphere.
+
+**Core Features:**
+- **6 Judge Anger States** - NEUTRAL → IRRITATED → ANGRY → FURIOUS → APOPLECTIC → VOLCANIC
+- **Full-Screen Character Sprites** - Judge dominates 70-80% of screen
+- **Expressive Animations** - Breathing, blinking, vein pulsing, gavel striking, screen shake
+- **Darkest Dungeon Atmosphere** - Oppressive vignette, film grain, chiaroscuro lighting
+- **Dynamic Visual Escalation** - Face reddening, veins appearing, gavel trembling, shattered at 100 patience
+- **Screen Effects** - Vignette darkening, red overlay, screen shake (±5px to ±15px)
+- **Dual Views** - Desk view (paperwork) ↔ Judge view (reactions)
+- **Smooth Transitions** - Fade transitions between views
+
+**Animation Specifications:**
+| State | Patience | Animation | FPS | Loop Time |
+|-------|----------|-----------|-----|-----------|
+| NEUTRAL | 0-15 | Slow blink, yawn | 8 | 2.0s |
+| IRRITATED | 16-35 | Finger drumming | 10 | 1.5s |
+| ANGRY | 36-60 | Veins pulse, heavy breathing | 8 | 1.0s |
+| FURIOUS | 61-85 | Gavel trembling, screen shake ±5px | 10 | 0.8s |
+| APOPLECTIC | 86-99 | Gavel strike, shake ±10px, flash | 10 | 0.6s |
+| VOLCANIC | 100 | Gavel shatter, shake ±15px, FREEZE | 10 | 0.5s (no loop) |
+
+**Visual Style:**
+- **Art Style:** Painterly (Disco Elysium), not anime
+- **Color Palette:** Desaturated browns, grays, sickly greens
+- **Lighting:** Single light source, heavy shadows
+- **Effects:** Film grain (15% opacity), vignette (40% opacity), red overlay at high anger
+
+**Technical Implementation:**
+- **Canvas-based rendering** - No external images needed
+- **JudgeSpriteAnimator** - 6 states with frame-perfect timing
+- **AtmosphereRenderer** - Vignette, film grain, color grading
+- **DialogueBox** - Ace Attorney-style text presentation
+- **PatienceMeter** - Color-coded visual feedback
+
+**New Sound Effects:**
+- Gavel shatter (VOLCANIC state)
+- Angry gavel strike (APOPLECTIC state)
+- Finger drumming (IRRITATED state loop)
+- Heavy breathing (ANGRY+ state loop)
+- Desk creak (when judge leans forward)
+
+**Performance:**
+- Desktop: 60 FPS
+- Mobile: 30 FPS (auto-detected)
+- Offscreen canvas caching for static elements
+- Optimized draw calls
+
+**Documentation:**
+- [docs/systems/ACE_ATTORNEY_COURTROOM_SYSTEM.md](docs/systems/ACE_ATTORNEY_COURTROOM_SYSTEM.md) - Complete technical specification
+- [docs/integration/ACE_ATTORNEY_COURTROOM_INTEGRATION.md](docs/integration/ACE_ATTORNEY_COURTROOM_INTEGRATION.md) - Step-by-step integration guide
+
+**Status:** 📋 Design Complete - Ready for Implementation (v1.5.0)
+**Implementation Time:** 48-71 hours (6-9 full days)
+**Priority:** HIGH - Centerpiece feature of v1.5.0
+
 ---
 
 ## PRISON SYSTEM
@@ -515,6 +572,7 @@ vroom-vroom/
 │   ├── car-selection.js           # Car preview
 │   ├── guard-manicure.js          # Guard manicure (text-based)
 │   ├── guard-manicure-visual.js   # ⭐ NEW: Visual manicure mini-game
+│   ├── gemini-events.js           # 📋 READY: Gemini random events (v1.5.0)
 │   ├── test-suite.js              # ⭐ NEW: Unit test suite
 │   ├── debug-logger.js            # ⭐ NEW: Logging utility
 │   ├── api-monitor.js             # ⭐ NEW: API tracking
@@ -536,7 +594,9 @@ vroom-vroom/
 │   │   ├── PRISON_SYSTEM.md
 │   │   ├── PRISON_REVIEW_EXECUTIVE_SUMMARY.md
 │   │   ├── CAR_SELECTION_SUMMARY.md
-│   │   └── GUARD_MANICURE_SYSTEM_SUMMARY.md
+│   │   ├── GUARD_MANICURE_SYSTEM_SUMMARY.md
+│   │   ├── GEMINI_RANDOM_EVENTS_SYSTEM.md  # 📋 NEW: v1.5.0 system design
+│   │   └── COMEDY_HOOK_SYSTEM.md           # 🎭 NEW: Trauma-comedy consultation system
 │   │
 │   ├── integration/               # ⭐ ORGANIZED: Integration guides
 │   │   ├── TATTOO_SYSTEM_INTEGRATION.md
@@ -547,7 +607,9 @@ vroom-vroom/
 │   │   ├── GUARD_MANICURE_IMPLEMENTATION.md
 │   │   ├── PRISON_ENHANCEMENTS_IMPLEMENTATION.md
 │   │   ├── CAR_SELECTION_CODE_SNIPPETS.md
-│   │   └── INTEGRATION_STEPS.md
+│   │   ├── INTEGRATION_STEPS.md
+│   │   ├── GEMINI_EVENTS_INTEGRATION.md    # 📋 NEW: v1.5.0 integration guide
+│   │   └── COMEDY_HOOK_INTEGRATION.md      # 🎭 NEW: Comedy agent consultation guide
 │   │
 │   ├── GAME_DELIVERY_REPORT.md    # Game delivery summary
 │   └── PROJECT_STATUS_REPORT.md   # Project status
@@ -572,6 +634,8 @@ vroom-vroom/
 | **Development Tools** | docs/systems/DEV_MODE_*.md |
 | **API Documentation** | docs/systems/API_VERIFICATION_REPORT.md |
 | **Code Examples** | docs/systems/LOGGING_EXAMPLES.md |
+| **Comedy/Tone Guidelines** | docs/systems/COMEDY_HOOK_SYSTEM.md |
+| **Agent Consultation** | docs/integration/COMEDY_HOOK_INTEGRATION.md |
 
 ---
 
@@ -624,21 +688,81 @@ logger.error('API', 'API call failed');
 
 ---
 
+## GEMINI RANDOM EVENTS SYSTEM ⭐ NEW (v1.5.0 READY)
+
+### Overview
+AI-generated dynamic prison events using Gemini API with intelligent caching to conserve API calls.
+
+### Features
+- **Event Pool Generation** - Batch generate 80 events in 1 API call
+- **Ambient Prison Events** - Random events every 2-5 minutes on prison menu
+- **Dynamic Guard Dialogue** - Context-aware guard remarks
+- **Corruption System** - Player stat (0-100) tracking bribes and illegal activities
+- **Time-Based Events** - Events vary based on real-world time
+- **Graceful Fallback** - Static events when API unavailable
+
+### API Efficiency
+- **1-2 API calls per session** (not per event)
+- **100+ unique events** from batch generation
+- **0.04% of daily limit** (5 sessions = 5 calls out of 14,000)
+- **Session-based caching** - Fresh pool each session
+
+### Components
+- **GeminiRandomEventGenerator** - Event pool management
+- **AmbientEventTimer** - 2-5 minute interval system
+- **GuardDialogueSystem** - Context-aware dialogue
+- **CorruptionTracker** - Player corruption stat (0-100)
+- **TimedEventSystem** - Real-time event variations
+
+### Corruption Tracking
+**Increases with:**
+- Bribing guards (+5)
+- Contraband smuggling (+10)
+- Gang activities (+3)
+- Successful manicure bribes (+2)
+- Escape planning (+15)
+
+**Decreases with:**
+- Good behavior (-1 per day)
+- Refusing bribes (-5)
+- Snitching on others (-10)
+
+**Effects:**
+- **High corruption (80+):** Better contraband access, guards ignore violations, +30% access, +40% ignore chance
+- **High corruption (80+) cons:** +70% investigation risk, +50% sentence if caught
+- **Low corruption (0-20):** Clean record, standard gameplay
+
+### Event Types
+- **Guard Walking By** - Footsteps, dialogue, footsteps fade
+- **Distant Events** - Shouts, fights, PA announcements
+- **Atmospheric** - Meal carts, keys jangling, doors clanging
+- **Time-Specific** - Morning count, yard time, lights out
+
+**Documentation:**
+- [docs/systems/GEMINI_RANDOM_EVENTS_SYSTEM.md](docs/systems/GEMINI_RANDOM_EVENTS_SYSTEM.md)
+- [docs/integration/GEMINI_EVENTS_INTEGRATION.md](docs/integration/GEMINI_EVENTS_INTEGRATION.md)
+
+**Status:** 📋 Design Complete - Ready for Implementation (v1.5.0)
+**Integration Time:** 4-6 hours
+
+---
+
 ## FUTURE ENHANCEMENTS
 
-### Priority: HIGH
-- [ ] Implement 20 random prison events
-- [ ] Add reputation system (guards/inmates/warden/legend)
+### Priority: HIGH (v1.5.0 - Ready to Implement)
+- [x] **Gemini Random Events System** - Design complete, ready for integration
+- [ ] Implement reputation system (guards/inmates/warden/legend) - See PRISON_ENHANCEMENTS_IMPLEMENTATION.md
+- [ ] Implement condition cascades - See PRISON_ENHANCEMENTS_IMPLEMENTATION.md
 - [ ] Make stats matter (hunger/strength/intelligence gameplay effects)
 - [ ] Enhance cellmate system (relationship progression)
 
-### Priority: MEDIUM
-- [ ] Letter response system (AI or scripted)
-- [ ] Condition cascades (hunger affects strength, etc.)
+### Priority: MEDIUM (v1.6.0+)
+- [ ] Letter response system (AI or scripted with Gemini)
 - [ ] More escape routes
 - [ ] Prison job system
+- [ ] Enhanced random events with AI-generated outcomes
 
-### Priority: LOW
+### Priority: LOW (v2.0.0+)
 - [ ] Multiplayer support
 - [ ] Achievement system
 - [ ] Steam integration
