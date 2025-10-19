@@ -16,6 +16,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.3] - 2025-10-19
+
+### Added
+- **Comprehensive Debug Menu Overhaul** - Professional-grade development tools
+  - **6 Categorized Sections**: Core Gameplay, Prison Activities, Social Systems, Special Systems, Save System
+  - **7 New System Jump-To Shortcuts**: Manicure, Letter, Cellmate, Favors, Character Creation, Save Export/Import
+  - **15 New Debug Functions**: Complete player stat manipulation and testing utilities
+
+- **Resource & Currency Tools**
+  - `testAddGoodBehavior(amount)` - Add/manage good behavior points (0-100)
+  - `testAddFavorTokens(amount)` - Add favor tokens for guard manicure system
+
+- **Physical Stats Tools**
+  - `testSetStrength(value)` - Set strength stat (0-100)
+  - `testSetIntelligence(value)` - Set intelligence stat (0-100)
+  - `testSetHunger(value)` - Set hunger stat (0-100)
+  - `testMaxAllStats()` - Instantly max all physical stats
+
+- **Time Control Tools**
+  - `testAddDays(days)` - Add days to prison time served
+  - `testSkipDays(days)` - Skip forward in time
+  - `testReduceSentence(years)` - Reduce prison sentence
+  - `testSetSentence(years)` - Set custom sentence length
+
+- **Special Testing Tools**
+  - `testInfectTattoo()` - Force random tattoo infection (for clinic testing)
+  - `testShowStats()` - View complete player stats in console and alert
+  - `testAddContraband()` - Add random contraband items
+  - `testVoicePreviews()` - Preview all 4 voice types sequentially
+  - `testApiKey()` - Test Gemini API key connection and functionality
+
+- **Grid Layout** - Responsive CSS grid for better organization on all screen sizes
+
+### Changed
+- **Testing Menu Organization** - Reorganized from flat list to 6 categorized sections
+- **Debug Tools Layout** - Grouped into 5 themed sections (Resources, Stats, Time, Special, System)
+- **testJumpTo() Function** - Added 7 new cases: manicure, letter, cellmate, favors, character, saveExport, saveImport
+- **Menu Max Width** - Increased from 900px to 1200px for better desktop experience
+
+### Technical
+- Updated `game/index.html`:
+  - Reorganized testing menu HTML with categorical sections (177 lines)
+  - Added grid layouts for responsive design
+  - Added color-coded section headers (yellow for systems, green for tools, red for system controls)
+  - Total testing menu: ~175 lines (was ~70 lines)
+- Updated `game/core/game.js`:
+  - Added 15 new test helper functions (217 lines)
+  - Enhanced `testJumpTo()` with 7 new cases (28 lines)
+  - Total testing methods: ~345 lines (was ~128 lines)
+- **Coverage Improvement**: Testing menu now covers ~95% of game systems (was ~60%)
+
+---
+
 ## [1.4.2] - 2025-10-15
 
 ### Fixed

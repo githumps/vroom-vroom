@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.5.0-alpha';
+        this.VERSION = '1.4.3';
 
         this.scene = null;
         this.camera = null;
@@ -4075,6 +4075,34 @@ class VroomVroomGame {
                 this.startDriving();
                 break;
 
+            case 'manicure':
+                this.prisonActivity('manicure');
+                break;
+
+            case 'letter':
+                this.prisonActivity('letter');
+                break;
+
+            case 'cellmate':
+                this.prisonActivity('cellmate');
+                break;
+
+            case 'favors':
+                this.showGuardFavorsMenu();
+                break;
+
+            case 'character':
+                this.showScreen('characterCreation');
+                break;
+
+            case 'saveExport':
+                this.exportSaveCode();
+                break;
+
+            case 'saveImport':
+                this.importSaveCode();
+                break;
+
             default:
                 this.showMessage('Unknown system: ' + system, 2000);
         }
@@ -4125,6 +4153,225 @@ class VroomVroomGame {
         if (confirm('Reset ALL progress? This will delete your save!')) {
             localStorage.removeItem('vroomVroomSave');
             this.showMessage('Progress reset! Reload the page.', 3000);
+        }
+    }
+
+    // Debug: Add good behavior points
+    testAddGoodBehavior(amount) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.goodBehaviorPoints = (this.player.goodBehaviorPoints || 0) + amount;
+        this.player.goodBehaviorPoints = Math.min(100, Math.max(0, this.player.goodBehaviorPoints));
+        this.showMessage(`Added ${amount} good behavior. Total: ${this.player.goodBehaviorPoints}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Add favor tokens
+    testAddFavorTokens(amount) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.favorTokens = (this.player.favorTokens || 0) + amount;
+        this.showMessage(`Added ${amount} favor tokens. Total: ${this.player.favorTokens}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Set strength
+    testSetStrength(value) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.strength = Math.min(100, Math.max(0, value));
+        this.showMessage(`Strength set to: ${this.player.strength}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Set intelligence
+    testSetIntelligence(value) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.intelligence = Math.min(100, Math.max(0, value));
+        this.showMessage(`Intelligence set to: ${this.player.intelligence}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Set hunger
+    testSetHunger(value) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.hunger = Math.min(100, Math.max(0, value));
+        this.showMessage(`Hunger set to: ${this.player.hunger}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Max all stats
+    testMaxAllStats() {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.strength = 100;
+        this.player.intelligence = 100;
+        this.player.hunger = 0;
+        this.player.goodBehaviorPoints = 100;
+        this.showMessage('All stats maxed! (Strength, Intelligence, Good Behavior, Hunger reset)', 3000);
+        this.saveGame();
+    }
+
+    // Debug: Add days served
+    testAddDays(days) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.prisonDays = (this.player.prisonDays || 0) + days;
+        this.showMessage(`Added ${days} days. Total served: ${this.player.prisonDays}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Skip days forward
+    testSkipDays(days) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.prisonDays = (this.player.prisonDays || 0) + days;
+        this.showMessage(`Skipped ${days} day(s) forward. Days served: ${this.player.prisonDays}`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Reduce sentence
+    testReduceSentence(years) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.sentence = Math.max(0.1, (this.player.sentence || 1) - years);
+        this.showMessage(`Reduced sentence by ${years} year(s). New sentence: ${this.player.sentence} years`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Set sentence
+    testSetSentence(years) {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        this.player.sentence = Math.max(0.1, years);
+        this.showMessage(`Sentence set to: ${this.player.sentence} year(s)`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Infect random tattoo
+    testInfectTattoo() {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        if (!this.player.tattoos || this.player.tattoos.length === 0) {
+            this.showMessage('No tattoos to infect! Get a tattoo first.', 2000);
+            return;
+        }
+        const randomTattoo = this.player.tattoos[Math.floor(Math.random() * this.player.tattoos.length)];
+        randomTattoo.infected = true;
+        this.showMessage(`Infected tattoo on ${randomTattoo.placementName || 'unknown location'}!`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Show all player stats
+    testShowStats() {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+
+        const stats = [
+            `=== PLAYER STATS ===`,
+            `Name: ${this.player.name || 'None'}`,
+            `Credits: ${this.player.money || 0}`,
+            `Cigarettes: ${this.player.cigarettes || 0}`,
+            `Good Behavior: ${this.player.goodBehaviorPoints || 0}`,
+            `Favor Tokens: ${this.player.favorTokens || 0}`,
+            `Strength: ${this.player.strength || 0}`,
+            `Intelligence: ${this.player.intelligence || 0}`,
+            `Hunger: ${this.player.hunger || 0}`,
+            `Days Served: ${this.player.prisonDays || 0}`,
+            `Sentence: ${this.player.sentence || 0} years`,
+            `Tattoos: ${this.player.tattoos ? this.player.tattoos.length : 0}`,
+            `Gang: ${this.player.currentGang || 'None'}`,
+            `Arrests: ${this.player.arrests || 0}`,
+            `Escapes: ${this.player.successfulEscapes || 0}`
+        ];
+
+        console.log(stats.join('\n'));
+        alert(stats.join('\n'));
+    }
+
+    // Debug: Add random contraband
+    testAddContraband() {
+        if (!this.player) {
+            this.showMessage('Initialize player first', 2000);
+            return;
+        }
+        if (!this.player.contraband) {
+            this.player.contraband = {
+                cigarettes: 0,
+                escapeTools: 0,
+                weapon: 0,
+                drugs: 0
+            };
+        }
+
+        const types = ['cigarettes', 'escapeTools', 'weapon', 'drugs'];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        const amount = randomType === 'cigarettes' ? Math.floor(Math.random() * 20) + 10 : 1;
+
+        this.player.contraband[randomType] = (this.player.contraband[randomType] || 0) + amount;
+        this.showMessage(`Added ${amount}x ${randomType} contraband!`, 2000);
+        this.saveGame();
+    }
+
+    // Debug: Preview all voice types
+    testVoicePreviews() {
+        const voices = ['deep', 'anxious', 'monotone', 'enthusiastic'];
+        let index = 0;
+
+        const playNext = () => {
+            if (index >= voices.length) {
+                this.showMessage('All voice previews complete!', 2000);
+                return;
+            }
+
+            const voiceType = voices[index];
+            this.showMessage(`Preview: ${voiceType.toUpperCase()}`, 1500);
+            this.soundSystem.playVoicePreview(voiceType);
+
+            index++;
+            setTimeout(playNext, 2000);
+        };
+
+        playNext();
+    }
+
+    // Debug: Test API key
+    testApiKey() {
+        if (this.apiKeyManager && this.apiKeyManager.hasKey()) {
+            this.showMessage('API Key is set! Testing with simple prompt...', 3000);
+            this.apiKeyManager.generateDynamicCharge('test').then(charge => {
+                this.showMessage(`API Test Success: ${charge.substring(0, 50)}...`, 4000);
+            }).catch(err => {
+                this.showMessage(`API Test Failed: ${err.message}`, 4000);
+            });
+        } else {
+            this.showMessage('No API key set. Using default charges.', 2000);
         }
     }
 

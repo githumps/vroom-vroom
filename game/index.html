@@ -2024,67 +2024,175 @@
             <h2 style="color: #ff0;">⚙️ TESTING / DEBUG MENU ⚙️</h2>
             <p style="margin: 20px; font-size: 1em; color: #888;">Type "TEST" on main menu to access</p>
 
-            <div style="max-width: 900px; margin: 0 auto;">
+            <div style="max-width: 1200px; margin: 0 auto;">
+
+                <!-- CORE GAMEPLAY SYSTEMS -->
                 <div class="form-container">
-                    <h3 style="margin-bottom: 20px; color: #ff0;">JUMP TO SYSTEM</h3>
+                    <h3 style="margin-bottom: 20px; color: #ff0;">📍 CORE GAMEPLAY</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="prison-activity" onclick="game.testJumpTo('driving')">
+                            <h3>DRIVING MODE</h3>
+                            <p>Test the 3D driving system</p>
+                        </div>
 
-                    <div class="prison-activity" onclick="game.testJumpTo('tattoo')">
-                        <h3>TATTOO SYSTEM</h3>
-                        <p>Test the prison tattoo drawing system</p>
-                    </div>
+                        <div class="prison-activity" onclick="game.testJumpTo('courtroom')">
+                            <h3>COURTROOM</h3>
+                            <p>Test the paperwork simulator</p>
+                        </div>
 
-                    <div class="prison-activity" onclick="game.testJumpTo('gang')">
-                        <h3>GANG SYSTEM</h3>
-                        <p>Test gang alliances and reputation</p>
-                    </div>
+                        <div class="prison-activity" onclick="game.testJumpTo('prison')">
+                            <h3>PRISON MENU</h3>
+                            <p>Jump to main prison menu</p>
+                        </div>
 
-                    <div class="prison-activity" onclick="game.testJumpTo('escape')">
-                        <h3>ESCAPE SYSTEM</h3>
-                        <p>Test escape planning and execution</p>
-                    </div>
-
-                    <div class="prison-activity" onclick="game.testJumpTo('weights')">
-                        <h3>WEIGHT LIFTING</h3>
-                        <p>Test the weight lifting simulator</p>
-                    </div>
-
-                    <div class="prison-activity" onclick="game.testJumpTo('eating')">
-                        <h3>EATING SIMULATOR</h3>
-                        <p>Test the meal eating system</p>
-                    </div>
-
-                    <div class="prison-activity" onclick="game.testJumpTo('library')">
-                        <h3>LIBRARY SYSTEM</h3>
-                        <p>Test book reading and intelligence</p>
-                    </div>
-
-                    <div class="prison-activity" onclick="game.testJumpTo('commissary')">
-                        <h3>COMMISSARY SHOP</h3>
-                        <p>Test the prison shop system</p>
-                    </div>
-
-                    <div class="prison-activity" onclick="game.testJumpTo('prison')">
-                        <h3>PRISON MENU</h3>
-                        <p>Jump to main prison menu</p>
-                    </div>
-
-                    <div class="prison-activity" onclick="game.testJumpTo('courtroom')">
-                        <h3>COURTROOM</h3>
-                        <p>Test the paperwork simulator</p>
-                    </div>
-
-                    <div class="prison-activity" onclick="game.testJumpTo('driving')">
-                        <h3>DRIVING MODE</h3>
-                        <p>Test the 3D driving system</p>
+                        <div class="prison-activity" onclick="game.testJumpTo('character')">
+                            <h3>CHARACTER CREATION</h3>
+                            <p>Test car selection & voice preview</p>
+                        </div>
                     </div>
                 </div>
 
+                <!-- PRISON ACTIVITIES -->
                 <div class="form-container" style="margin-top: 20px;">
-                    <h3 style="margin-bottom: 15px; color: #ff0;">DEBUG TOOLS</h3>
-                    <button onclick="game.testAddMoney(100)">Add 100 Credits</button>
-                    <button onclick="game.testAddCigarettes(20)">Add 20 Cigarettes</button>
-                    <button onclick="game.testMaxGangRep()">Max All Gang Reps</button>
-                    <button onclick="game.testResetProgress()">Reset All Progress</button>
+                    <h3 style="margin-bottom: 20px; color: #ff0;">🏋️ PRISON ACTIVITIES</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="prison-activity" onclick="game.testJumpTo('weights')">
+                            <h3>WEIGHT LIFTING</h3>
+                            <p>Test the weight lifting simulator</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('eating')">
+                            <h3>EATING SIMULATOR</h3>
+                            <p>Test the meal eating system</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('library')">
+                            <h3>LIBRARY SYSTEM</h3>
+                            <p>Test book reading and intelligence</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('commissary')">
+                            <h3>COMMISSARY SHOP</h3>
+                            <p>Test the prison shop system</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOCIAL SYSTEMS -->
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 20px; color: #ff0;">💬 SOCIAL SYSTEMS</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="prison-activity" onclick="game.testJumpTo('gang')">
+                            <h3>GANG SYSTEM</h3>
+                            <p>Test gang alliances and reputation</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('cellmate')">
+                            <h3>CELLMATE CONVERSATION</h3>
+                            <p>Test cellmate dialogue system</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('letter')">
+                            <h3>LETTER WRITING</h3>
+                            <p>Test the letter writing system</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SPECIAL SYSTEMS -->
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 20px; color: #ff0;">⭐ SPECIAL SYSTEMS</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="prison-activity" onclick="game.testJumpTo('tattoo')">
+                            <h3>TATTOO SYSTEM</h3>
+                            <p>Test the prison tattoo drawing system</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('manicure')">
+                            <h3>GUARD MANICURE (VISUAL)</h3>
+                            <p>Test nail cleaning mini-game & favor tokens</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('favors')">
+                            <h3>GUARD FAVORS MENU</h3>
+                            <p>Test spending favor tokens for privileges</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('escape')">
+                            <h3>ESCAPE SYSTEM</h3>
+                            <p>Test escape planning and execution</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAVE SYSTEM -->
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 20px; color: #ff0;">💾 SAVE SYSTEM</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="prison-activity" onclick="game.testJumpTo('saveExport')">
+                            <h3>SAVE CODE EXPORT</h3>
+                            <p>Test save code generation</p>
+                        </div>
+
+                        <div class="prison-activity" onclick="game.testJumpTo('saveImport')">
+                            <h3>SAVE CODE IMPORT</h3>
+                            <p>Test save code loading</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DEBUG TOOLS: RESOURCES -->
+                <div class="form-container" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #0f0;">🛠️ RESOURCES & CURRENCY</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <button onclick="game.testAddMoney(100)">Add 100 Credits</button>
+                        <button onclick="game.testAddCigarettes(20)">Add 20 Cigarettes</button>
+                        <button onclick="game.testAddGoodBehavior(20)">Add 20 Good Behavior</button>
+                        <button onclick="game.testAddFavorTokens(3)">Add 3 Favor Tokens</button>
+                    </div>
+                </div>
+
+                <!-- DEBUG TOOLS: PHYSICAL STATS -->
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #0f0;">💪 PHYSICAL STATS</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <button onclick="game.testSetStrength(100)">Max Strength (100)</button>
+                        <button onclick="game.testSetIntelligence(100)">Max Intelligence (100)</button>
+                        <button onclick="game.testSetHunger(0)">Reset Hunger (0)</button>
+                        <button onclick="game.testMaxAllStats()">Max All Stats</button>
+                    </div>
+                </div>
+
+                <!-- DEBUG TOOLS: TIME CONTROLS -->
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #0f0;">⏰ TIME CONTROLS</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <button onclick="game.testAddDays(10)">Add 10 Days Served</button>
+                        <button onclick="game.testSkipDays(1)">Skip 1 Day Forward</button>
+                        <button onclick="game.testReduceSentence(1)">Reduce Sentence 1 Year</button>
+                        <button onclick="game.testSetSentence(1)">Set Sentence to 1 Year</button>
+                    </div>
+                </div>
+
+                <!-- DEBUG TOOLS: SPECIAL TESTING -->
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #0f0;">🧪 SPECIAL TESTING</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <button onclick="game.testInfectTattoo()">Infect Random Tattoo</button>
+                        <button onclick="game.testShowStats()">View All Player Stats</button>
+                        <button onclick="game.testMaxGangRep()">Max All Gang Reps</button>
+                        <button onclick="game.testAddContraband()">Add Random Contraband</button>
+                    </div>
+                </div>
+
+                <!-- DEBUG TOOLS: SYSTEM CONTROLS -->
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #f00;">⚠️ SYSTEM CONTROLS</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <button onclick="game.testVoicePreviews()">Preview All Voices</button>
+                        <button onclick="game.testApiKey()">Test Gemini API Key</button>
+                        <button onclick="game.testResetProgress()">Reset All Progress</button>
+                    </div>
                 </div>
 
                 <button onclick="game.showScreen('mainMenu')" style="margin-top: 30px;">BACK TO MAIN MENU</button>
