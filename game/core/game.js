@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.6.0';
+        this.VERSION = '1.6.1';
 
         this.scene = null;
         this.camera = null;
@@ -2316,9 +2316,9 @@ class VroomVroomGame {
             this.initTattooSystem();
             return; // Don't add prison day yet, handled in tattoo completion
         } else if (activity === 'manicure') {
-            this.initManicureSystem();
-            this.manicureSystem.startManicure();
-            return; // Don't add prison day yet, handled in manicure completion
+            // Use new nail art decoration system
+            this.showScreen('nailArtGuardSelection');
+            return; // Don't add prison day yet, handled in nail art completion
         } else if (activity === 'gang') {
             this.showGangSystem();
             return; // Don't show generic message for gang system
