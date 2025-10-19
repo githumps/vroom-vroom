@@ -2614,11 +2614,12 @@
     <script src="systems/gemini-events.js"></script>
     <script src="systems/ace-attorney-courtroom.js"></script>
     <script src="systems/character-preview.js"></script>
-    <!-- Nail Art System (Isometric Pixel Art) -->
+    <!-- Nail Art System (Isometric Pixel Art) - Classes/Helpers first -->
     <script src="rendering/nail-art-palette.js"></script>
     <script src="rendering/nail-art-effects.js"></script>
     <script src="rendering/nail-art-renderer.js"></script>
-    <script src="systems/nail-art-integration.js"></script>
     <script src="core/game.js"></script>
+    <!-- Nail Art Integration (extends VroomVroomGame.prototype - must load AFTER game.js) -->
+    <script src="systems/nail-art-integration.js"></script>
 </body>
 </html>
