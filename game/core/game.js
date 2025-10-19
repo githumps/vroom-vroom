@@ -660,6 +660,9 @@ class VroomVroomGame {
         this.corruptionTracker = new CorruptionTracker();
         this.timedEvents = new TimedEventSystem(this.geminiEvents);
 
+        // Initialize Ace Attorney Courtroom System
+        this.aceCourtroom = null; // Lazy initialization
+
         // Initialize Tattoo System (lazy initialization)
         this.tattooSystem = null;
 
@@ -1803,6 +1806,11 @@ class VroomVroomGame {
     }
 
     async setupCourtroom() {
+        // Initialize Ace Attorney Courtroom (lazy)
+        if (!this.aceCourtroom) {
+            this.aceCourtroom = new AceAttorneyCourtroom('judgeCanvas', 'aceDialogueContainer');
+        }
+
         // Play cop mumbling sound (Sims-style gibberish)
         this.soundSystem.playCopMumbling();
 
@@ -1857,8 +1865,13 @@ class VroomVroomGame {
         document.getElementById('moodLevel').textContent = newMood;
         document.getElementById('patienceLevel').textContent = this.judge.patience;
 
-        // Show judge dialogue box
-        document.getElementById('judgeDialogue').style.display = 'block';
+        // Show Ace Attorney intro first
+        this.aceCourtroom.start(this.judge.patience);
+        this.aceCourtroom.showDialogue('JUDGE HARDCASTLE', response.text, () => {
+            this.aceCourtroom.stop();
+            // Show judge dialogue box after Ace Attorney scene
+            document.getElementById('judgeDialogue').style.display = 'block';
+        });
 
         // Add listeners for form interactions to trigger judge commentary
         this.addJudgeCommentaryListeners();

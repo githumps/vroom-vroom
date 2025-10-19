@@ -55,13 +55,14 @@
             background: rgba(0, 0, 0, 0.95);
             padding: 40px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .screen.active {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         h1 {
@@ -1042,6 +1043,12 @@
 
         <!-- COURTROOM -->
         <div id="courtroom" class="screen">
+            <!-- Ace Attorney Judge Canvas -->
+            <canvas id="judgeCanvas" style="display: none; max-width: 100%; margin: 20px auto;"></canvas>
+
+            <!-- Ace Attorney Dialogue -->
+            <div id="aceDialogueContainer" style="display: none;"></div>
+
             <h2>PAPERWORK SIMULATOR 3000</h2>
             <p style="margin: 20px; font-size: 1.1em;">You have been pulled over. Please complete ALL forms in triplicate.</p>
 
@@ -2151,6 +2158,7 @@
     <script src="systems/guard-manicure.js"></script>
     <script src="systems/guard-manicure-visual.js"></script>
     <script src="systems/gemini-events.js"></script>
+    <script src="systems/ace-attorney-courtroom.js"></script>
     <script src="core/game.js"></script>
 </body>
 </html>
