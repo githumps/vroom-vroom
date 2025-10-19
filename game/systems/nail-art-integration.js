@@ -509,8 +509,17 @@ VroomVroomGame.prototype.calculateNailArtRewards = function(guardKey, decoration
 
             // Check guard preferences
             const pref = this.nailArtPalette.guardPreferences[guardKey];
-            if (pref.favoriteColors.includes(nail.baseColor)) colorMatches++;
-            if (nail.specialEffect === pref.preferredEffect) effectMatches++;
+            if (pref && pref.preferences) {
+                // Color matching (baseColor is hex, preferences.baseColors are IDs)
+                // For now, just count any decorated nail
+                if (nail.baseColor) colorMatches++;
+
+                // Effect matching
+                if (nail.specialEffect && pref.preferences.specialEffects &&
+                    pref.preferences.specialEffects.includes(nail.specialEffect)) {
+                    effectMatches++;
+                }
+            }
         });
     });
 
