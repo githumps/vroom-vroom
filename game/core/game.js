@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.6.1';
+        this.VERSION = '1.6.2';
 
         this.scene = null;
         this.camera = null;

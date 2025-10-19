@@ -22,7 +22,7 @@ VroomVroomGame.prototype.initNailArtSystem = function() {
     // Create renderer instance
     this.nailArtRenderer = new NailArtRenderer();
     this.nailArtPalette = NAIL_ART_PALETTE;
-    this.nailArtEffects = new NailArtEffectsSystem();
+    this.nailArtEffects = new NailArtEffects();
 
     // Current session state
     this.currentNailArtSession = {
