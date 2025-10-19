@@ -81,8 +81,8 @@ class SoundSystem {
         sirenOsc2.frequency.setValueAtTime(800, now + 0.9);
 
         sirenGain.gain.setValueAtTime(0, now);
-        sirenGain.gain.linearRampToValueAtTime(0.3, now + 0.1);
-        sirenGain.gain.setValueAtTime(0.3, now + 1.2);
+        sirenGain.gain.linearRampToValueAtTime(0.35, now + 0.1);
+        sirenGain.gain.setValueAtTime(0.35, now + 1.2);
         sirenGain.gain.exponentialRampToValueAtTime(0.01, now + 1.8);
 
         sirenOsc1.connect(sirenGain);
@@ -124,7 +124,7 @@ class SoundSystem {
         clickFilter.Q.value = 10;
 
         const clickGain = this.audioContext.createGain();
-        clickGain.gain.setValueAtTime(0.5, now);
+        clickGain.gain.setValueAtTime(0.35, now);
         clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
 
         noise.connect(clickFilter);
@@ -168,8 +168,8 @@ class SoundSystem {
 
             // Envelope for syllable
             voiceGain.gain.setValueAtTime(0, startTime);
-            voiceGain.gain.linearRampToValueAtTime(0.15, startTime + 0.02);
-            voiceGain.gain.setValueAtTime(0.15, startTime + syllableDuration - 0.02);
+            voiceGain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);
+            voiceGain.gain.setValueAtTime(0.3, startTime + syllableDuration - 0.02);
             voiceGain.gain.linearRampToValueAtTime(0, startTime + syllableDuration);
 
             voice.connect(voiceFilter);
@@ -199,7 +199,7 @@ class SoundSystem {
         gavelFilter.type = 'lowpass';
         gavelFilter.frequency.value = 200;
 
-        gavelGain.gain.setValueAtTime(0.6, now);
+        gavelGain.gain.setValueAtTime(0.9, now);
         gavelGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
 
         gavelOsc.connect(gavelFilter);
@@ -210,7 +210,7 @@ class SoundSystem {
         gavelOsc.stop(now + 0.3);
 
         // Add impact noise
-        this.playImpactNoise(now, 0.3);
+        this.playImpactNoise(now, 0.45);
     }
 
     // PRISON DOOR CLANG - Metal door sound
@@ -239,7 +239,7 @@ class SoundSystem {
         clang3.frequency.setValueAtTime(200, now);
         clang3.frequency.exponentialRampToValueAtTime(150, now + 0.5);
 
-        clangGain.gain.setValueAtTime(0.4, now);
+        clangGain.gain.setValueAtTime(0.3, now);
         clangGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
 
         clang1.connect(clangGain);
@@ -255,7 +255,7 @@ class SoundSystem {
         clang3.stop(now + 0.8);
 
         // Add impact noise for door slam
-        this.playImpactNoise(now, 0.5);
+        this.playImpactNoise(now, 0.35);
     }
 
     // Helper: Impact noise for thuds and clangs
@@ -312,7 +312,7 @@ class SoundSystem {
                 decay: 0.4,
                 sustain: 0.3,
                 release: 0.6,
-                gain: 0.25
+                gain: 0.6 // Increased from 0.25
             },
             high: {
                 // High and Anxious: High frequency, rapid, wavering/vibrato
@@ -330,7 +330,7 @@ class SoundSystem {
                 decay: 0.1,
                 sustain: 0.4,
                 release: 0.25,
-                gain: 0.2
+                gain: 0.5 // Increased from 0.2
             },
             monotone: {
                 // Monotone Bureaucrat: Mid frequency, flat, no variation
@@ -346,7 +346,7 @@ class SoundSystem {
                 decay: 0.05,
                 sustain: 0.7,
                 release: 0.2,
-                gain: 0.22
+                gain: 0.55 // Increased from 0.22
             },
             enthusiastic: {
                 // Disturbingly Enthusiastic: Mid-high, ascending, energetic
@@ -364,7 +364,7 @@ class SoundSystem {
                 decay: 0.08,
                 sustain: 0.5,
                 release: 0.3,
-                gain: 0.23
+                gain: 0.58 // Increased from 0.23
             }
         };
 

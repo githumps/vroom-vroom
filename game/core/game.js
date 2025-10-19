@@ -576,12 +576,26 @@ class VroomVroomGame {
         this.car = null;
         this.policecar = null;
         this.carPreview = null;
+        this.characterPreview = null; // Character preview renderer
         this.gameState = 'menu'; // menu, character, driving, courtroom, prison
         this.player = {
             name: '',
             skinTone: 2,
             height: 175,
             voice: 'deep',
+
+            // Appearance (BG3/Cyberpunk-style)
+            faceShape: 'oval',
+            hairStyle: 'short',
+            hairColor: '#3d2f1f',
+            eyeColor: '#4a5a6b',
+            facialFeature: 'clean-shaven',
+            scar: 'none',
+            bodyType: 'average',
+
+            // Background/Origin
+            origin: 'taxi-driver',
+            archetype: 'cautious',
             selectedCar: {
                 model: 'beater',
                 color: 0x8B7355  // rust brown default
@@ -739,6 +753,13 @@ class VroomVroomGame {
         // Update height display
         document.getElementById('height').addEventListener('input', (e) => {
             document.getElementById('heightValue').textContent = e.target.value + 'cm';
+        });
+
+        // Update character preview when skin tone changes
+        document.getElementById('skinTone').addEventListener('input', () => {
+            if (this.characterPreview) {
+                this.updateCharacterPreview();
+            }
         });
 
         // Show API key prompt on first load (if not skipped)
@@ -1336,6 +1357,7 @@ class VroomVroomGame {
     startNewGame() {
         this.showScreen('characterCreation');
         this.initializeCarPreview();
+        this.initializeCharacterPreview();
     }
 
     loadGame() {
@@ -1521,10 +1543,30 @@ class VroomVroomGame {
         this.player.height = parseInt(document.getElementById('height').value);
         this.player.voice = document.getElementById('voice').value;
 
-        // Clean up car preview renderer
+        // Save appearance customization
+        this.player.faceShape = document.getElementById('faceShape').value;
+        this.player.hairStyle = document.getElementById('hairStyle').value;
+        this.player.hairColor = document.getElementById('hairColor').value;
+        this.player.eyeColor = document.getElementById('eyeColor').value;
+        this.player.facialFeature = document.getElementById('facialFeature').value;
+        this.player.scar = document.getElementById('scar').value;
+        this.player.bodyType = document.getElementById('bodyType').value;
+
+        // Save background and archetype
+        this.player.origin = document.getElementById('origin').value;
+        this.player.archetype = document.getElementById('archetype').value;
+
+        // Apply origin bonuses
+        this.applyOriginBonuses();
+
+        // Clean up preview renderers
         if (this.carPreview) {
             this.carPreview.destroy();
             this.carPreview = null;
+        }
+        if (this.characterPreview) {
+            this.characterPreview.destroy();
+            this.characterPreview = null;
         }
 
         this.showMessage('Welcome, ' + name + '. Get ready to drive.', 2000);
@@ -1535,6 +1577,87 @@ class VroomVroomGame {
                 this.startDriving();
             });
         }, 2000);
+    }
+
+    // Apply stat bonuses from origin selection
+    applyOriginBonuses() {
+        const origins = CharacterOrigins.getOrigins();
+        const origin = origins[this.player.origin];
+
+        if (origin && origin.stats) {
+            if (origin.stats.intelligence) this.player.intelligence += origin.stats.intelligence;
+            if (origin.stats.strength) this.player.strength += origin.stats.strength;
+            if (origin.stats.money) this.player.money += origin.stats.money;
+            if (origin.stats.goodBehavior) this.player.goodBehavior += origin.stats.goodBehavior;
+            if (origin.stats.patience) {
+                // Patience affects starting Judge mood (if we add that later)
+            }
+        }
+    }
+
+    // Update character preview when appearance changes
+    updateCharacterPreview() {
+        if (!this.characterPreview) {
+            this.characterPreview = new CharacterPreviewRenderer('characterPreviewCanvas');
+        }
+
+        // Get current values from form
+        const characterData = {
+            faceShape: document.getElementById('faceShape').value,
+            skinTone: parseInt(document.getElementById('skinTone').value),
+            hairStyle: document.getElementById('hairStyle').value,
+            hairColor: document.getElementById('hairColor').value,
+            eyeColor: document.getElementById('eyeColor').value,
+            facialFeature: document.getElementById('facialFeature').value,
+            scar: document.getElementById('scar').value,
+            bodyType: document.getElementById('bodyType').value
+        };
+
+        this.characterPreview.updateCharacter(characterData);
+    }
+
+    // Update origin description display
+    updateOriginDisplay() {
+        const origins = CharacterOrigins.getOrigins();
+        const selectedOrigin = document.getElementById('origin').value;
+        const origin = origins[selectedOrigin];
+
+        const descDiv = document.getElementById('originDescription');
+        if (origin && descDiv) {
+            let bonusText = '';
+            if (origin.stats) {
+                const bonuses = [];
+                Object.keys(origin.stats).forEach(stat => {
+                    const value = origin.stats[stat];
+                    const sign = value > 0 ? '+' : '';
+                    bonuses.push(`${sign}${value} ${stat}`);
+                });
+                bonusText = '<strong>Stats:</strong> ' + bonuses.join(', ') + '<br>';
+            }
+
+            descDiv.innerHTML = `
+                <div style="color: #0f0; font-weight: bold; margin-bottom: 8px;">${origin.name}</div>
+                <div style="color: #ccc; margin-bottom: 10px;">${origin.desc}</div>
+                ${bonusText}
+                <div style="color: #ff0; font-size: 0.85em; margin-top: 10px;"><strong>Perk:</strong> ${origin.perk}</div>
+            `;
+        }
+    }
+
+    // Update archetype description display
+    updateArchetypeDisplay() {
+        const archetypes = CharacterArchetypes.getArchetypes();
+        const selectedArchetype = document.getElementById('archetype').value;
+        const archetype = archetypes[selectedArchetype];
+
+        const descDiv = document.getElementById('archetypeDescription');
+        if (archetype && descDiv) {
+            descDiv.innerHTML = `
+                <div style="color: #0f0; font-weight: bold; margin-bottom: 8px;">${archetype.name}</div>
+                <div style="color: #ccc; margin-bottom: 10px;">${archetype.desc}</div>
+                <div style="color: #ff0; font-size: 0.85em;"><strong>Effect:</strong> ${archetype.effect}</div>
+            `;
+        }
     }
 
     // Preview selected voice personality
@@ -1649,6 +1772,15 @@ class VroomVroomGame {
             const colors = ColorPalette.getColors();
             document.getElementById('carDescription').innerHTML =
                 `<strong>${models.beater.name}</strong> - ${colors.rustbrown.name}<br>${colors.rustbrown.desc}`;
+        }, 100);
+    }
+
+    initializeCharacterPreview() {
+        // Initialize character preview renderer
+        setTimeout(() => {
+            this.updateCharacterPreview();
+            this.updateOriginDisplay();
+            this.updateArchetypeDisplay();
         }, 100);
     }
 
@@ -1865,11 +1997,12 @@ class VroomVroomGame {
         document.getElementById('moodLevel').textContent = newMood;
         document.getElementById('patienceLevel').textContent = this.judge.patience;
 
-        // Show Ace Attorney intro first
+        // Show Ace Attorney courtroom (stays visible during entire courtroom session)
         this.aceCourtroom.start(this.judge.patience);
         this.aceCourtroom.showDialogue('JUDGE HARDCASTLE', response.text, () => {
-            this.aceCourtroom.stop();
-            // Show judge dialogue box after Ace Attorney scene
+            // Don't stop the ace courtroom - keep judge visible!
+            // Just hide the dialogue box and show the form interface
+            this.aceCourtroom.hideDialogue();
             document.getElementById('judgeDialogue').style.display = 'block';
         });
 
@@ -2045,6 +2178,12 @@ class VroomVroomGame {
 
     startPrison() {
         this.gameState = 'prison';
+
+        // Stop Ace Attorney courtroom if it's running
+        if (this.aceCourtroom) {
+            this.aceCourtroom.stop();
+        }
+
         this.showScreen('prisonMenu');
         document.getElementById('sentenceLength').textContent = this.player.sentence;
         document.getElementById('timeServed').textContent = this.player.prisonDays;

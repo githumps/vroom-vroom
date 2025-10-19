@@ -105,70 +105,99 @@ class JudgeSpriteRenderer {
     drawJudge() {
         const state = this.states[this.currentState];
         const centerX = this.width / 2;
-        const baseY = this.height * 0.4 + this.breathing;
+        const baseY = this.height * 0.3 + this.breathing;
 
-        // Head (large circle)
-        const headRadius = 120;
-        this.ctx.fillStyle = state.color;
-        this.ctx.beginPath();
-        this.ctx.arc(centerX, baseY, headRadius, 0, Math.PI * 2);
-        this.ctx.fill();
-
-        // Facial features
-        this.drawFace(centerX, baseY, headRadius);
-
-        // Body (shoulders/robe)
-        this.ctx.fillStyle = '#2a2015'; // Dark brown robe
-        this.ctx.fillRect(centerX - 150, baseY + 80, 300, 200);
-
-        // Judge's desk
+        // Judge's desk (draw first, behind everything)
         this.ctx.fillStyle = '#3d2f1f'; // Mahogany
-        this.ctx.fillRect(0, baseY + 250, this.width, 100);
+        this.ctx.fillRect(0, baseY + 280, this.width, 120);
+        // Desk front panel
+        this.ctx.fillStyle = '#2a2015';
+        this.ctx.fillRect(0, baseY + 280, this.width, 20);
+
+        // Body (judge's robe) - black judicial robe
+        this.ctx.fillStyle = '#0a0a0a';
+        this.ctx.fillRect(centerX - 140, baseY + 100, 280, 180);
+        // Robe collar (white)
+        this.ctx.fillStyle = '#f5f5f5';
+        this.ctx.fillRect(centerX - 80, baseY + 100, 160, 30);
+
+        // Neck
+        this.ctx.fillStyle = state.color;
+        this.ctx.fillRect(centerX - 30, baseY + 70, 60, 50);
+
+        // Head - pixel art style (rectangular, not circle)
+        const headWidth = 110;
+        const headHeight = 130;
+        this.ctx.fillStyle = state.color;
+        this.ctx.fillRect(centerX - headWidth/2, baseY - headHeight + 30, headWidth, headHeight);
+
+        // Judge's wig (white/grey) - iconic judicial wig
+        this.ctx.fillStyle = '#e8e8e8';
+        // Top of wig
+        this.ctx.fillRect(centerX - headWidth/2 - 10, baseY - headHeight + 20, headWidth + 20, 40);
+        // Wig curls on sides
+        this.ctx.fillRect(centerX - headWidth/2 - 15, baseY - headHeight + 60, 20, 60);
+        this.ctx.fillRect(centerX + headWidth/2 - 5, baseY - headHeight + 60, 20, 60);
+
+        // Facial features (pixel art style)
+        this.drawFace(centerX, baseY, headWidth, headHeight);
     }
 
-    drawFace(x, y, radius) {
+    drawFace(x, y, headWidth, headHeight) {
         const state = this.currentState;
 
-        // Eyes
-        const eyeY = y - 20;
-        const eyeSpacing = 40;
-        const eyeSize = this.blinking ? 2 : 15;
+        // Pixel art style - use rectangles, not curves
+        const eyeY = y - headHeight/2 + 20;
+        const eyeSpacing = 25;
+
+        // Eyes (pixel art rectangles)
+        this.ctx.fillStyle = '#000';
+        if (this.blinking) {
+            // Closed eyes (thin horizontal line)
+            this.ctx.fillRect(x - eyeSpacing - 8, eyeY, 16, 3);
+            this.ctx.fillRect(x + eyeSpacing - 8, eyeY, 16, 3);
+        } else {
+            // Open eyes (rectangles)
+            this.ctx.fillRect(x - eyeSpacing - 8, eyeY - 8, 16, 16);
+            this.ctx.fillRect(x + eyeSpacing - 8, eyeY - 8, 16, 16);
+
+            // Eye whites (smaller rectangles inside)
+            this.ctx.fillStyle = '#fff';
+            this.ctx.fillRect(x - eyeSpacing - 4, eyeY - 4, 6, 6);
+            this.ctx.fillRect(x + eyeSpacing - 4, eyeY - 4, 6, 6);
+        }
+
+        // Eyebrows (pixel art, angle based on anger)
+        this.ctx.fillStyle = '#000';
+        const browY = eyeY - 18;
+        const browAngle = Math.floor((this.currentPatience / 100) * 8); // 0-8 pixel offset
+
+        // Left eyebrow (angry = higher on inside)
+        this.ctx.fillRect(x - eyeSpacing - 12, browY - browAngle, 24, 4);
+
+        // Right eyebrow (angry = higher on inside)
+        this.ctx.fillRect(x + eyeSpacing - 12, browY - browAngle, 24, 4);
+
+        // Nose (simple pixel line)
+        this.ctx.fillRect(x - 2, eyeY + 12, 4, 12);
+
+        // Mouth/frown (deeper frown = more anger)
+        const mouthY = y + 30;
+        const frown = Math.floor((this.currentPatience / 100) * 15); // 0-15 pixel droop
 
         this.ctx.fillStyle = '#000';
-        // Left eye
-        this.ctx.beginPath();
-        this.ctx.ellipse(x - eyeSpacing, eyeY, 10, eyeSize, 0, 0, Math.PI * 2);
-        this.ctx.fill();
-        // Right eye
-        this.ctx.beginPath();
-        this.ctx.ellipse(x + eyeSpacing, eyeY, 10, eyeSize, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        // Horizontal mouth line
+        this.ctx.fillRect(x - 20, mouthY, 40, 4);
+        // Droop on ends for frown
+        if (frown > 0) {
+            this.ctx.fillRect(x - 20, mouthY, 4, frown);
+            this.ctx.fillRect(x + 16, mouthY, 4, frown);
+        }
 
-        // Eyebrows (angle based on anger)
-        const browAngle = this.currentPatience / 100 * 0.4;
-        this.ctx.strokeStyle = '#000';
-        this.ctx.lineWidth = 4;
-
-        // Left eyebrow
-        this.ctx.beginPath();
-        this.ctx.moveTo(x - eyeSpacing - 20, eyeY - 30 + browAngle * 20);
-        this.ctx.lineTo(x - eyeSpacing + 20, eyeY - 30 - browAngle * 10);
-        this.ctx.stroke();
-
-        // Right eyebrow
-        this.ctx.beginPath();
-        this.ctx.moveTo(x + eyeSpacing - 20, eyeY - 30 - browAngle * 10);
-        this.ctx.lineTo(x + eyeSpacing + 20, eyeY - 30 + browAngle * 20);
-        this.ctx.stroke();
-
-        // Mouth (frown deepens with anger)
-        const mouthY = y + 40;
-        const frown = this.currentPatience / 100 * 30;
-
-        this.ctx.beginPath();
-        this.ctx.moveTo(x - 30, mouthY);
-        this.ctx.quadraticCurveTo(x, mouthY + frown, x + 30, mouthY);
-        this.ctx.stroke();
+        // Mustache (pixel art - optional, makes him look more judge-like)
+        this.ctx.fillStyle = '#4a4a4a';
+        this.ctx.fillRect(x - 25, mouthY - 8, 20, 6);
+        this.ctx.fillRect(x + 5, mouthY - 8, 20, 6);
     }
 
     drawVeins(count, color) {

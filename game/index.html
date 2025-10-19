@@ -898,6 +898,141 @@
                     </button>
                 </div>
 
+                <hr style="border-color: #0f0; margin: 30px 0;">
+                <h3 style="color: #0f0; text-align: center; margin: 20px 0;">APPEARANCE</h3>
+
+                <div class="form-field">
+                    <label>Face Shape:</label>
+                    <select id="faceShape" onchange="game.updateCharacterPreview()">
+                        <option value="oval">Oval</option>
+                        <option value="angular">Angular</option>
+                        <option value="round">Round</option>
+                        <option value="square">Square</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Hair Style:</label>
+                    <select id="hairStyle" onchange="game.updateCharacterPreview()">
+                        <option value="short">Short</option>
+                        <option value="buzzcut">Buzzcut</option>
+                        <option value="medium">Medium</option>
+                        <option value="long">Long</option>
+                        <option value="bald">Bald</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Hair Color:</label>
+                    <select id="hairColor" onchange="game.updateCharacterPreview()">
+                        <option value="#3d2f1f">Dark Brown</option>
+                        <option value="#000000">Black</option>
+                        <option value="#6b4423">Brown</option>
+                        <option value="#b5651d">Light Brown</option>
+                        <option value="#e9c2a3">Blonde</option>
+                        <option value="#dc143c">Red</option>
+                        <option value="#808080">Grey</option>
+                        <option value="#ffffff">White</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Eye Color:</label>
+                    <select id="eyeColor" onchange="game.updateCharacterPreview()">
+                        <option value="#4a5a6b">Blue</option>
+                        <option value="#3d2f1f">Brown</option>
+                        <option value="#5a6b4a">Green</option>
+                        <option value="#808080">Grey</option>
+                        <option value="#1a1612">Black</option>
+                        <option value="#6b8e23">Hazel</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Facial Features:</label>
+                    <select id="facialFeature" onchange="game.updateCharacterPreview()">
+                        <option value="clean-shaven">Clean Shaven</option>
+                        <option value="stubble">Stubble</option>
+                        <option value="goatee">Goatee</option>
+                        <option value="full-beard">Full Beard</option>
+                        <option value="makeup">Makeup</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Scars:</label>
+                    <select id="scar" onchange="game.updateCharacterPreview()">
+                        <option value="none">None</option>
+                        <option value="eye-scar">Eye Scar</option>
+                        <option value="cheek-scar">Cheek Scar</option>
+                        <option value="forehead-scar">Forehead Scar</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Body Type:</label>
+                    <select id="bodyType" onchange="game.updateCharacterPreview()">
+                        <option value="average">Average</option>
+                        <option value="thin">Thin</option>
+                        <option value="muscular">Muscular</option>
+                        <option value="heavy">Heavy</option>
+                    </select>
+                </div>
+
+                <!-- Character Preview Canvas -->
+                <div class="form-field">
+                    <label>Your Character:</label>
+                    <div style="text-align: center; margin: 15px 0;">
+                        <canvas id="characterPreviewCanvas" width="400" height="500"
+                                style="border: 2px solid #0f0; background: #000; max-width: 100%;"></canvas>
+                        <p style="font-size: 0.85em; color: #888; margin-top: 10px; font-style: italic;">
+                            This is you. In prison orange. Get used to it.
+                        </p>
+                    </div>
+                </div>
+
+                <hr style="border-color: #0f0; margin: 30px 0;">
+                <h3 style="color: #0f0; text-align: center; margin: 20px 0;">BACKGROUND</h3>
+
+                <div class="form-field">
+                    <label>Origin:</label>
+                    <p style="font-size: 0.9em; color: #888; margin: 10px 0;">
+                        Who were you before everything went wrong?
+                    </p>
+                    <select id="origin" onchange="game.updateOriginDisplay()">
+                        <option value="taxi-driver">Former Taxi Driver</option>
+                        <option value="street-racer">Underground Racer</option>
+                        <option value="delivery-driver">Corporate Delivery Driver</option>
+                        <option value="bureaucrat">Failed Bureaucrat</option>
+                        <option value="rebel">Born Rebel</option>
+                    </select>
+                    <div id="originDescription" style="margin-top: 15px; padding: 15px; border: 1px solid #0f0; background: rgba(0, 255, 0, 0.05); font-size: 0.9em; line-height: 1.6;">
+                        <!-- Origin description will be inserted here -->
+                    </div>
+                </div>
+
+                <hr style="border-color: #0f0; margin: 30px 0;">
+                <h3 style="color: #0f0; text-align: center; margin: 20px 0;">ARCHETYPE</h3>
+
+                <div class="form-field">
+                    <label>Playstyle:</label>
+                    <p style="font-size: 0.9em; color: #888; margin: 10px 0;">
+                        How do you approach this doomed existence?
+                    </p>
+                    <select id="archetype" onchange="game.updateArchetypeDisplay()">
+                        <option value="cautious">The Cautious One</option>
+                        <option value="reckless">The Reckless One</option>
+                        <option value="calculated">The Calculated One</option>
+                        <option value="desperate">The Desperate One</option>
+                    </select>
+                    <div id="archetypeDescription" style="margin-top: 15px; padding: 15px; border: 1px solid #0f0; background: rgba(0, 255, 0, 0.05); font-size: 0.9em; line-height: 1.6;">
+                        <!-- Archetype description will be inserted here -->
+                    </div>
+                </div>
+
+                <hr style="border-color: #0f0; margin: 30px 0;">
+                <h3 style="color: #0f0; text-align: center; margin: 20px 0;">YOUR RIDE</h3>
+
                 <!-- CAR SELECTION UI SECTION -->
                 <div class="form-field">
                     <label>Select Your Ride:</label>
@@ -2159,6 +2294,7 @@
     <script src="systems/guard-manicure-visual.js"></script>
     <script src="systems/gemini-events.js"></script>
     <script src="systems/ace-attorney-courtroom.js"></script>
+    <script src="systems/character-preview.js"></script>
     <script src="core/game.js"></script>
 </body>
 </html>
