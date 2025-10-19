@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '1.4.3';
+        this.VERSION = '1.6.0';
 
         this.scene = null;
         this.camera = null;
@@ -633,6 +633,8 @@ class VroomVroomGame {
             guardManicures: {},
             guardFavors: { ignoreViolation: false },
             goodBehavior: 100,
+            // Nail art system
+            guardHands: {},
             // Corruption system
             corruption: 0
         };
@@ -683,6 +685,12 @@ class VroomVroomGame {
         // Initialize Guard Manicure System (lazy initialization)
         this.manicureSystem = null;
 
+        // Initialize Nail Art System
+        this.nailArtRenderer = null;
+        this.nailArtEffects = null;
+        this.nailArtPalette = null;
+        this.currentNailArtSession = null;
+
         // Current escape route being viewed
         this.currentEscapeRoute = null;
 
@@ -690,6 +698,11 @@ class VroomVroomGame {
     }
 
     init() {
+        // Initialize Nail Art System
+        if (typeof this.initNailArtSystem === 'function') {
+            this.initNailArtSystem();
+        }
+
         // Display version number
         document.getElementById('gameVersion').textContent = this.VERSION;
 

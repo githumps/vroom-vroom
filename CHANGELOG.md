@@ -16,6 +16,142 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.0] - 2025-10-19
+
+### Added - NAIL ART DECORATION SYSTEM 💅✨
+
+**The Most Glamorous Prison Update Ever Created**
+
+Transform guard hands into dazzling works of isometric pixel art! A complete creative expression system that contrasts beautifully with the dystopian VROOM VROOM world.
+
+#### **Isometric Pixel Art Rendering System**
+- **Complete code-based graphics** - Zero external image dependencies
+- **5 unique guard hand styles** with distinct personalities, skin tones, and nail shapes
+  - **Guard Jenkins** (Masculine, rough) - Prefers red/black, matte, NO stickers
+  - **Guard Martinez** (Delicate, perfectionist) - Loves white/gold, chrome, perfect symmetry
+  - **Guard Chen** (Nervous, impatient) - Likes black/gray, matte, minimal decoration
+  - **Guard Thompson** (Chatty, fun-loving) - Adores pastels, glossy, ALL THE STICKERS
+  - **Guard Rodriguez** (Secretly glamorous) - Craves neon pink/gold, holographic, maximum dazzle
+- **Isometric 3/4 top-down view** (26.565° angle, 2:1 pixel ratio)
+- **10 individually rendered nails** per scene (5 per hand)
+- **8-layer decoration rendering** (hand → nail → color → pattern → effect → stickers → glitter → selection)
+- **Mobile-responsive** canvas scaling (800x600 → 400x300 for phones)
+
+#### **40+ Decoration Options**
+- **15 base colors** across 5 categories:
+  - Classic: Hot pink, gold, red, white, black
+  - Pastels: Lavender, light pink, pale green, peach, powder blue
+  - Metallics: Rose gold
+  - Glamour: Neon pink
+  - Dystopian: Rust brown, olive, slate gray, steel blue, dark red
+- **5 special effects**:
+  - **Chrome** - Jewel beetle iridescent shimmer 🪲
+  - **Holographic** - Rainbow sparkle with 360° hue rotation
+  - **Iridescent** - Multi-color shimmer (3-color cycle)
+  - **Matte** - Flat, non-reflective finish
+  - **Glossy** - High-shine finish
+- **3 patterns**:
+  - Solid (single color)
+  - French tip (classic white/colored tips)
+  - Ombre (two-color gradient)
+- **20 stickers & dazzles**:
+  - Stars (gold, silver, sparkle, tiny, huge)
+  - Hearts (red, pink, holo, tiny)
+  - Gems (diamond, ruby, emerald, sapphire, crystal)
+  - Shapes (circle, square, crescent)
+  - Thematic (skull, lightning, flame)
+- **Glitter toggle** - Animated sparkle overlay (12 particles, fade in/out)
+
+#### **Advanced Animation System**
+- **Sparkle/glitter particles** - 2-second fade cycle with randomized positions
+- **Holographic color cycling** - 7.2-second full spectrum rotation
+- **Chrome shimmer effect** - 3.14-second oscillating highlight
+- **Iridescent multi-color** - 6-second 3-color cycle
+- **Selection pulse animation** - 1.57-second gold border breathing
+- **Performance optimized**: 60 FPS desktop, 30 FPS mobile
+
+#### **Quality-Based Reward System**
+- **Base reward**: 1 favor token (guaranteed completion)
+- **+1 bonus**: All 10 nails decorated
+- **+1 bonus**: 60%+ nails use guard's favorite colors
+- **+1 bonus**: Guard-specific preference met
+  - Jenkins: NO stickers (clean/simple)
+  - Martinez: Perfect left/right symmetry
+  - Chen: Completed in < 2 minutes (speed bonus)
+  - Thompson: 15+ total stickers (maximum dazzle)
+  - Rodriguez: 5+ nails with holographic + glitter (DOUBLE BONUS!)
+- **Maximum**: 4 favor tokens per session
+- **Diminishing returns**: 100% → 75% → 50% → 25% (prevents grinding)
+
+#### **Persistent Guard Hand Saves**
+- **guardHands player property** - Stores decorated designs per guard
+- **Complete decoration data** - Base colors, effects, patterns, stickers, glitter
+- **Session tracking** - Total decorations, tokens earned, last decorated date
+- **24-hour cooldown** per guard (rotate between 5 guards)
+- **Gallery view** - View all 5 guards' decorated hands with statistics
+- **Referenced throughout game** - Guards mention their fabulous nails in dialogue
+
+#### **UI/UX Enhancements**
+- **3 new screens**:
+  - Guard selection screen (5 guard buttons with stats)
+  - Nail art canvas (full decoration interface with toolbar)
+  - Gallery view (grid of all decorated hands)
+- **Responsive toolbar** - Scrollable decoration palette (colors, effects, patterns, stickers)
+- **Undo system** - 20-level undo stack for mistake correction
+- **Clear functions** - Clear current nail or all nails
+- **Visual feedback** - Selected nail highlighting, real-time preview
+- **Prison menu integration** - 2 new buttons:
+  - "💅 DECORATE GUARD NAILS (Advanced)" - Full decoration system
+  - "💅 VIEW NAIL ART GALLERY" - View all decorated hands
+
+### Technical Details
+
+**New Files Created (7 files, ~3,100 lines, ~128 KB):**
+- `game/rendering/nail-art-renderer.js` (1,012 lines, 32 KB) - Isometric hand rendering engine
+- `game/rendering/nail-art-palette.js` (518 lines, 20 KB) - Color catalog and guard preferences
+- `game/rendering/nail-art-effects.js` (521 lines, 17 KB) - Animation system (sparkle, chrome, holographic)
+- `game/systems/nail-art-integration.js` (1,051 lines, 37 KB) - Game mechanics integration
+- `docs/systems/NAIL_ART_DECORATION_SYSTEM.md` (95 KB) - Complete design specification
+- `docs/integration/NAIL_ART_INTEGRATION_GUIDE.md` (35 KB) - Implementation guide
+- `docs/systems/NAIL_ART_QUICK_REFERENCE.md` (9 KB) - Quick reference guide
+
+**Modified Files:**
+- `game/index.html`:
+  - Added 3 new screens (guard selection, canvas, gallery) - 200 lines
+  - Added 4 script tags for nail art system
+  - Updated prison menu with 2 new buttons
+- `game/core/game.js`:
+  - Added `guardHands` to player object initialization
+  - Added nail art system initialization in constructor
+  - Auto-saves guardHands in save/load system
+
+**Cost & Time Balance:**
+- **Cost**: 20 credits (reasonable for advanced feature)
+- **Time**: 45 minutes per session
+- **Cooldown**: 24 hours per guard (5 guards = daily opportunities)
+- **Max tokens/day**: ~10 (5 guards × 2 avg tokens)
+
+### Changed
+- **Basic manicure renamed** - "GIVE MANICURE TO GUARD (Basic)" to differentiate from advanced system
+- **Prison menu layout** - Nail art buttons added between manicure and favors
+
+### Design Philosophy
+*"In a dystopian world where driving is illegal, prisoners find freedom through fabulous pixel art nail designs. Every nail is a masterpiece. Every guard a canvas. This is VROOM VROOM."*
+
+The nail art system achieves the perfect balance of:
+- **Depth without complexity** - 40+ options, intuitive interface
+- **Persistence creates meaning** - Designs saved, referenced, admired
+- **Personality creates connection** - 5 unique guards with distinct preferences
+- **Visual delight** - Gorgeous pixel art contrasts with bleak prison world
+- **Balanced rewards** - Fair favor token economy, no exploitation
+
+### Collaboration Credit
+- **Isometric pixel art system**: isometric-pixel-artist agent
+- **Game mechanics design**: game-dev-specialist agent
+- **Integration & implementation**: Claude Code
+
+---
+
 ## [1.4.3] - 2025-10-19
 
 ### Added

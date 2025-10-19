@@ -1287,9 +1287,21 @@
                 </div>
 
                 <div class="prison-activity" onclick="game.prisonActivity('manicure')">
-                    <h3>GIVE MANICURE TO GUARD</h3>
+                    <h3>GIVE MANICURE TO GUARD (Basic)</h3>
                     <p>Earn favor tokens through the ancient art of nail care. Guards love this.</p>
                     <p style="font-size: 0.9em; color: #ff0;">Favor Tokens: <span id="favorTokensDisplay">0</span></p>
+                </div>
+
+                <div class="prison-activity" onclick="game.showScreen('nailArtGuardSelection')">
+                    <h3>💅 DECORATE GUARD NAILS (Advanced)</h3>
+                    <p>Transform guard hands into dazzling works of pixel art. Full nail decoration system.</p>
+                    <p style="font-size: 0.9em; color: #888;">15 colors, 20 stickers, chrome powder, holographic effects, glitter!</p>
+                </div>
+
+                <div class="prison-activity" onclick="game.showNailArtGallery()">
+                    <h3>💅 VIEW NAIL ART GALLERY</h3>
+                    <p>Admire your decorated guard hands. A testament to fabulous nail art.</p>
+                    <p style="font-size: 0.9em; color: #888;">View all 5 guards' decorated hands</p>
                 </div>
 
                 <div class="prison-activity" onclick="game.showGuardFavorsMenu()">
@@ -2019,6 +2031,205 @@
             </div>
         </div>
 
+        <!-- NAIL ART GUARD SELECTION -->
+        <div id="nailArtGuardSelection" class="screen">
+            <h2>💅 NAIL ART SALON 💅</h2>
+            <p style="margin: 20px; font-size: 1.1em; color: #888; font-style: italic;">
+                Transform guard hands into works of art. Earn favor tokens through fabulous nail designs.
+            </p>
+
+            <div style="max-width: 1000px; margin: 0 auto;">
+                <div class="form-container">
+                    <h3 style="margin-bottom: 20px; color: #ff0;">SELECT A GUARD</h3>
+
+                    <div class="prison-activity" onclick="game.startNailArt('jenkins')">
+                        <h3>GUARD JENKINS</h3>
+                        <p>Strict and punctual. Prefers red or black, matte finish, NO stickers.</p>
+                        <p style="font-size: 0.9em; color: #888;">
+                            Last decorated: <span id="jenkinsLastDate">Never</span> |
+                            Sessions: <span id="jenkinsSessions">0</span>
+                        </p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.startNailArt('martinez')">
+                        <h3>GUARD MARTINEZ</h3>
+                        <p>Detail-oriented perfectionist. Loves white/gold, chrome finish, perfect symmetry.</p>
+                        <p style="font-size: 0.9em; color: #888;">
+                            Last decorated: <span id="martinezLastDate">Never</span> |
+                            Sessions: <span id="martinezSessions">0</span>
+                        </p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.startNailArt('chen')">
+                        <h3>GUARD CHEN</h3>
+                        <p>Impatient and irritable. Prefers black/gray, matte, minimal decoration.</p>
+                        <p style="font-size: 0.9em; color: #888;">
+                            Last decorated: <span id="chenLastDate">Never</span> |
+                            Sessions: <span id="chenSessions">0</span>
+                        </p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.startNailArt('thompson')">
+                        <h3>GUARD THOMPSON</h3>
+                        <p>Chatty and fun-loving. Adores pastels, glossy finish, ALL THE STICKERS!</p>
+                        <p style="font-size: 0.9em; color: #888;">
+                            Last decorated: <span id="thompsonLastDate">Never</span> |
+                            Sessions: <span id="thompsonSessions">0</span>
+                        </p>
+                    </div>
+
+                    <div class="prison-activity" onclick="game.startNailArt('rodriguez')">
+                        <h3>GUARD RODRIGUEZ</h3>
+                        <p>Secretly glamorous. Craves neon pink/gold, holographic finish, maximum dazzle.</p>
+                        <p style="font-size: 0.9em; color: #888;">
+                            Last decorated: <span id="rodriguezLastDate">Never</span> |
+                            Sessions: <span id="rodriguezSessions">0</span>
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
+            </div>
+        </div>
+
+        <!-- NAIL ART DECORATION CANVAS -->
+        <div id="nailArtCanvas" class="screen">
+            <h2>💅 NAIL ART DECORATION 💅</h2>
+
+            <div style="text-align: center; margin: 15px;">
+                <p id="nailArtGuardName" style="font-size: 1.3em; color: #ff0;"></p>
+                <p id="nailArtGuardPreference" style="font-size: 0.9em; color: #888; font-style: italic;"></p>
+            </div>
+
+            <div style="display: flex; max-width: 1400px; margin: 0 auto; gap: 20px; flex-wrap: wrap;">
+                <!-- Canvas Area -->
+                <div style="flex: 2; min-width: 400px; text-align: center;">
+                    <canvas id="nailArtMainCanvas" style="border: 2px solid #333; background: #1a1a1a; max-width: 100%;"></canvas>
+
+                    <div style="margin: 15px 0; font-size: 0.9em; color: #888;">
+                        Click a nail to select it, then choose decorations from the toolbar →
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: center; margin: 15px 0;">
+                        <button onclick="game.nailArtUndo()" style="padding: 10px 20px;">↶ UNDO</button>
+                        <button onclick="game.nailArtClearAll()" style="padding: 10px 20px;">🗑️ CLEAR ALL</button>
+                        <button onclick="game.nailArtSave()" style="padding: 10px 20px; background: #0f0; color: #000;">💾 SAVE & FINISH</button>
+                        <button onclick="game.showScreen('nailArtGuardSelection')" style="padding: 10px 20px;">✖ CANCEL</button>
+                    </div>
+                </div>
+
+                <!-- Decoration Toolbar -->
+                <div style="flex: 1; min-width: 300px; max-height: 600px; overflow-y: auto; background: rgba(0,255,0,0.05); border: 1px solid #0f0; padding: 15px;">
+                    <h3 style="color: #ff0; margin-bottom: 15px;">DECORATION TOOLS</h3>
+
+                    <!-- Base Colors -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #0ff; margin-bottom: 10px;">BASE COLORS</h4>
+                        <div id="baseColorPalette" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Special Effects -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #0ff; margin-bottom: 10px;">SPECIAL EFFECTS</h4>
+                        <div id="specialEffectsList" style="display: flex; flex-direction: column; gap: 5px;">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Patterns -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #0ff; margin-bottom: 10px;">PATTERNS</h4>
+                        <div id="patternsList" style="display: flex; flex-direction: column; gap: 5px;">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Stickers -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #0ff; margin-bottom: 10px;">STICKERS & DAZZLES</h4>
+                        <div id="stickersList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px;">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Glitter Toggle -->
+                    <div style="margin-bottom: 20px;">
+                        <button id="glitterToggle" onclick="game.nailArtToggleGlitter()" style="width: 100%; padding: 15px; font-size: 1.1em;">
+                            ✨ GLITTER: OFF
+                        </button>
+                    </div>
+
+                    <!-- Clear Current Nail -->
+                    <div>
+                        <button onclick="game.nailArtClearCurrentNail()" style="width: 100%; padding: 10px; background: #444;">
+                            Clear Selected Nail
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAIL ART GALLERY -->
+        <div id="nailArtGallery" class="screen">
+            <h2>💅 NAIL ART GALLERY 💅</h2>
+            <p style="margin: 20px; font-size: 1.1em; color: #888; font-style: italic;">
+                View your decorated guard hands. A testament to your artistic prowess in a dystopian world.
+            </p>
+
+            <div style="max-width: 1400px; margin: 0 auto;">
+                <div class="form-container">
+                    <h3 style="margin-bottom: 20px; color: #ff0;">YOUR MASTERPIECES</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+                        <!-- Guard hand previews -->
+                        <div id="galleryJenkins" class="prison-activity" onclick="game.viewNailArtDetail('jenkins')">
+                            <h3>GUARD JENKINS</h3>
+                            <canvas id="galleryCanvasJenkins" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
+                            <p id="galleryStatsJenkins" style="font-size: 0.9em; color: #888; margin-top: 10px;">
+                                Not yet decorated
+                            </p>
+                        </div>
+
+                        <div id="galleryMartinez" class="prison-activity" onclick="game.viewNailArtDetail('martinez')">
+                            <h3>GUARD MARTINEZ</h3>
+                            <canvas id="galleryCanvasMartinez" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
+                            <p id="galleryStatsMartinez" style="font-size: 0.9em; color: #888; margin-top: 10px;">
+                                Not yet decorated
+                            </p>
+                        </div>
+
+                        <div id="galleryChen" class="prison-activity" onclick="game.viewNailArtDetail('chen')">
+                            <h3>GUARD CHEN</h3>
+                            <canvas id="galleryCanvasChen" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
+                            <p id="galleryStatsChen" style="font-size: 0.9em; color: #888; margin-top: 10px;">
+                                Not yet decorated
+                            </p>
+                        </div>
+
+                        <div id="galleryThompson" class="prison-activity" onclick="game.viewNailArtDetail('thompson')">
+                            <h3>GUARD THOMPSON</h3>
+                            <canvas id="galleryCanvasThompson" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
+                            <p id="galleryStatsThompson" style="font-size: 0.9em; color: #888; margin-top: 10px;">
+                                Not yet decorated
+                            </p>
+                        </div>
+
+                        <div id="galleryRodriguez" class="prison-activity" onclick="game.viewNailArtDetail('rodriguez')">
+                            <h3>GUARD RODRIGUEZ</h3>
+                            <canvas id="galleryCanvasRodriguez" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
+                            <p id="galleryStatsRodriguez" style="font-size: 0.9em; color: #888; margin-top: 10px;">
+                                Not yet decorated
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
+            </div>
+        </div>
+
         <!-- TESTING MENU (Hidden Easter Egg) -->
         <div id="testingMenu" class="screen">
             <h2 style="color: #ff0;">⚙️ TESTING / DEBUG MENU ⚙️</h2>
@@ -2404,6 +2615,11 @@
     <script src="systems/gemini-events.js"></script>
     <script src="systems/ace-attorney-courtroom.js"></script>
     <script src="systems/character-preview.js"></script>
+    <!-- Nail Art System (Isometric Pixel Art) -->
+    <script src="rendering/nail-art-palette.js"></script>
+    <script src="rendering/nail-art-effects.js"></script>
+    <script src="rendering/nail-art-renderer.js"></script>
+    <script src="systems/nail-art-integration.js"></script>
     <script src="core/game.js"></script>
 </body>
 </html>
