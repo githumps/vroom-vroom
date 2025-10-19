@@ -163,63 +163,69 @@ VroomVroomGame.prototype.handleNailArtCanvasClick = function(event) {
  * Populate decoration toolbar with all options
  */
 VroomVroomGame.prototype.populateNailArtToolbar = function() {
-    // Base colors
+    // Base colors - palette structure has categories with arrays
     const colorPalette = document.getElementById('baseColorPalette');
     if (colorPalette) {
         colorPalette.innerHTML = '';
-        Object.entries(this.nailArtPalette.baseColors).forEach(([key, color]) => {
-            const btn = document.createElement('button');
-            btn.style.background = color.hex;
-            btn.style.width = '50px';
-            btn.style.height = '50px';
-            btn.style.border = '2px solid #333';
-            btn.style.cursor = 'pointer';
-            btn.title = color.name;
-            btn.onclick = () => this.applyBaseColor(color.hex);
-            colorPalette.appendChild(btn);
+        // Iterate through all color categories
+        Object.values(this.nailArtPalette.baseColors).forEach(categoryArray => {
+            categoryArray.forEach(color => {
+                const btn = document.createElement('button');
+                btn.style.background = color.hex;
+                btn.style.width = '50px';
+                btn.style.height = '50px';
+                btn.style.border = '2px solid #0f0';
+                btn.style.cursor = 'pointer';
+                btn.style.borderRadius = '4px';
+                btn.title = color.name;
+                btn.onclick = () => this.applyBaseColor(color.hex);
+                colorPalette.appendChild(btn);
+            });
         });
     }
 
-    // Special effects
+    // Special effects - it's an array, not an object
     const effectsList = document.getElementById('specialEffectsList');
     if (effectsList) {
         effectsList.innerHTML = '';
-        Object.entries(this.nailArtPalette.specialEffects).forEach(([key, effect]) => {
+        this.nailArtPalette.specialEffects.forEach(effect => {
             const btn = document.createElement('button');
             btn.textContent = effect.name;
             btn.style.width = '100%';
             btn.style.padding = '8px';
             btn.style.marginBottom = '5px';
-            btn.onclick = () => this.applySpecialEffect(key);
+            btn.onclick = () => this.applySpecialEffect(effect.id);
             effectsList.appendChild(btn);
         });
     }
 
-    // Patterns
+    // Patterns - it's an array
     const patternsList = document.getElementById('patternsList');
     if (patternsList) {
         patternsList.innerHTML = '';
-        Object.entries(this.nailArtPalette.patterns).forEach(([key, pattern]) => {
+        this.nailArtPalette.patterns.forEach(pattern => {
             const btn = document.createElement('button');
             btn.textContent = pattern.name;
             btn.style.width = '100%';
             btn.style.padding = '8px';
             btn.style.marginBottom = '5px';
-            btn.onclick = () => this.applyPattern(key);
+            btn.onclick = () => this.applyPattern(pattern.id);
             patternsList.appendChild(btn);
         });
     }
 
-    // Stickers
+    // Stickers - has categories with arrays like baseColors
     const stickersList = document.getElementById('stickersList');
     if (stickersList) {
         stickersList.innerHTML = '';
-        Object.entries(this.nailArtPalette.stickers).forEach(([key, sticker]) => {
-            const btn = document.createElement('button');
-            btn.textContent = sticker.icon + ' ' + sticker.name;
-            btn.style.padding = '8px';
-            btn.onclick = () => this.applySticker(key);
-            stickersList.appendChild(btn);
+        Object.values(this.nailArtPalette.stickers).forEach(categoryArray => {
+            categoryArray.forEach(sticker => {
+                const btn = document.createElement('button');
+                btn.textContent = sticker.name;
+                btn.style.padding = '8px';
+                btn.onclick = () => this.applySticker(sticker.id);
+                stickersList.appendChild(btn);
+            });
         });
     }
 };

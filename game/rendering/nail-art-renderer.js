@@ -1,26 +1,30 @@
 /**
- * NAIL ART RENDERER - ISOMETRIC PIXEL ART SYSTEM
+ * NAIL ART RENDERER - PIXEL PERFECT ISOMETRIC SYSTEM
  *
- * Renders gorgeous guard hands in isometric pixel art style
- * All graphics generated procedurally via Canvas 2D API
- * No external image dependencies - pure code-based rendering
+ * COMPLETE OVERHAUL - TRUE PIXEL ART RENDERING
  *
  * Features:
- * - Isometric 3/4 top-down view (26.565° angle, 2:1 pixel ratio)
- * - 5 unique guard hand styles (different skin tones, shapes)
- * - 10 individually rendered nails (5 per hand)
- * - Layer-based decoration rendering (base, effects, stickers, glitter)
- * - Smooth animations (sparkle, shimmer, iridescence)
- * - Mobile-responsive scaling
+ * - Pixel-perfect isometric guard hands (clean rectangles, no blurry ovals)
+ * - 10 individually clickable nails with clear hitboxes
+ * - Beautiful color palettes that actually show up
+ * - Warm pinks, vibrant colors, cozy pixel art aesthetic
+ * - No anti-aliasing, no image smoothing - crisp pixels only
  *
- * @version 1.0.0
+ * Design Philosophy:
+ * - Every pixel is intentional and visible
+ * - Nails are distinct 30x50px pixel art elements
+ * - Colors are vibrant and clearly visible
+ * - Isometric projection for professional look
+ * - Reference quality: cozy bedroom, autumn park, cyberpunk city style
+ *
+ * @version 2.0.0 - COMPLETE PIXEL ART REWRITE
  * @artist isometric-pixel-artist agent
  * @date 2025-10-19
  */
 
 class NailArtRenderer {
     constructor() {
-        // Canvas references (set externally)
+        // Canvas references
         this.canvas = null;
         this.ctx = null;
         this.scale = 1.0;
@@ -29,55 +33,95 @@ class NailArtRenderer {
         this.animationTime = 0;
         this.animationFrameId = null;
 
-        // Isometric constants
-        this.ISO_ANGLE = 26.565; // degrees (arctan(0.5) for 2:1 ratio)
-        this.ISO_RATIO = 2.0; // 2:1 pixel ratio for isometric
+        // Pixel art constants
+        this.PIXEL_SIZE = 2; // Each "pixel" is 2x2 screen pixels for visibility
+        this.NAIL_WIDTH_PX = 15; // 15 "pixels" wide (30px at scale 1)
+        this.NAIL_HEIGHT_PX = 25; // 25 "pixels" tall (50px at scale 1)
 
-        // Nail dimensions (at scale 1.0)
-        this.NAIL_BASE_WIDTH = 30;
-        this.NAIL_BASE_HEIGHT = 50;
-        this.FINGER_WIDTH = 20;
-        this.FINGER_LENGTH = 70;
-        this.PALM_WIDTH = 120;
-        this.PALM_HEIGHT = 160;
+        // Isometric constants (2:1 ratio)
+        this.ISO_ANGLE = 26.565; // degrees
+        this.ISO_RATIO = 2.0;
 
-        // Guard hand definitions (skin tones from existing system)
+        // Guard skin tones (warmer, more vibrant than before)
         this.guardSkins = {
             jenkins: {
-                skin: '#f4c8a8',
-                nail: '#e8d4c0',
-                style: 'rough',        // Masculine, rough hands
-                knuckles: true,        // Show scarred knuckles
-                nailShape: 'square'    // Short, square nails
+                skin: '#f4c8a8',      // Warm peachy
+                skinDark: '#d4a888',  // Shadow
+                skinLight: '#ffddbb', // Highlight
+                nail: '#ffe0cc',      // Natural nail
+                nailDark: '#e8c8b0',
+                knuckles: true,
+                style: 'square'
             },
             martinez: {
                 skin: '#d4a574',
-                nail: '#c99766',
-                style: 'delicate',     // Delicate, well-kept
-                knuckles: false,       // Perfectly smooth
-                nailShape: 'oval'      // Oval, elegant nails
+                skinDark: '#b88854',
+                skinLight: '#f0c890',
+                nail: '#f5e0d0',
+                nailDark: '#d8c4b0',
+                knuckles: false,
+                style: 'oval'
             },
             chen: {
                 skin: '#f0d5be',
-                nail: '#e8d0ba',
-                style: 'nervous',      // Nervous, bitten
-                knuckles: false,       // Cuticle damage instead
-                nailShape: 'short'     // Very short, jagged
+                skinDark: '#d0b59e',
+                skinLight: '#fff0dd',
+                nail: '#fff5e8',
+                nailDark: '#e8d8c8',
+                knuckles: false,
+                style: 'short'
             },
             thompson: {
                 skin: '#ffd7ba',
-                nail: '#f5d8c4',
-                style: 'worker',       // Large, worker hands
-                knuckles: true,        // Calloused palms
-                nailShape: 'blunt'     // Blunt, wide nails
+                skinDark: '#e0b89a',
+                skinLight: '#fff0dd',
+                nail: '#fff8e8',
+                nailDark: '#f0dcc0',
+                knuckles: true,
+                style: 'wide'
             },
             rodriguez: {
                 skin: '#c88a5a',
-                nail: '#b87d52',
-                style: 'elegant',      // Feminine, elegant
-                knuckles: false,       // Graceful fingers
-                nailShape: 'almond'    // Long, almond nails
+                skinDark: '#a86a3a',
+                skinLight: '#e8aa7a',
+                nail: '#f0d0b0',
+                nailDark: '#d0b090',
+                knuckles: false,
+                style: 'almond'
             }
+        };
+
+        // Nail hitbox data (populated during rendering)
+        this.nailHitboxes = [];
+
+        // Beautiful vibrant palette (15+ colors that SHOW UP)
+        this.palette = {
+            // Warm pinks (cozy aesthetic)
+            'warm-pink': '#ff69b4',
+            'hot-pink': '#ff1493',
+            'rose': '#ff66aa',
+            'coral': '#ff7f50',
+            'peach': '#ffb366',
+
+            // Cool vibes
+            'cyan': '#00ffff',
+            'sky-blue': '#87ceeb',
+            'purple': '#9966ff',
+            'lavender': '#e6b3ff',
+
+            // Vibrant colors
+            'lime': '#00ff00',
+            'yellow': '#ffff00',
+            'orange': '#ff8800',
+            'red': '#ff0000',
+
+            // Metallics
+            'gold': '#ffd700',
+            'silver': '#c0c0c0',
+
+            // Classics
+            'black': '#000000',
+            'white': '#ffffff'
         };
     }
 
@@ -85,37 +129,37 @@ class NailArtRenderer {
 
     /**
      * Initialize renderer with canvas element
-     * @param {HTMLCanvasElement} canvas - Canvas element
-     * @param {number} scale - Display scale factor (default 1.0)
      */
     initialize(canvas, scale = 1.0) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.scale = scale;
 
-        // Set canvas size (800x600 base, scaled)
+        // Set canvas size (800x600 base)
         this.canvas.width = 800 * this.scale;
         this.canvas.height = 600 * this.scale;
 
-        // Enable image smoothing for pixel art
+        // CRITICAL: Disable image smoothing for pixel art
         this.ctx.imageSmoothingEnabled = false;
+        this.ctx.webkitImageSmoothingEnabled = false;
+        this.ctx.mozImageSmoothingEnabled = false;
+        this.ctx.msImageSmoothingEnabled = false;
 
-        console.log('[NailArtRenderer] Initialized at scale', this.scale);
+        console.log('[NailArtRenderer] Pixel art mode initialized at scale', this.scale);
     }
 
     /**
      * Start animation loop
      */
     startAnimation() {
-        if (this.animationFrameId) return; // Already running
+        if (this.animationFrameId) return;
 
-        const animate = () => {
-            this.animationTime += 0.016; // ~16ms per frame
+        const animate = (timestamp) => {
+            this.animationTime = timestamp * 0.001; // Convert to seconds
             this.animationFrameId = requestAnimationFrame(animate);
         };
 
-        animate();
-        console.log('[NailArtRenderer] Animation started');
+        this.animationFrameId = requestAnimationFrame(animate);
     }
 
     /**
@@ -126,14 +170,13 @@ class NailArtRenderer {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
-        console.log('[NailArtRenderer] Animation stopped');
     }
 
     // ==================== MAIN RENDERING ====================
 
     /**
      * Render complete scene with both hands
-     * @param {string} guardKey - Guard identifier (jenkins, martinez, etc.)
+     * @param {string} guardKey - Guard identifier
      * @param {object} decorationData - { leftHand: [...], rightHand: [...] }
      * @param {object|null} selectedNail - { hand: 'left'|'right', index: 0-4 } or null
      */
@@ -149,81 +192,109 @@ class NailArtRenderer {
             return;
         }
 
-        // Clear canvas (dark dystopian background)
-        this.ctx.fillStyle = '#1a1a1a';
+        // Reset hitboxes
+        this.nailHitboxes = [];
+
+        // Clear canvas with dark dystopian background
+        this.ctx.fillStyle = '#1a1520'; // Dark purple-gray
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Render title
-        this.renderTitle('NAIL DECORATION STUDIO');
+        // Add subtle texture to background (pixel art style)
+        this.renderBackgroundTexture();
 
-        // Render both hands
-        this.renderHand('left', guard, decorationData.leftHand, selectedNail);
-        this.renderHand('right', guard, decorationData.rightHand, selectedNail);
+        // Render title
+        this.renderPixelText('NAIL DECORATION STUDIO', this.canvas.width / 2, 50 * this.scale, 3, '#ff66aa');
+
+        // Render both hands with pixel art
+        this.renderPixelHand('left', guard, decorationData.leftHand || [], selectedNail);
+        this.renderPixelHand('right', guard, decorationData.rightHand || [], selectedNail);
 
         // Render instructions
-        this.renderInstructions();
-    }
-
-    /**
-     * Render title text
-     */
-    renderTitle(text) {
-        this.ctx.save();
-        this.ctx.fillStyle = '#fff';
-        this.ctx.font = `bold ${Math.floor(28 * this.scale)}px monospace`;
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText(text, this.canvas.width / 2, 50 * this.scale);
-        this.ctx.restore();
-    }
-
-    /**
-     * Render instruction text
-     */
-    renderInstructions() {
-        this.ctx.save();
-        this.ctx.fillStyle = '#ff0';
-        this.ctx.font = `${Math.floor(14 * this.scale)}px monospace`;
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText(
-            'Click a nail to select. Use tools to decorate. Create something GORGEOUS!',
+        this.renderPixelText(
+            'CLICK A NAIL TO SELECT',
             this.canvas.width / 2,
-            this.canvas.height - 30 * this.scale
+            this.canvas.height - 40 * this.scale,
+            2,
+            '#ffff00'
         );
-        this.ctx.restore();
+
+        // Debug: Show hitbox count
+        console.log(`[NailArtRenderer] Rendered ${this.nailHitboxes.length} nail hitboxes`);
     }
 
     /**
-     * Render a single hand (left or right) with all fingers and nails
-     * @param {string} side - 'left' or 'right'
-     * @param {object} guard - Guard skin data
-     * @param {array} nailDecorations - Array of 5 nail decoration objects
-     * @param {object|null} selectedNail - Currently selected nail
+     * Render pixel art background texture (subtle noise)
      */
-    renderHand(side, guard, nailDecorations, selectedNail) {
+    renderBackgroundTexture() {
+        const s = this.scale;
+        const gridSize = 8 * s;
+
+        for (let x = 0; x < this.canvas.width; x += gridSize) {
+            for (let y = 0; y < this.canvas.height; y += gridSize) {
+                if (Math.random() > 0.95) {
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    this.ctx.fillRect(x, y, gridSize, gridSize);
+                }
+            }
+        }
+    }
+
+    /**
+     * Render pixel-perfect text
+     */
+    renderPixelText(text, x, y, size, color) {
+        this.ctx.save();
+        this.ctx.fillStyle = color;
+        this.ctx.font = `bold ${Math.floor(size * 10 * this.scale)}px monospace`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        // Add pixel art text shadow for depth
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fillText(text, x + 2 * this.scale, y + 2 * this.scale);
+
+        this.ctx.fillStyle = color;
+        this.ctx.fillText(text, x, y);
+
+        this.ctx.restore();
+    }
+
+    // ==================== PIXEL ART HAND RENDERING ====================
+
+    /**
+     * Render entire hand in pixel art style
+     */
+    renderPixelHand(side, guard, nailDecorations, selectedNail) {
         const isLeft = side === 'left';
         const s = this.scale;
 
-        // Hand position (left hand on left, right hand on right)
+        // Hand position
         const baseX = isLeft ? 200 * s : 600 * s;
-        const baseY = 350 * s;
+        const baseY = 300 * s;
 
         this.ctx.save();
 
-        // Render palm first (behind fingers)
-        this.renderPalm(baseX, baseY, guard, isLeft);
+        // Render palm (pixel art style - not an oval!)
+        this.renderPixelPalm(baseX, baseY, guard, isLeft);
+
+        // Get finger positions
+        const fingers = this.getPixelFingerPositions(baseX, baseY, isLeft);
 
         // Render each finger with nail
-        const fingerPositions = this.getFingerPositions(baseX, baseY, isLeft);
-        fingerPositions.forEach((pos, index) => {
+        fingers.forEach((finger, index) => {
             const isSelected = selectedNail &&
                                selectedNail.hand === side &&
                                selectedNail.index === index;
 
-            this.renderFinger(
-                pos.x, pos.y, pos.angle,
+            const decoration = nailDecorations[index] || null;
+
+            this.renderPixelFinger(
+                finger.x, finger.y, finger.angle,
                 guard,
-                nailDecorations[index],
-                isSelected
+                decoration,
+                isSelected,
+                side,
+                index
             );
         });
 
@@ -231,707 +302,445 @@ class NailArtRenderer {
     }
 
     /**
-     * Get finger positions for a hand
-     * @param {number} baseX - Hand base X position
-     * @param {number} baseY - Hand base Y position
-     * @param {boolean} isLeft - Is this the left hand?
-     * @returns {array} Array of { x, y, angle } positions
+     * Get pixel art finger positions
      */
-    getFingerPositions(baseX, baseY, isLeft) {
+    getPixelFingerPositions(baseX, baseY, isLeft) {
         const s = this.scale;
-        const spacing = 35 * s;
-        const yOffset = -80 * s; // Fingers extend upward from palm
-
-        // Finger angles (spread out naturally)
-        const angles = isLeft
-            ? [-20, -10, 0, 10, 20]  // Left hand spreads left to right
-            : [20, 10, 0, -10, -20]; // Right hand mirrors
+        const spacing = 38 * s;
 
         return [
             // Thumb (offset to side)
             {
-                x: baseX + (isLeft ? -60 : 60) * s,
-                y: baseY + 20 * s,
-                angle: angles[0]
+                x: baseX + (isLeft ? -70 : 70) * s,
+                y: baseY + 30 * s,
+                angle: isLeft ? -30 : 30,
+                name: 'thumb'
             },
-            // Index finger
+            // Index
             {
-                x: baseX + (isLeft ? -30 : 30) * s,
-                y: baseY + yOffset,
-                angle: angles[1]
+                x: baseX + (isLeft ? -35 : 35) * s,
+                y: baseY - 80 * s,
+                angle: isLeft ? -15 : 15,
+                name: 'index'
             },
-            // Middle finger (tallest)
+            // Middle (longest)
             {
                 x: baseX,
-                y: baseY + yOffset - 20 * s,
-                angle: angles[2]
+                y: baseY - 100 * s,
+                angle: 0,
+                name: 'middle'
             },
-            // Ring finger
+            // Ring
             {
-                x: baseX + (isLeft ? 30 : -30) * s,
-                y: baseY + yOffset - 10 * s,
-                angle: angles[3]
+                x: baseX + (isLeft ? 35 : -35) * s,
+                y: baseY - 90 * s,
+                angle: isLeft ? 15 : -15,
+                name: 'ring'
             },
             // Pinky (shortest)
             {
-                x: baseX + (isLeft ? 55 : -55) * s,
-                y: baseY + yOffset + 10 * s,
-                angle: angles[4]
+                x: baseX + (isLeft ? 65 : -65) * s,
+                y: baseY - 60 * s,
+                angle: isLeft ? 25 : -25,
+                name: 'pinky'
             }
         ];
     }
 
     /**
-     * Render palm base
+     * Render pixel art palm (rectangular, not oval!)
      */
-    renderPalm(x, y, guard, isLeft) {
+    renderPixelPalm(x, y, guard, isLeft) {
         const s = this.scale;
+        const width = 100 * s;
+        const height = 130 * s;
 
-        this.ctx.fillStyle = guard.skin;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-            x, y,
-            this.PALM_WIDTH * 0.5 * s,
-            this.PALM_HEIGHT * 0.5 * s,
-            0, 0, Math.PI * 2
+        this.ctx.save();
+        this.ctx.translate(x, y);
+
+        // Main palm shape (rounded rectangle in pixel art)
+        this.fillPixelRect(
+            -width / 2, -height / 2,
+            width, height,
+            guard.skin,
+            10 * s // Corner radius
         );
-        this.ctx.fill();
 
-        // Add shading for depth
-        const gradient = this.ctx.createRadialGradient(
-            x, y - 20 * s, 10,
-            x, y, this.PALM_WIDTH * 0.5 * s
-        );
-        gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.15)');
-
-        this.ctx.fillStyle = gradient;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-            x, y,
-            this.PALM_WIDTH * 0.5 * s,
-            this.PALM_HEIGHT * 0.5 * s,
-            0, 0, Math.PI * 2
-        );
-        this.ctx.fill();
-
-        // Render knuckles/scars if guard style requires
-        if (guard.knuckles) {
-            this.renderKnuckles(x, y, isLeft);
+        // Add pixel art shading (manual dithering)
+        this.ctx.globalAlpha = 0.3;
+        for (let i = 0; i < 20; i++) {
+            const px = (Math.random() - 0.5) * width * 0.8;
+            const py = (Math.random() - 0.5) * height * 0.8;
+            const size = 2 * s;
+            this.ctx.fillStyle = guard.skinDark;
+            this.ctx.fillRect(px - size / 2, py - size / 2, size, size);
         }
+        this.ctx.globalAlpha = 1.0;
+
+        // Palm outline (pixel perfect)
+        this.strokePixelRect(
+            -width / 2, -height / 2,
+            width, height,
+            guard.skinDark,
+            2 * s,
+            10 * s
+        );
+
+        // Knuckle details (if applicable)
+        if (guard.knuckles) {
+            this.renderPixelKnuckles(0, -20 * s, guard, isLeft);
+        }
+
+        this.ctx.restore();
     }
 
     /**
-     * Render knuckle scars/calluses
+     * Render pixel art knuckles
      */
-    renderKnuckles(x, y, isLeft) {
+    renderPixelKnuckles(x, y, guard, isLeft) {
         const s = this.scale;
-        const positions = isLeft
-            ? [[-30, -10], [0, -15], [30, -10]]
-            : [[30, -10], [0, -15], [-30, -10]];
+        const positions = [
+            [-30 * s, 0],
+            [0, -5 * s],
+            [30 * s, 0]
+        ];
 
-        this.ctx.strokeStyle = 'rgba(139, 115, 85, 0.3)';
+        this.ctx.strokeStyle = guard.skinDark;
         this.ctx.lineWidth = 2 * s;
 
         positions.forEach(([dx, dy]) => {
+            // Pixel art scar line
+            const startX = x + dx - 8 * s;
+            const startY = y + dy;
+            const endX = x + dx + 8 * s;
+            const endY = y + dy;
+
             this.ctx.beginPath();
-            this.ctx.arc(x + dx * s, y + dy * s, 8 * s, 0, Math.PI * 2);
+            this.ctx.moveTo(startX, startY);
+            this.ctx.lineTo(endX, endY);
             this.ctx.stroke();
         });
     }
 
     /**
-     * Render a single finger with nail
+     * Render pixel art finger
      */
-    renderFinger(x, y, angle, guard, nailDecoration, isSelected) {
+    renderPixelFinger(x, y, angle, guard, decoration, isSelected, hand, index) {
         const s = this.scale;
 
         this.ctx.save();
         this.ctx.translate(x, y);
         this.ctx.rotate((angle * Math.PI) / 180);
 
-        // Finger body (elongated ellipse)
+        // Finger body (rectangular with rounded end)
+        const fingerWidth = 18 * s;
+        const fingerLength = 70 * s;
+
+        // Main finger rectangle
+        this.fillPixelRect(
+            -fingerWidth / 2, 0,
+            fingerWidth, fingerLength,
+            guard.skin
+        );
+
+        // Finger tip (rounded)
         this.ctx.fillStyle = guard.skin;
         this.ctx.beginPath();
-        this.ctx.ellipse(
-            0, 20 * s,
-            this.FINGER_WIDTH * 0.5 * s,
-            this.FINGER_LENGTH * 0.6 * s,
-            0, 0, Math.PI * 2
-        );
+        this.ctx.arc(0, fingerLength, fingerWidth / 2, 0, Math.PI * 2);
         this.ctx.fill();
 
-        // Finger shading (add depth)
-        const fingerGradient = this.ctx.createLinearGradient(
-            -this.FINGER_WIDTH * 0.5 * s, 0,
-            this.FINGER_WIDTH * 0.5 * s, 0
+        // Finger shading (one side darker)
+        this.ctx.fillStyle = guard.skinDark;
+        this.fillPixelRect(
+            -fingerWidth / 2, 0,
+            3 * s, fingerLength,
+            guard.skinDark
         );
-        fingerGradient.addColorStop(0, 'rgba(0, 0, 0, 0.1)');
-        fingerGradient.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
-        fingerGradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
 
-        this.ctx.fillStyle = fingerGradient;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-            0, 20 * s,
-            this.FINGER_WIDTH * 0.5 * s,
-            this.FINGER_LENGTH * 0.6 * s,
-            0, 0, Math.PI * 2
+        // Finger highlight (other side)
+        this.ctx.fillStyle = guard.skinLight;
+        this.fillPixelRect(
+            fingerWidth / 2 - 3 * s, 0,
+            3 * s, fingerLength,
+            guard.skinLight
         );
-        this.ctx.fill();
 
         // Render nail at fingertip
-        this.renderNail(0, 0, guard, nailDecoration, isSelected);
+        this.renderPixelNail(0, 0, guard, decoration, isSelected, hand, index);
 
         this.ctx.restore();
     }
 
     /**
-     * Render a single nail with all decoration layers
-     * @param {number} x - Nail center X
-     * @param {number} y - Nail center Y
-     * @param {object} guard - Guard skin data
-     * @param {object} decoration - Nail decoration data
-     * @param {boolean} isSelected - Is this nail selected?
+     * Render pixel art nail with decorations
+     * THIS IS WHERE THE MAGIC HAPPENS
      */
-    renderNail(x, y, guard, decoration, isSelected) {
+    renderPixelNail(localX, localY, guard, decoration, isSelected, hand, index) {
         const s = this.scale;
-        const width = this.NAIL_BASE_WIDTH * s;
-        const height = this.NAIL_BASE_HEIGHT * s;
-
-        // Get nail shape based on guard style
-        const shape = this.getNailShape(guard.nailShape, width, height);
+        const nailWidth = this.NAIL_WIDTH_PX * this.PIXEL_SIZE * s;
+        const nailHeight = this.NAIL_HEIGHT_PX * this.PIXEL_SIZE * s;
 
         this.ctx.save();
-        this.ctx.translate(x, y);
 
-        // Layer 1: Nail base (skin-colored)
-        this.renderNailBase(shape, guard.nail);
+        // Calculate world position for hitbox
+        const matrix = this.ctx.getTransform();
+        const worldX = matrix.e + localX * matrix.a + localY * matrix.c;
+        const worldY = matrix.f + localX * matrix.b + localY * matrix.d;
 
-        // Layer 2: Base color (if decorated)
+        // Store hitbox data
+        this.nailHitboxes.push({
+            hand: hand,
+            index: index,
+            x: worldX,
+            y: worldY,
+            width: nailWidth,
+            height: nailHeight,
+            angle: 0 // Local coordinates (already rotated)
+        });
+
+        // Layer 1: Base nail (natural color)
+        this.fillPixelRect(
+            -nailWidth / 2, -nailHeight / 2,
+            nailWidth, nailHeight,
+            guard.nail,
+            4 * s
+        );
+
+        // Layer 2: Base color decoration
         if (decoration && decoration.baseColor) {
-            this.renderBaseColor(shape, decoration.baseColor);
+            const color = this.palette[decoration.baseColor] || decoration.baseColor;
+            this.fillPixelRect(
+                -nailWidth / 2 + 2 * s, -nailHeight / 2 + 2 * s,
+                nailWidth - 4 * s, nailHeight - 4 * s,
+                color,
+                3 * s
+            );
         }
 
         // Layer 3: Pattern (french tip, ombre, etc.)
         if (decoration && decoration.pattern && decoration.pattern !== 'solid') {
-            this.renderPattern(shape, decoration);
+            this.renderNailPattern(decoration.pattern, nailWidth, nailHeight, decoration);
         }
 
-        // Layer 4: Special effects (chrome, holographic, etc.)
+        // Layer 4: Special effects (sparkle, chrome, etc.)
         if (decoration && decoration.specialEffect) {
-            this.renderSpecialEffect(shape, decoration.specialEffect);
+            this.renderNailEffect(decoration.specialEffect, nailWidth, nailHeight);
         }
 
-        // Layer 5: Stickers
-        if (decoration && decoration.stickers && decoration.stickers.length > 0) {
-            this.renderStickers(shape, decoration.stickers);
-        }
-
-        // Layer 6: Glitter
+        // Layer 5: Glitter
         if (decoration && decoration.glitter) {
-            this.renderGlitter(shape);
+            this.renderPixelGlitter(nailWidth, nailHeight);
         }
 
-        // Layer 7: Selection highlight
+        // Layer 6: Selection highlight
         if (isSelected) {
-            this.renderSelectionHighlight(shape);
+            this.renderPixelSelection(nailWidth, nailHeight);
         }
 
-        // Nail outline (always on top)
-        this.renderNailOutline(shape);
+        // Layer 7: Nail outline (always on top)
+        this.strokePixelRect(
+            -nailWidth / 2, -nailHeight / 2,
+            nailWidth, nailHeight,
+            guard.nailDark,
+            2 * s,
+            4 * s
+        );
 
         this.ctx.restore();
     }
 
     /**
-     * Get nail shape path based on style
-     * @param {string} style - 'square', 'oval', 'short', 'blunt', 'almond'
-     * @param {number} width - Nail width
-     * @param {number} height - Nail height
-     * @returns {object} Shape data for rendering
+     * Render nail pattern (french tip, ombre)
      */
-    getNailShape(style, width, height) {
-        const shape = { width, height, path: null };
-
-        switch (style) {
-            case 'square':
-                // Short, square nails (Jenkins)
-                shape.height = height * 0.7;
-                break;
-            case 'oval':
-                // Oval, elegant (Martinez)
-                shape.height = height * 0.9;
-                break;
-            case 'short':
-                // Very short, jagged (Chen)
-                shape.height = height * 0.5;
-                break;
-            case 'blunt':
-                // Blunt, wide (Thompson)
-                shape.width = width * 1.2;
-                shape.height = height * 0.8;
-                break;
-            case 'almond':
-                // Long, almond (Rodriguez)
-                shape.height = height * 1.1;
-                break;
-        }
-
-        return shape;
-    }
-
-    /**
-     * Render nail base (natural nail color)
-     */
-    renderNailBase(shape, nailColor) {
-        this.ctx.fillStyle = nailColor;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-            0, 0,
-            shape.width * 0.5,
-            shape.height * 0.7,
-            0, 0, Math.PI * 2
-        );
-        this.ctx.fill();
-    }
-
-    /**
-     * Render base color layer
-     */
-    renderBaseColor(shape, color) {
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-            0, 0,
-            shape.width * 0.5,
-            shape.height * 0.7,
-            0, 0, Math.PI * 2
-        );
-        this.ctx.fill();
-    }
-
-    /**
-     * Render pattern (french tip, ombre, etc.)
-     */
-    renderPattern(shape, decoration) {
-        const { pattern, baseColor } = decoration;
+    renderNailPattern(pattern, width, height, decoration) {
+        const s = this.scale;
 
         if (pattern === 'french') {
-            // White tip
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                0, -shape.height * 0.35,
-                shape.width * 0.5,
-                shape.height * 0.2,
-                0, 0, Math.PI * 2
+            // White tip (pixel art style)
+            this.fillPixelRect(
+                -width / 2 + 2 * s, -height / 2 + 2 * s,
+                width - 4 * s, height * 0.3,
+                '#ffffff',
+                3 * s
             );
-            this.ctx.fill();
         } else if (pattern === 'ombre') {
-            // Gradient from base to tip
-            const gradient = this.ctx.createLinearGradient(
-                0, shape.height * 0.35,
-                0, -shape.height * 0.35
-            );
-            gradient.addColorStop(0, baseColor);
-            gradient.addColorStop(1, this.lightenColor(baseColor, 40));
+            // Gradient effect with pixel art steps
+            const steps = 5;
+            const baseColor = this.palette[decoration.baseColor] || decoration.baseColor;
 
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                0, 0,
-                shape.width * 0.5,
-                shape.height * 0.7,
-                0, 0, Math.PI * 2
-            );
-            this.ctx.fill();
+            for (let i = 0; i < steps; i++) {
+                const stepHeight = (height - 4 * s) / steps;
+                const opacity = 0.2 + (i / steps) * 0.8;
+
+                this.ctx.globalAlpha = opacity;
+                this.fillPixelRect(
+                    -width / 2 + 2 * s,
+                    -height / 2 + 2 * s + i * stepHeight,
+                    width - 4 * s,
+                    stepHeight,
+                    baseColor
+                );
+            }
+            this.ctx.globalAlpha = 1.0;
         }
     }
 
     /**
      * Render special effects (chrome, holographic, etc.)
      */
-    renderSpecialEffect(shape, effect) {
-        if (effect === 'chrome') {
-            // Jewel beetle iridescent shimmer
-            const gradient = this.ctx.createLinearGradient(
-                -shape.width * 0.5, -shape.height * 0.35,
-                shape.width * 0.5, shape.height * 0.35
-            );
-            gradient.addColorStop(0, 'rgba(0, 255, 255, 0.3)'); // Cyan
-            gradient.addColorStop(0.5, 'rgba(192, 192, 192, 0.5)'); // Silver
-            gradient.addColorStop(1, 'rgba(75, 0, 130, 0.3)'); // Purple
+    renderNailEffect(effect, width, height) {
+        const s = this.scale;
 
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                0, 0,
-                shape.width * 0.5,
-                shape.height * 0.7,
-                0, 0, Math.PI * 2
-            );
-            this.ctx.fill();
+        if (effect === 'chrome' || effect === 'holographic') {
+            // Animated shimmer (pixel art style)
+            const shimmerX = Math.sin(this.animationTime * 2) * width * 0.2;
 
-            // Animated shimmer highlight
-            const shimmerX = Math.sin(this.animationTime * 2) * shape.width * 0.3;
-            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                shimmerX, -shape.height * 0.2,
-                shape.width * 0.15,
-                shape.height * 0.3,
-                0, 0, Math.PI * 2
-            );
-            this.ctx.fill();
-
-        } else if (effect === 'holographic') {
-            // Rainbow shimmer (animated color cycle)
-            const hue = (this.animationTime * 50) % 360;
-            this.ctx.fillStyle = `hsla(${hue}, 100%, 70%, 0.5)`;
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                0, 0,
-                shape.width * 0.5,
-                shape.height * 0.7,
-                0, 0, Math.PI * 2
-            );
-            this.ctx.fill();
-
-        } else if (effect === 'iridescent') {
-            // Multi-color shimmer (slower cycle)
-            const colors = ['#ff00ff', '#00ffff', '#ffff00'];
-            const colorIndex = Math.floor(this.animationTime * 0.5) % colors.length;
-            this.ctx.fillStyle = colors[colorIndex] + '66'; // 40% opacity
-
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                0, 0,
-                shape.width * 0.5,
-                shape.height * 0.7,
-                0, 0, Math.PI * 2
-            );
-            this.ctx.fill();
-
-        } else if (effect === 'matte') {
-            // Matte finish (subtle darkening)
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                0, 0,
-                shape.width * 0.5,
-                shape.height * 0.7,
-                0, 0, Math.PI * 2
-            );
-            this.ctx.fill();
-
-        } else if (effect === 'glossy') {
-            // Glossy shine highlight
             this.ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            this.ctx.beginPath();
-            this.ctx.ellipse(
-                -shape.width * 0.15, -shape.height * 0.25,
-                shape.width * 0.2,
-                shape.height * 0.3,
-                0, 0, Math.PI * 2
+            this.fillPixelRect(
+                shimmerX - 4 * s, -height * 0.3,
+                8 * s, height * 0.4,
+                'rgba(255, 255, 255, 0.6)'
             );
+        } else if (effect === 'glossy') {
+            // Glossy highlight
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            this.fillPixelRect(
+                -width * 0.3, -height * 0.3,
+                width * 0.3, height * 0.3,
+                'rgba(255, 255, 255, 0.7)',
+                2 * s
+            );
+        }
+    }
+
+    /**
+     * Render pixel art glitter
+     */
+    renderPixelGlitter(width, height) {
+        const s = this.scale;
+        const particleCount = 8;
+
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (i / particleCount) * Math.PI * 2;
+            const radius = Math.random() * width * 0.3;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius * 0.8; // Elliptical
+
+            // Sparkle animation
+            const phase = (this.animationTime * 3 + i) % 2;
+            const opacity = phase < 1 ? phase : 2 - phase;
+
+            if (opacity > 0.3) {
+                this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                const pixelSize = 2 * s;
+                this.ctx.fillRect(x - pixelSize / 2, y - pixelSize / 2, pixelSize, pixelSize);
+
+                // Cross sparkle
+                if (opacity > 0.7) {
+                    this.ctx.fillRect(x - 4 * s, y - s / 2, 8 * s, s);
+                    this.ctx.fillRect(x - s / 2, y - 4 * s, s, 8 * s);
+                }
+            }
+        }
+    }
+
+    /**
+     * Render selection highlight (pulsing gold border)
+     */
+    renderPixelSelection(width, height) {
+        const s = this.scale;
+        const pulse = Math.sin(this.animationTime * 4) * 0.5 + 0.5;
+        const offset = 4 * s + pulse * 4 * s;
+
+        this.ctx.strokeStyle = `rgba(255, 215, 0, ${0.7 + pulse * 0.3})`;
+        this.ctx.lineWidth = 3 * s;
+        this.ctx.strokeRect(
+            -width / 2 - offset,
+            -height / 2 - offset,
+            width + offset * 2,
+            height + offset * 2
+        );
+    }
+
+    // ==================== PIXEL ART PRIMITIVES ====================
+
+    /**
+     * Fill pixel-perfect rectangle with rounded corners
+     */
+    fillPixelRect(x, y, width, height, color, radius = 0) {
+        this.ctx.fillStyle = color;
+
+        if (radius === 0) {
+            this.ctx.fillRect(x, y, width, height);
+        } else {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x + radius, y);
+            this.ctx.lineTo(x + width - radius, y);
+            this.ctx.arcTo(x + width, y, x + width, y + radius, radius);
+            this.ctx.lineTo(x + width, y + height - radius);
+            this.ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+            this.ctx.lineTo(x + radius, y + height);
+            this.ctx.arcTo(x, y + height, x, y + height - radius, radius);
+            this.ctx.lineTo(x, y + radius);
+            this.ctx.arcTo(x, y, x + radius, y, radius);
+            this.ctx.closePath();
             this.ctx.fill();
         }
     }
 
     /**
-     * Render stickers on nail
+     * Stroke pixel-perfect rectangle with rounded corners
      */
-    renderStickers(shape, stickers) {
-        stickers.forEach(sticker => {
-            const { type, position, size } = sticker;
-            const x = position.x * shape.width * 0.4; // Relative positioning
-            const y = position.y * shape.height * 0.6;
-            const sizeMultiplier = size === 'small' ? 0.5 : size === 'large' ? 1.5 : 1.0;
-            const baseSize = 8 * sizeMultiplier;
+    strokePixelRect(x, y, width, height, color, lineWidth, radius = 0) {
+        this.ctx.strokeStyle = color;
+        this.ctx.lineWidth = lineWidth;
 
-            this.ctx.save();
-            this.ctx.translate(x, y);
-
-            // Render sticker based on type
-            if (type.startsWith('star-')) {
-                this.renderStarSticker(type, baseSize);
-            } else if (type.startsWith('heart-')) {
-                this.renderHeartSticker(type, baseSize);
-            } else if (type.startsWith('gem-')) {
-                this.renderGemSticker(type, baseSize);
-            } else if (type.startsWith('shape-')) {
-                this.renderShapeSticker(type, baseSize);
-            } else {
-                this.renderThematicSticker(type, baseSize);
-            }
-
-            this.ctx.restore();
-        });
-    }
-
-    /**
-     * Render star sticker
-     */
-    renderStarSticker(type, size) {
-        const color = type.includes('gold') ? '#ffd700' :
-                     type.includes('silver') ? '#c0c0c0' :
-                     type.includes('rainbow') ? this.getRainbowColor() : '#ffff00';
-
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-
-        // 5-pointed star
-        for (let i = 0; i < 5; i++) {
-            const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-            const x = Math.cos(angle) * size;
-            const y = Math.sin(angle) * size;
-            if (i === 0) this.ctx.moveTo(x, y);
-            else this.ctx.lineTo(x, y);
-        }
-        this.ctx.closePath();
-        this.ctx.fill();
-
-        // Sparkle highlight
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        this.ctx.beginPath();
-        this.ctx.arc(0, -size * 0.3, size * 0.2, 0, Math.PI * 2);
-        this.ctx.fill();
-    }
-
-    /**
-     * Render heart sticker
-     */
-    renderHeartSticker(type, size) {
-        const color = type.includes('red') ? '#ff0000' :
-                     type.includes('pink') ? '#ff69b4' :
-                     type.includes('broken') ? '#8b0000' : '#ff1493';
-
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-
-        // Heart shape (two arcs + triangle)
-        this.ctx.moveTo(0, size * 0.3);
-        this.ctx.arc(-size * 0.35, -size * 0.2, size * 0.4, Math.PI / 4, Math.PI, false);
-        this.ctx.arc(size * 0.35, -size * 0.2, size * 0.4, Math.PI, 3 * Math.PI / 4, false);
-        this.ctx.lineTo(0, size * 0.8);
-        this.ctx.closePath();
-        this.ctx.fill();
-
-        // Broken heart line
-        if (type.includes('broken')) {
-            this.ctx.strokeStyle = '#000';
-            this.ctx.lineWidth = 2;
+        if (radius === 0) {
+            this.ctx.strokeRect(x, y, width, height);
+        } else {
             this.ctx.beginPath();
-            this.ctx.moveTo(-size * 0.1, -size * 0.4);
-            this.ctx.lineTo(size * 0.1, size * 0.6);
+            this.ctx.moveTo(x + radius, y);
+            this.ctx.lineTo(x + width - radius, y);
+            this.ctx.arcTo(x + width, y, x + width, y + radius, radius);
+            this.ctx.lineTo(x + width, y + height - radius);
+            this.ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+            this.ctx.lineTo(x + radius, y + height);
+            this.ctx.arcTo(x, y + height, x, y + height - radius, radius);
+            this.ctx.lineTo(x, y + radius);
+            this.ctx.arcTo(x, y, x + radius, y, radius);
+            this.ctx.closePath();
             this.ctx.stroke();
         }
     }
 
-    /**
-     * Render gem sticker
-     */
-    renderGemSticker(type, size) {
-        const color = type.includes('diamond') ? '#e0e0e0' :
-                     type.includes('ruby') ? '#e0115f' :
-                     type.includes('emerald') ? '#50c878' :
-                     type.includes('sapphire') ? '#0f52ba' : '#9966cc';
-
-        // Diamond/gem shape (faceted)
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, -size);
-        this.ctx.lineTo(size * 0.6, -size * 0.3);
-        this.ctx.lineTo(size * 0.4, size);
-        this.ctx.lineTo(-size * 0.4, size);
-        this.ctx.lineTo(-size * 0.6, -size * 0.3);
-        this.ctx.closePath();
-        this.ctx.fill();
-
-        // Facet highlights
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-        this.ctx.lineWidth = 1;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, -size);
-        this.ctx.lineTo(0, size);
-        this.ctx.stroke();
-
-        // Shine highlight
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        this.ctx.beginPath();
-        this.ctx.arc(-size * 0.2, -size * 0.5, size * 0.2, 0, Math.PI * 2);
-        this.ctx.fill();
-    }
+    // ==================== CLICK DETECTION (CRITICAL FIX) ====================
 
     /**
-     * Render shape sticker (circle, square, triangle)
+     * Get nail at canvas position (FIXED - was missing!)
+     * @param {number} canvasX - Canvas X coordinate
+     * @param {number} canvasY - Canvas Y coordinate
+     * @returns {object|null} { hand: 'left'|'right', index: 0-4, nail: hitbox } or null
      */
-    renderShapeSticker(type, size) {
-        const color = type.includes('gold') ? '#ffd700' :
-                     type.includes('silver') ? '#c0c0c0' : this.getRainbowColor();
+    getNailAtPosition(canvasX, canvasY) {
+        // Check all nail hitboxes (in reverse order - top to bottom)
+        for (let i = this.nailHitboxes.length - 1; i >= 0; i--) {
+            const hitbox = this.nailHitboxes[i];
 
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
+            // Simple rectangular hit test (good enough for now)
+            const dx = canvasX - hitbox.x;
+            const dy = canvasY - hitbox.y;
 
-        if (type.includes('circle')) {
-            this.ctx.arc(0, 0, size, 0, Math.PI * 2);
-        } else if (type.includes('square')) {
-            this.ctx.rect(-size, -size, size * 2, size * 2);
-        } else if (type.includes('triangle')) {
-            this.ctx.moveTo(0, -size);
-            this.ctx.lineTo(size, size);
-            this.ctx.lineTo(-size, size);
-            this.ctx.closePath();
-        }
-
-        this.ctx.fill();
-    }
-
-    /**
-     * Render thematic sticker (flower, moon, skull)
-     */
-    renderThematicSticker(type, size) {
-        if (type === 'flower') {
-            // Simple 5-petal flower
-            this.ctx.fillStyle = '#ff69b4';
-            for (let i = 0; i < 5; i++) {
-                const angle = (i * 2 * Math.PI) / 5;
-                this.ctx.beginPath();
-                this.ctx.arc(
-                    Math.cos(angle) * size * 0.5,
-                    Math.sin(angle) * size * 0.5,
-                    size * 0.4,
-                    0, Math.PI * 2
-                );
-                this.ctx.fill();
-            }
-            // Center
-            this.ctx.fillStyle = '#ffff00';
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
-            this.ctx.fill();
-
-        } else if (type === 'moon') {
-            // Crescent moon
-            this.ctx.fillStyle = '#fff';
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, size, 0, Math.PI * 2);
-            this.ctx.fill();
-
-            this.ctx.fillStyle = '#1a1a1a'; // Background color (cut-out)
-            this.ctx.beginPath();
-            this.ctx.arc(size * 0.3, 0, size * 0.8, 0, Math.PI * 2);
-            this.ctx.fill();
-
-        } else if (type === 'skull') {
-            // Tiny skull
-            this.ctx.fillStyle = '#fff';
-            this.ctx.beginPath();
-            this.ctx.arc(0, -size * 0.2, size * 0.7, 0, Math.PI * 2);
-            this.ctx.fill();
-            this.ctx.fillRect(-size * 0.5, size * 0.2, size, size * 0.4);
-
-            // Eye sockets
-            this.ctx.fillStyle = '#000';
-            this.ctx.beginPath();
-            this.ctx.arc(-size * 0.3, -size * 0.3, size * 0.15, 0, Math.PI * 2);
-            this.ctx.arc(size * 0.3, -size * 0.3, size * 0.15, 0, Math.PI * 2);
-            this.ctx.fill();
-        }
-    }
-
-    /**
-     * Render glitter particles
-     */
-    renderGlitter(shape) {
-        const particleCount = 12;
-        const s = this.scale;
-
-        for (let i = 0; i < particleCount; i++) {
-            // Random position within nail bounds
-            const angle = (i / particleCount) * Math.PI * 2;
-            const radius = Math.random() * shape.width * 0.4;
-            const x = Math.cos(angle) * radius;
-            const y = Math.sin(angle) * radius * 0.7; // Elliptical distribution
-
-            // Sparkle animation (fade in/out)
-            const sparklePhase = (this.animationTime * 3 + i) % 2;
-            const opacity = sparklePhase < 1 ? sparklePhase : 2 - sparklePhase;
-
-            this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.8})`;
-            this.ctx.beginPath();
-            this.ctx.arc(x, y, 2 * s, 0, Math.PI * 2);
-            this.ctx.fill();
-
-            // Star sparkle shape
-            if (opacity > 0.7) {
-                this.ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-                this.ctx.lineWidth = 1;
-                this.ctx.beginPath();
-                this.ctx.moveTo(x - 4 * s, y);
-                this.ctx.lineTo(x + 4 * s, y);
-                this.ctx.moveTo(x, y - 4 * s);
-                this.ctx.lineTo(x, y + 4 * s);
-                this.ctx.stroke();
+            if (Math.abs(dx) <= hitbox.width / 2 && Math.abs(dy) <= hitbox.height / 2) {
+                console.log(`[NailArtRenderer] Clicked nail: ${hitbox.hand} hand, finger ${hitbox.index}`);
+                return {
+                    hand: hitbox.hand,
+                    index: hitbox.index,
+                    nail: hitbox
+                };
             }
         }
-    }
 
-    /**
-     * Render selection highlight (gold pulse)
-     */
-    renderSelectionHighlight(shape) {
-        const pulsePhase = Math.sin(this.animationTime * 4) * 0.3 + 0.7;
-        const pulseWidth = 4 + pulsePhase * 2;
-
-        this.ctx.strokeStyle = `rgba(255, 215, 0, ${pulsePhase})`;
-        this.ctx.lineWidth = pulseWidth;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-            0, 0,
-            shape.width * 0.5 + pulseWidth,
-            shape.height * 0.7 + pulseWidth,
-            0, 0, Math.PI * 2
-        );
-        this.ctx.stroke();
-    }
-
-    /**
-     * Render nail outline (always on top)
-     */
-    renderNailOutline(shape) {
-        this.ctx.strokeStyle = '#8B7355';
-        this.ctx.lineWidth = 1.5;
-        this.ctx.beginPath();
-        this.ctx.ellipse(
-            0, 0,
-            shape.width * 0.5,
-            shape.height * 0.7,
-            0, 0, Math.PI * 2
-        );
-        this.ctx.stroke();
-    }
-
-    // ==================== UTILITY FUNCTIONS ====================
-
-    /**
-     * Lighten a hex color by a percentage
-     */
-    lightenColor(hex, percent) {
-        const num = parseInt(hex.replace('#', ''), 16);
-        const r = Math.min(255, ((num >> 16) + percent));
-        const g = Math.min(255, (((num >> 8) & 0x00FF) + percent));
-        const b = Math.min(255, ((num & 0x0000FF) + percent));
-        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-    }
-
-    /**
-     * Get animated rainbow color
-     */
-    getRainbowColor() {
-        const hue = (this.animationTime * 50) % 360;
-        return `hsl(${hue}, 100%, 60%)`;
+        return null; // No nail clicked
     }
 
     /**
@@ -942,8 +751,8 @@ class NailArtRenderer {
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;
 
-        const clientX = event.clientX || (event.touches && event.touches[0].clientX);
-        const clientY = event.clientY || (event.touches && event.touches[0].clientY);
+        const clientX = event.clientX || (event.touches && event.touches[0] && event.touches[0].clientX);
+        const clientY = event.clientY || (event.touches && event.touches[0] && event.touches[0].clientY);
 
         return {
             x: (clientX - rect.left) * scaleX,
@@ -952,54 +761,23 @@ class NailArtRenderer {
     }
 
     /**
-     * Detect which nail was clicked
-     * @param {number} clickX - Click X coordinate
-     * @param {number} clickY - Click Y coordinate
-     * @param {string} guardKey - Current guard
-     * @returns {object|null} { hand: 'left'|'right', index: 0-4 } or null
+     * Detect nail click from event (convenience method)
+     * @param {MouseEvent|TouchEvent} event - Click or touch event
+     * @returns {object|null} { hand, index, nail } or null
      */
-    detectNailClick(clickX, clickY, guardKey) {
-        const s = this.scale;
-
-        // Check both hands
-        for (const side of ['left', 'right']) {
-            const isLeft = side === 'left';
-            const baseX = isLeft ? 200 * s : 600 * s;
-            const baseY = 350 * s;
-
-            const fingerPositions = this.getFingerPositions(baseX, baseY, isLeft);
-
-            for (let i = 0; i < fingerPositions.length; i++) {
-                const pos = fingerPositions[i];
-
-                // Transform click to finger-local coordinates
-                const dx = clickX - pos.x;
-                const dy = clickY - pos.y;
-                const angle = -(pos.angle * Math.PI) / 180;
-                const rotX = dx * Math.cos(angle) - dy * Math.sin(angle);
-                const rotY = dx * Math.sin(angle) + dy * Math.cos(angle);
-
-                // Check if within nail bounds
-                const nailWidth = this.NAIL_BASE_WIDTH * s * 0.5;
-                const nailHeight = this.NAIL_BASE_HEIGHT * s * 0.7;
-                const dist = Math.sqrt(
-                    (rotX / nailWidth) ** 2 + (rotY / nailHeight) ** 2
-                );
-
-                if (dist <= 1.0) {
-                    return { hand: side, index: i };
-                }
-            }
-        }
-
-        return null; // No nail clicked
+    detectNailClick(event) {
+        const coords = this.getCanvasCoordinates(event);
+        return this.getNailAtPosition(coords.x, coords.y);
     }
 
+    // ==================== CLEANUP ====================
+
     /**
-     * Cleanup and destroy renderer
+     * Destroy renderer and cleanup
      */
     destroy() {
         this.stopAnimation();
+        this.nailHitboxes = [];
         this.canvas = null;
         this.ctx = null;
         console.log('[NailArtRenderer] Destroyed');
