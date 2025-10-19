@@ -239,8 +239,9 @@ VroomVroomGame.prototype.applyBaseColor = function(colorHex) {
         return;
     }
 
-    const { hand, finger } = this.currentNailArtSession.selectedNail;
-    const nail = this.currentNailArtSession.decorations[hand][finger];
+    const { hand, index } = this.currentNailArtSession.selectedNail;
+    const handKey = hand === 'left' ? 'leftHand' : 'rightHand';
+    const nail = this.currentNailArtSession.decorations[handKey][index];
 
     // Save to undo stack
     this.saveNailArtUndoState();
@@ -261,8 +262,9 @@ VroomVroomGame.prototype.applySpecialEffect = function(effectKey) {
         return;
     }
 
-    const { hand, finger } = this.currentNailArtSession.selectedNail;
-    const nail = this.currentNailArtSession.decorations[hand][finger];
+    const { hand, index } = this.currentNailArtSession.selectedNail;
+    const handKey = hand === 'left' ? 'leftHand' : 'rightHand';
+    const nail = this.currentNailArtSession.decorations[handKey][index];
 
     // Save to undo stack
     this.saveNailArtUndoState();
@@ -283,8 +285,9 @@ VroomVroomGame.prototype.applyPattern = function(patternKey) {
         return;
     }
 
-    const { hand, finger } = this.currentNailArtSession.selectedNail;
-    const nail = this.currentNailArtSession.decorations[hand][finger];
+    const { hand, index } = this.currentNailArtSession.selectedNail;
+    const handKey = hand === 'left' ? 'leftHand' : 'rightHand';
+    const nail = this.currentNailArtSession.decorations[handKey][index];
 
     // Save to undo stack
     this.saveNailArtUndoState();
@@ -305,8 +308,9 @@ VroomVroomGame.prototype.applySticker = function(stickerKey) {
         return;
     }
 
-    const { hand, finger } = this.currentNailArtSession.selectedNail;
-    const nail = this.currentNailArtSession.decorations[hand][finger];
+    const { hand, index } = this.currentNailArtSession.selectedNail;
+    const handKey = hand === 'left' ? 'leftHand' : 'rightHand';
+    const nail = this.currentNailArtSession.decorations[handKey][index];
 
     // Check sticker limit (5 per nail)
     if (nail.stickers.length >= 5) {
@@ -339,8 +343,9 @@ VroomVroomGame.prototype.nailArtToggleGlitter = function() {
         return;
     }
 
-    const { hand, finger } = this.currentNailArtSession.selectedNail;
-    const nail = this.currentNailArtSession.decorations[hand][finger];
+    const { hand, index } = this.currentNailArtSession.selectedNail;
+    const handKey = hand === 'left' ? 'leftHand' : 'rightHand';
+    const nail = this.currentNailArtSession.decorations[handKey][index];
 
     // Save to undo stack
     this.saveNailArtUndoState();
@@ -397,13 +402,14 @@ VroomVroomGame.prototype.nailArtClearCurrentNail = function() {
         return;
     }
 
-    const { hand, finger } = this.currentNailArtSession.selectedNail;
+    const { hand, index } = this.currentNailArtSession.selectedNail;
+    const handKey = hand === 'left' ? 'leftHand' : 'rightHand';
 
     // Save to undo stack
     this.saveNailArtUndoState();
 
     // Clear nail
-    this.currentNailArtSession.decorations[hand][finger] = this.createEmptyNailDecoration();
+    this.currentNailArtSession.decorations[handKey][index] = this.createEmptyNailDecoration();
 
     // Re-render
     this.renderNailArtScene();
