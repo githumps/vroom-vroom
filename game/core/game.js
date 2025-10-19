@@ -1107,6 +1107,7 @@ class VroomVroomGame {
         if (screenId === 'prisonMenu') {
             this.ambientTimer.start();
             this.corruptionTracker.initialize(this.player);
+            this.updateCharacterInfoDisplay();
             this.updatePrisonTimeDisplay();
             this.updateCorruptionDisplay();
         }
@@ -1152,6 +1153,55 @@ class VroomVroomGame {
                 </div>
             `;
         }
+    }
+
+    // Update character info display
+    updateCharacterInfoDisplay() {
+        const display = document.getElementById('characterInfoDisplay');
+        if (!display || !this.player) return;
+
+        const skinTones = ['Very Pale', 'Pale', 'Light', 'Medium', 'Tan', 'Dark', 'Very Dark'];
+        const voiceTypes = {
+            'deep': 'Deep & Resigned',
+            'high': 'High & Anxious',
+            'monotone': 'Monotone Bureaucrat',
+            'enthusiastic': 'Disturbingly Enthusiastic'
+        };
+
+        const carModels = {
+            'beater': 'The Beater',
+            'box': 'The Box',
+            'clunker': 'The Clunker',
+            'rustbucket': 'The Rust Bucket'
+        };
+
+        const carColors = {
+            0x8B7355: 'Rust Brown',
+            0x5A6B4A: 'Military Green',
+            0x6B6B6B: 'Dull Grey',
+            0x4A5A6B: 'Faded Blue',
+            0x7A7A7A: 'Primer Grey',
+            0x8B4A4A: 'Oxidized Red',
+            0x8B8B4A: 'Muddy Yellow',
+            0x4A6B4A: 'Sick Green',
+            0x2A2A2A: 'Asphalt Black',
+            0x9B9B9B: 'Dingy White'
+        };
+
+        display.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; font-size: 0.9em;">
+                <div>
+                    <strong style="color: #0f0;">Inmate:</strong> ${this.player.name || 'Unknown'}<br>
+                    <strong style="color: #0f0;">Height:</strong> ${this.player.height || 175}cm<br>
+                    <strong style="color: #0f0;">Skin Tone:</strong> ${skinTones[this.player.skinTone || 2]}
+                </div>
+                <div>
+                    <strong style="color: #0f0;">Voice:</strong> ${voiceTypes[this.player.voice] || 'Unknown'}<br>
+                    <strong style="color: #0f0;">Vehicle:</strong> ${carModels[this.player.selectedCar?.model] || 'Unknown'}<br>
+                    <strong style="color: #0f0;">Color:</strong> ${carColors[this.player.selectedCar?.color] || 'Unknown'}
+                </div>
+            </div>
+        `;
     }
 
     // Modal Management
