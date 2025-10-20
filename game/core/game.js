@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '3.0.0';
+        this.VERSION = '3.0.1';
 
         this.scene = null;
         this.camera = null;
@@ -801,6 +801,9 @@ class VroomVroomGame {
 
         // Initialize mobile touch controls if on mobile device
         this.initMobileTouchControls();
+
+        // Set initial state class for main menu
+        document.body.classList.add('state-menu');
 
         // Start render loop
         this.animate();
@@ -1991,6 +1994,10 @@ class VroomVroomGame {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('drivingHUD').style.display = 'block';
 
+            // Add driving state class to body for pixel art background
+            document.body.classList.add('state-driving');
+            document.body.classList.remove('state-prison', 'state-courtroom', 'state-menu');
+
             this.player.speed = 0;
             this.player.drivingTime = 0;
             this.player.wantedLevel = 0;
@@ -2120,6 +2127,10 @@ class VroomVroomGame {
     pullOver() {
         this.gameState = 'courtroom';
         document.getElementById('drivingHUD').style.display = 'none';
+
+        // Remove driving state class from body
+        document.body.classList.remove('state-driving');
+        document.body.classList.add('state-courtroom');
 
         // Hide mobile controls
         if (this.isMobile()) {
@@ -2378,6 +2389,10 @@ class VroomVroomGame {
 
     startPrison() {
         this.gameState = 'prison';
+
+        // Add prison state class to body
+        document.body.classList.add('state-prison');
+        document.body.classList.remove('state-driving', 'state-courtroom', 'state-menu');
 
         // Stop Ace Attorney courtroom if it's running
         if (this.aceCourtroom) {

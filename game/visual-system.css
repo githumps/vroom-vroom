@@ -1544,6 +1544,65 @@ body {
 }
 
 /* ============================================================================
+   DRIVING SCENE - Pixel Art Background
+   ============================================================================ */
+
+/* Atmospheric pixel art background when driving */
+body.state-driving {
+    position: relative;
+    background: linear-gradient(
+        to bottom,
+        #2d3561 0%,      /* Dark blue sky (top)
+        #4a5f8f 30%,     /* Mid blue
+        #6d7fa8 60%,     /* Lighter blue (horizon)
+        #3d4a5e 100%     /* Dark ground
+    );
+}
+
+/* Scanline effect for retro feel */
+body.state-driving::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.05) 2px,
+        rgba(0, 0, 0, 0.05) 4px
+    );
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.3;
+}
+
+/* Atmospheric glow (dystopian pollution) */
+body.state-driving::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: radial-gradient(
+        ellipse at center top,
+        rgba(255, 150, 100, 0.1) 0%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: 4;
+}
+
+/* Ensure game canvas is above background but below HUD */
+#gameCanvas {
+    position: relative;
+    z-index: 10;
+}
+
+/* ============================================================================
    DRIVING HUD - Pixel Art Overlay
    ============================================================================ */
 

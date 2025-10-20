@@ -426,15 +426,20 @@ class PrisonSceneRenderer {
         // Fallback for simple pixel data rendering
         if (element.pixelData && Array.isArray(element.pixelData)) {
             this.renderPixelData(ctx, element.pixelData, element.size);
-        } else {
-            // Draw placeholder
+        } else if (element.size) {
+            // Draw placeholder only if size is defined
             ctx.fillStyle = '#ff00ff';
             ctx.fillRect(0, 0, element.size.width, element.size.height);
         }
+        // If no pixelData and no size, skip rendering (animated elements, etc.)
     }
 
     renderPixelData(ctx, pixelData, size) {
         // Convert ASCII pixel art to canvas pixels
+        if (!pixelData || !Array.isArray(pixelData) || pixelData.length === 0) {
+            return; // Nothing to render
+        }
+
         const palette = this.sceneData.palette;
         const charMap = {
             '█': palette.metal_dark || '#3a3a3a',
@@ -444,7 +449,13 @@ class PrisonSceneRenderer {
             '  ': 'transparent'
         };
 
-        const lineHeight = size.height / pixelData.length;
+        // Calculate size from pixelData if not provided
+        const actualSize = size || {
+            width: pixelData[0].length / 2, // ASCII uses 2 chars per pixel
+            height: pixelData.length
+        };
+
+        const lineHeight = actualSize.height / pixelData.length;
 
         pixelData.forEach((line, y) => {
             for (let x = 0; x < line.length; x += 2) {
