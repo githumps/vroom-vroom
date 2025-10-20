@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '3.2.1'; // CRITICAL BUG FIXES (CharacterSprites, scene renderer, color validation)
+        this.VERSION = '3.2.2'; // FIX: CharacterOrigins/Archetypes errors + character preview skin tone updates
 
         this.scene = null;
         this.camera = null;
@@ -1634,6 +1634,12 @@ class VroomVroomGame {
 
     // Update origin description display
     updateOriginDisplay() {
+        // Check if CharacterOrigins exists (may not be implemented yet)
+        if (typeof CharacterOrigins === 'undefined') {
+            console.warn('[Character Creation] CharacterOrigins not yet implemented');
+            return;
+        }
+
         const origins = CharacterOrigins.getOrigins();
         const selectedOrigin = document.getElementById('origin').value;
         const origin = origins[selectedOrigin];
@@ -1662,6 +1668,12 @@ class VroomVroomGame {
 
     // Update archetype description display
     updateArchetypeDisplay() {
+        // Check if CharacterArchetypes exists (may not be implemented yet)
+        if (typeof CharacterArchetypes === 'undefined') {
+            console.warn('[Character Creation] CharacterArchetypes not yet implemented');
+            return;
+        }
+
         const archetypes = CharacterArchetypes.getArchetypes();
         const selectedArchetype = document.getElementById('archetype').value;
         const archetype = archetypes[selectedArchetype];
