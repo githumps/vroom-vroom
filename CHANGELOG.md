@@ -16,6 +16,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.1.0] - 2025-10-19
+
+### Changed - SIDESCROLLER ENGINE 🎮🚗
+
+**Major Rendering Update: Three.js → 2D Pixel Art Sidescroller**
+
+Replaces the 3D isometric driving system with a gorgeous 2D pixel art sidescroller for better performance and more authentic retro aesthetic.
+
+#### **New Sidescroller Engine** (`game/systems/sidescroller-engine.js`)
+- **Canvas 2D rendering** - No more Three.js for driving scenes
+- **Side-scrolling camera** - Smooth parallax following player car
+- **60 FPS performance** - Optimized pixel-perfect rendering
+- **Parallax background layers** - 4 layers of buildings at different scroll speeds
+- **Infinite scrolling** - Seamless world that wraps around
+- **Particle system** - Dust clouds and smoke trails
+
+#### **Physics System**
+- **Horizontal movement** - Left/right acceleration
+- **Gravity** - Ground detection and collision
+- **Speed tracking** - Max speed 50 km/h (synced with HUD)
+- **Police AI** - Chase system adapted for sidescroller
+- **Collision detection** - Player car vs police car trigger arrest
+
+#### **Rendering Features**
+- **Pixel-perfect rendering** - Image smoothing disabled
+- **Disco Elysium color palette** - Muted, desaturated colors
+- **Player car sprite** - Uses selected car model and color
+- **Police car sprite** - Flashing red/blue lights
+- **Road tiles** - Repeating asphalt with dashed yellow line
+- **Building silhouettes** - Randomized parallax background
+- **Screen shake** - Impact effects on arrest
+
+#### **Maintained Features**
+- **All game mechanics preserved** - Speed, wanted level, police spawn, arrest
+- **Mobile touch controls** - Full compatibility maintained
+- **HUD updates** - Speed, wanted level, driving time
+- **Save/load system** - No breaking changes
+- **Courtroom/prison flow** - Seamless integration
+
+#### **Technical Changes**
+- **Removed Three.js dependencies** for driving (still used for car preview)
+- **New files**:
+  - `game/systems/sidescroller-engine.js` (520 lines)
+  - `game/systems/sidescroller-renderer.js` (350 lines)
+- **Modified files**:
+  - `game/core/game.js` - Removed createWorld(), createCar(), createPoliceCar()
+  - `game/core/game.js` - Updated startDriving(), updateDriving(), animate()
+  - `game/index.html` - Added sidescroller script tags
+- **Version bump**: v3.0.1 → v3.1.0
+
+#### **Performance Improvements**
+- **Reduced memory usage** - No 3D scene graph
+- **Faster rendering** - 2D canvas vs WebGL overhead
+- **Better mobile performance** - Simpler rendering pipeline
+- **Smaller asset footprint** - Procedural sprites instead of models
+
+---
+
 ## [1.6.0] - 2025-10-19
 
 ### Added - NAIL ART DECORATION SYSTEM 💅✨

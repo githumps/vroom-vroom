@@ -1,7 +1,7 @@
 # VROOM VROOM - COMPLETE SYSTEMS DOCUMENTATION
 
-**Version:** 1.4.0
-**Last Updated:** 2025-10-14
+**Version:** 3.1.0
+**Last Updated:** 2025-10-19
 **Game:** Dystopian prison driving simulator with Disco Elysium aesthetic
 
 This document provides a comprehensive overview of ALL game systems in VROOM VROOM. For detailed documentation on each system, see the linked reference documents.
@@ -80,20 +80,36 @@ Rust Brown, Military Green, Dull Grey, Faded Blue, Primer Grey, Oxidized Red, Mu
 - Touch controls (left, right, accelerate buttons)
 - Stop driving button
 
-### World
-- 3D isometric view (Disco Elysium style)
-- Muted color palette
-- Infinite driving space
-- Dynamic police spawning
+### Rendering Engine
+**NEW v3.1.0:** 2D Pixel Art Sidescroller (replaces Three.js 3D)
+- Canvas 2D rendering (pixel-perfect)
+- Side-scrolling camera with smooth parallax
+- 4 background layers (buildings at different scroll speeds)
+- Infinite horizontal scrolling
+- 60 FPS performance
+- Disco Elysium color palette (muted, desaturated)
 
 ### Car Physics
-- Acceleration and deceleration
-- Turning mechanics
-- Speed tracking
-- Collision detection (police contact)
+- Horizontal acceleration and deceleration
+- Gravity and ground collision
+- Speed tracking (0-50 km/h)
+- Visual car rotation/tilt based on speed
+- Particle effects (dust, smoke)
 
-**Status:** ✅ Fully Implemented
-**Mobile Support:** ✅ Added v1.3.0
+### Visual Features
+- Player car sprite (uses selected model and color)
+- Police car sprite with flashing red/blue lights
+- Road tiles with dashed yellow center line
+- Randomized building silhouettes
+- Screen shake on arrest
+
+**Files:**
+- `game/systems/sidescroller-engine.js` - Main engine (520 lines)
+- `game/systems/sidescroller-renderer.js` - Rendering utilities (350 lines)
+
+**Status:** ✅ Fully Implemented (Sidescroller v3.1.0)
+**Mobile Support:** ✅ Full compatibility maintained
+**Performance:** ✅ Improved vs Three.js
 
 ---
 

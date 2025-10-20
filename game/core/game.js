@@ -568,11 +568,13 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '3.0.1';
+        this.VERSION = '3.1.0'; // SIDESCROLLER UPDATE
 
         this.scene = null;
         this.camera = null;
         this.renderer = null;
+        this.sidescroller = null; // NEW: Sidescroller engine
+        this.sidescrollerRenderer = null; // NEW: Sidescroller renderer utilities
         this.car = null;
         this.policecar = null;
         this.carPreview = null;
@@ -712,24 +714,23 @@ class VroomVroomGame {
         // Display version number
         document.getElementById('gameVersion').textContent = this.VERSION;
 
-        // Setup Three.js
+        // Setup Sidescroller Engine (replaces Three.js)
+        console.log('[VROOM] Initializing Sidescroller Engine...');
+        this.sidescrollerRenderer = new SidescrollerRenderer();
+        this.sidescroller = new SidescrollerEngine('gameCanvas', this);
+        console.log('[VROOM] ✅ Sidescroller Engine initialized - 2D pixel art driving ready');
+
+        // Keep Three.js for car preview only (character creation)
+        // Note: We still need this for the car selection preview
         this.renderer = new THREE.WebGLRenderer({
-            canvas: document.getElementById('gameCanvas'),
+            canvas: document.createElement('canvas'), // Offscreen canvas for previews only
             antialias: true
         });
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(400, 400);
 
-        // Disco Elysium color palette - muted, desaturated sky
-        this.renderer.setClearColor(0x8B9DC3);
-
-        // Setup scene
+        // Minimal Three.js scene for car preview
         this.scene = new THREE.Scene();
-
-        // Atmospheric fog with muted color
-        this.scene.fog = new THREE.Fog(0x8B9DC3, 30, 200);
-
-        // Setup ISOMETRIC camera (Disco Elysium style)
-        const aspect = window.innerWidth / window.innerHeight;
+        const aspect = 1; // Square preview
         const frustumSize = 20;
         this.camera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2,
@@ -739,30 +740,15 @@ class VroomVroomGame {
             0.1,
             1000
         );
-
-        // Position camera at 45-degree angle (isometric view)
         this.camera.position.set(20, 20, 20);
         this.camera.lookAt(0, 0, 0);
 
-        // Store camera settings for smooth following
-        this.cameraOffset = new THREE.Vector3(20, 20, 20);
-
-        // Disco Elysium style lighting - soft, atmospheric
-        const ambientLight = new THREE.AmbientLight(0xB8C7D9, 0.7); // Soft blue-gray
+        // Basic lighting for car preview
+        const ambientLight = new THREE.AmbientLight(0xB8C7D9, 0.7);
         this.scene.add(ambientLight);
-
-        // Main directional light - softer, more diffuse
-        const directionalLight = new THREE.DirectionalLight(0xF0E8D0, 0.5); // Warm, muted light
+        const directionalLight = new THREE.DirectionalLight(0xF0E8D0, 0.5);
         directionalLight.position.set(50, 100, 50);
         this.scene.add(directionalLight);
-
-        // Secondary fill light for atmosphere
-        const fillLight = new THREE.DirectionalLight(0x8B9DC3, 0.3); // Cool blue fill
-        fillLight.position.set(-30, 50, -30);
-        this.scene.add(fillLight);
-
-        // Create world
-        this.createWorld();
 
         // Event listeners
         window.addEventListener('resize', () => this.onResize());
@@ -882,215 +868,13 @@ class VroomVroomGame {
         console.log('[VROOM] Prison scene initialization complete. Active renderers:', Object.keys(this.sceneRenderers).length);
     }
 
-    createWorld() {
-        // Ground - Muted green/brown (Disco Elysium palette)
-        const groundGeometry = new THREE.PlaneGeometry(1000, 1000);
-        const groundMaterial = new THREE.MeshStandardMaterial({
-            color: 0x6B7353, // Muted olive green
-            roughness: 0.9,
-            metalness: 0.1
-        });
-        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-        ground.rotation.x = -Math.PI / 2;
-        this.scene.add(ground);
-
-        // Road - Dark desaturated gray
-        const roadGeometry = new THREE.PlaneGeometry(10, 1000);
-        const roadMaterial = new THREE.MeshStandardMaterial({
-            color: 0x4A4A4A, // Dark gray
-            roughness: 0.95,
-            metalness: 0.05
-        });
-        const road = new THREE.Mesh(roadGeometry, roadMaterial);
-        road.rotation.x = -Math.PI / 2;
-        road.position.y = 0.01;
-        this.scene.add(road);
-
-        // Road markers - Desaturated yellow
-        for (let i = -500; i < 500; i += 20) {
-            const markerGeometry = new THREE.PlaneGeometry(0.5, 5);
-            const markerMaterial = new THREE.MeshStandardMaterial({
-                color: 0xB8A562, // Desaturated yellow/beige
-                roughness: 0.8
-            });
-            const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-            marker.rotation.x = -Math.PI / 2;
-            marker.position.set(0, 0.02, i);
-            this.scene.add(marker);
-            this.roadMarkers.push(marker);
-        }
-
-        // Buildings (Disco Elysium style - muted, desaturated)
-        const buildingColors = [
-            0x5A5A5A, // Dark gray
-            0x6B6B6B, // Medium gray
-            0x7A6E5D, // Brown-gray
-            0x5D6B7A, // Blue-gray
-            0x6B5D5A  // Red-gray
-        ];
-
-        for (let i = 0; i < 50; i++) {
-            const height = Math.random() * 30 + 10;
-            const buildingGeometry = new THREE.BoxGeometry(
-                Math.random() * 8 + 5,
-                height,
-                Math.random() * 8 + 5
-            );
-            const buildingMaterial = new THREE.MeshStandardMaterial({
-                color: buildingColors[Math.floor(Math.random() * buildingColors.length)],
-                roughness: 0.9,
-                metalness: 0.1
-            });
-            const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
-
-            const side = Math.random() > 0.5 ? 1 : -1;
-            building.position.set(
-                side * (Math.random() * 30 + 20),
-                height / 2,
-                Math.random() * 400 - 200
-            );
-
-            this.scene.add(building);
-            this.buildings.push(building);
-        }
-
-        // Player car
-        this.createCar();
-    }
-
-    createCar() {
-        // Use selected car from character creation
-        const selectedModel = this.player.selectedCar?.model || 'beater';
-        const selectedColor = this.player.selectedCar?.color || 0x8B7355;
-
-        // Create car using CarGeometry system
-        this.car = CarGeometry.createCarMesh(selectedModel, selectedColor);
-        if (this.car) {
-            this.car.position.set(0, 0.2, 0);
-            this.scene.add(this.car);
-        } else {
-            // Fallback to default if something goes wrong
-            console.warn('CarGeometry failed, using fallback');
-            this.createCarFallback();
-        }
-    }
-
-    createCarFallback() {
-        // Original car creation code as fallback
-        const carGroup = new THREE.Group();
-
-        const bodyGeometry = new THREE.BoxGeometry(2, 1, 4);
-        const bodyMaterial = new THREE.MeshStandardMaterial({
-            color: 0x9B4A4A,
-            roughness: 0.7,
-            metalness: 0.3
-        });
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        body.position.y = 0.5;
-        carGroup.add(body);
-
-        const topGeometry = new THREE.BoxGeometry(1.8, 0.8, 2);
-        const topMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8B3A3A,
-            roughness: 0.7,
-            metalness: 0.3
-        });
-        const top = new THREE.Mesh(topGeometry, topMaterial);
-        top.position.y = 1.4;
-        top.position.z = -0.3;
-        carGroup.add(top);
-
-        const wheelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 16);
-        const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
-
-        const wheelPositions = [
-            [-1, 0, 1.2],
-            [1, 0, 1.2],
-            [-1, 0, -1.2],
-            [1, 0, -1.2]
-        ];
-
-        wheelPositions.forEach(pos => {
-            const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
-            wheel.rotation.z = Math.PI / 2;
-            wheel.position.set(pos[0], pos[1], pos[2]);
-            carGroup.add(wheel);
-        });
-
-        carGroup.rotation.y = Math.PI;
-        carGroup.position.set(0, 0.2, 0);
-        this.car = carGroup;
-        this.scene.add(carGroup);
-    }
-
-    createPoliceCar() {
-        const policeGroup = new THREE.Group();
-
-        // Police car body - Desaturated blue
-        const bodyGeometry = new THREE.BoxGeometry(2, 1, 4);
-        const bodyMaterial = new THREE.MeshStandardMaterial({
-            color: 0x3A4A8B, // Muted blue
-            roughness: 0.7,
-            metalness: 0.3
-        });
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        body.position.y = 0.5;
-        policeGroup.add(body);
-
-        // Police car top - Desaturated white/gray
-        const topGeometry = new THREE.BoxGeometry(1.8, 0.8, 2);
-        const topMaterial = new THREE.MeshStandardMaterial({
-            color: 0xB8B8B8, // Light gray
-            roughness: 0.7,
-            metalness: 0.3
-        });
-        const top = new THREE.Mesh(topGeometry, topMaterial);
-        top.position.y = 1.4;
-        top.position.z = -0.3;
-        policeGroup.add(top);
-
-        // Lights - Muted but still visible
-        const lightGeometry = new THREE.BoxGeometry(0.3, 0.2, 0.3);
-        const redLight = new THREE.Mesh(lightGeometry, new THREE.MeshStandardMaterial({
-            color: 0x8B3A3A, // Muted red
-            emissive: 0x8B3A3A,
-            emissiveIntensity: 1.5,
-            roughness: 0.3
-        }));
-        redLight.position.set(-0.3, 1.9, -0.3);
-        policeGroup.add(redLight);
-
-        const blueLight = new THREE.Mesh(lightGeometry, new THREE.MeshStandardMaterial({
-            color: 0x3A4A8B, // Muted blue
-            emissive: 0x3A4A8B,
-            emissiveIntensity: 1.5,
-            roughness: 0.3
-        }));
-        blueLight.position.set(0.3, 1.9, -0.3);
-        policeGroup.add(blueLight);
-
-        // Wheels
-        const wheelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 16);
-        const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
-
-        const wheelPositions = [
-            [-1, 0, 1.2],
-            [1, 0, 1.2],
-            [-1, 0, -1.2],
-            [1, 0, -1.2]
-        ];
-
-        wheelPositions.forEach(pos => {
-            const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
-            wheel.rotation.z = Math.PI / 2;
-            wheel.position.set(pos[0], pos[1], pos[2]);
-            policeGroup.add(wheel);
-        });
-
-        policeGroup.position.set(0, 0.2, -50);
-        this.policecar = policeGroup;
-        this.scene.add(policeGroup);
-    }
+    // === THREE.JS WORLD METHODS REMOVED ===
+    // The following methods were removed in v3.1.0 (Sidescroller Update):
+    // - createWorld() - Three.js scene generation
+    // - createCar() - Three.js car mesh
+    // - createCarFallback() - Three.js fallback car
+    // - createPoliceCar() - Three.js police car
+    // All driving rendering now handled by SidescrollerEngine (game/systems/sidescroller-engine.js)
 
     // Mobile device detection
     isMobile() {
@@ -1168,7 +952,12 @@ class VroomVroomGame {
     }
 
     onResize() {
-        // Update orthographic camera for isometric view
+        // Resize sidescroller canvas
+        if (this.sidescroller) {
+            this.sidescroller.resize();
+        }
+
+        // Update Three.js camera (for car preview only)
         const aspect = window.innerWidth / window.innerHeight;
         const frustumSize = 20;
 
@@ -1178,7 +967,6 @@ class VroomVroomGame {
         this.camera.bottom = frustumSize / -2;
 
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     showScreen(screenId) {
@@ -1990,7 +1778,7 @@ class VroomVroomGame {
     startDriving(showCinematic = false) {
         const actuallyStartDriving = () => {
             this.gameState = 'driving';
-            // Hide all screens to show the 3D world
+            // Hide all screens to show the sidescroller canvas
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('drivingHUD').style.display = 'block';
 
@@ -2004,9 +1792,10 @@ class VroomVroomGame {
             this.policeChasing = false;
             this.policeSpawnTime = Math.random() * 10 + 5; // 5-15 seconds before police
 
-            if (this.policecar) {
-                this.scene.remove(this.policecar);
-                this.policecar = null;
+            // Reset sidescroller engine
+            if (this.sidescroller) {
+                this.sidescroller.reset();
+                this.sidescroller.start();
             }
 
             // Reset courtroom forms for next arrest
@@ -2040,46 +1829,13 @@ class VroomVroomGame {
     }
 
     updateDriving(delta) {
-        if (!this.car) return;
+        if (!this.sidescroller) return;
 
-        // Player controls
-        const acceleration = 0.5;
-        const deceleration = 0.3;
-        const maxSpeed = 50;
-        const turnSpeed = 0.02;
+        // Update sidescroller engine
+        this.sidescroller.update(delta);
 
-        if (this.keys['w'] || this.keys['arrowup']) {
-            this.player.speed = Math.min(this.player.speed + acceleration, maxSpeed);
-        } else {
-            this.player.speed = Math.max(this.player.speed - deceleration, 0);
-        }
-
-        if (this.keys['a'] || this.keys['arrowleft']) {
-            this.car.rotation.y -= turnSpeed * (this.player.speed / maxSpeed);
-        }
-        if (this.keys['d'] || this.keys['arrowright']) {
-            this.car.rotation.y += turnSpeed * (this.player.speed / maxSpeed);
-        }
-
-        // Move car forward
-        const moveX = Math.sin(this.car.rotation.y) * this.player.speed * delta;
-        const moveZ = Math.cos(this.car.rotation.y) * this.player.speed * delta;
-        this.car.position.x += moveX;
-        this.car.position.z -= moveZ;
-
-        // Isometric camera follow (smooth lerp)
-        const targetPosition = new THREE.Vector3(
-            this.car.position.x + this.cameraOffset.x,
-            this.cameraOffset.y,
-            this.car.position.z + this.cameraOffset.z
-        );
-
-        // Smooth camera movement
-        this.camera.position.lerp(targetPosition, 0.1);
-
-        // Isometric camera always looks at car position
-        const lookTarget = new THREE.Vector3(this.car.position.x, 0, this.car.position.z);
-        this.camera.lookAt(lookTarget);
+        // Sync player speed from sidescroller
+        this.player.speed = this.sidescroller.playerCar.speed;
 
         // Update driving time
         this.player.drivingTime += delta;
@@ -2089,26 +1845,8 @@ class VroomVroomGame {
             this.spawnPolice();
         }
 
-        // Police chase
-        if (this.policeChasing && this.policecar) {
-            // Police AI: Follow player
-            const dx = this.car.position.x - this.policecar.position.x;
-            const dz = this.car.position.z - this.policecar.position.z;
-            const distance = Math.sqrt(dx * dx + dz * dz);
-
-            const policeSpeed = this.player.speed + 5; // Police always faster
-            const angle = Math.atan2(dx, -dz);
-            this.policecar.rotation.y = angle;
-
-            this.policecar.position.x += Math.sin(angle) * policeSpeed * delta;
-            this.policecar.position.z -= Math.cos(angle) * policeSpeed * delta;
-
-            // Caught by police
-            if (distance < 5) {
-                this.pullOver();
-            }
-
-            // Increase wanted level
+        // Update wanted level
+        if (this.policeChasing) {
             this.player.wantedLevel = Math.min(5, Math.floor(this.player.drivingTime / 10));
         }
 
@@ -2120,7 +1858,9 @@ class VroomVroomGame {
 
     spawnPolice() {
         this.policeChasing = true;
-        this.createPoliceCar();
+        if (this.sidescroller) {
+            this.sidescroller.spawnPolice();
+        }
         this.showMessage('POLICE DETECTED. You were driving. This is illegal.', 4000);
     }
 
@@ -4549,9 +4289,14 @@ class VroomVroomGame {
 
         if (this.gameState === 'driving') {
             this.updateDriving(delta);
+            // Render sidescroller
+            if (this.sidescroller) {
+                this.sidescroller.render();
+            }
         }
 
-        this.renderer.render(this.scene, this.camera);
+        // Note: Three.js renderer only used for car preview (offscreen canvas)
+        // Main game canvas now rendered by sidescroller engine
     }
 }
 
