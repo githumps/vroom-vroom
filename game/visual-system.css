@@ -1487,5 +1487,62 @@ body {
 }
 
 /* ============================================================================
+   CHARACTER CREATION - Bureaucratic Atmosphere
+   ============================================================================ */
+
+#characterCreation.active {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a1f 0%, #2a2a2f 50%, #1a1a1f 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* Subtle grid pattern (bureaucratic forms aesthetic) */
+#characterCreation.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(0deg, transparent 95%, rgba(0, 255, 0, 0.03) 95%),
+        linear-gradient(90deg, transparent 95%, rgba(0, 255, 0, 0.03) 95%);
+    background-size: 40px 40px;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Ensure content is above grid */
+#characterCreation.active > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Character creation title */
+#characterCreation.active h2 {
+    color: var(--color-primary-teal, #06D6A0);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow:
+        0 0 10px rgba(6, 214, 160, 0.4),
+        2px 2px 0 rgba(0, 0, 0, 0.8);
+    margin-bottom: 30px;
+}
+
+/* Section headers */
+#characterCreation.active h3 {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Character preview canvas styling */
+#characterPreviewCanvas {
+    box-shadow:
+        0 0 20px rgba(0, 255, 0, 0.3),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================================
    END OF VISUAL SYSTEM
    ============================================================================ */
