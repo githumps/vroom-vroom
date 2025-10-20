@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '2.3.1';
+        this.VERSION = '2.4.0-phase7';
 
         this.scene = null;
         this.camera = null;
@@ -706,6 +706,9 @@ class VroomVroomGame {
         // Generate pixel art main menu background
         this.initMainMenuBackground();
 
+        // Initialize prison scene renderers
+        this.initPrisonScenes();
+
         // Display version number
         document.getElementById('gameVersion').textContent = this.VERSION;
 
@@ -828,6 +831,52 @@ class VroomVroomGame {
         } else {
             console.warn('[VROOM] PixelArtGenerator not loaded - skipping main menu background');
         }
+    }
+
+    initPrisonScenes() {
+        // Initialize pixel art scene renderers for prison activities
+        this.sceneRenderers = {};
+
+        // Initialize gym scene
+        const gymCanvas = document.getElementById('gymCanvas');
+        if (gymCanvas && typeof GymScene !== 'undefined' && typeof PrisonSceneRenderer !== 'undefined') {
+            try {
+                this.sceneRenderers.gym = new PrisonSceneRenderer(gymCanvas, GymScene);
+                console.log('[VROOM] ✅ Gym scene renderer initialized');
+            } catch (error) {
+                console.error('[VROOM] Error initializing gym scene:', error);
+            }
+        } else {
+            console.warn('[VROOM] Gym scene not available - missing canvas or scene data');
+        }
+
+        // Initialize library scene
+        const libraryCanvas = document.getElementById('libraryCanvas');
+        if (libraryCanvas && typeof LibraryScene !== 'undefined' && typeof PrisonSceneRenderer !== 'undefined') {
+            try {
+                this.sceneRenderers.library = new PrisonSceneRenderer(libraryCanvas, LibraryScene);
+                console.log('[VROOM] ✅ Library scene renderer initialized');
+            } catch (error) {
+                console.error('[VROOM] Error initializing library scene:', error);
+            }
+        } else {
+            console.warn('[VROOM] Library scene not available - missing canvas or scene data');
+        }
+
+        // Initialize cafeteria scene
+        const cafeteriaCanvas = document.getElementById('cafeteriaCanvas');
+        if (cafeteriaCanvas && typeof CafeteriaScene !== 'undefined' && typeof PrisonSceneRenderer !== 'undefined') {
+            try {
+                this.sceneRenderers.cafeteria = new PrisonSceneRenderer(cafeteriaCanvas, CafeteriaScene);
+                console.log('[VROOM] ✅ Cafeteria scene renderer initialized');
+            } catch (error) {
+                console.error('[VROOM] Error initializing cafeteria scene:', error);
+            }
+        } else {
+            console.warn('[VROOM] Cafeteria scene not available - missing canvas or scene data');
+        }
+
+        console.log('[VROOM] Prison scene initialization complete. Active renderers:', Object.keys(this.sceneRenderers).length);
     }
 
     createWorld() {
