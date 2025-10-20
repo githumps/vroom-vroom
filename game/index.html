@@ -867,12 +867,12 @@
             <h1>VROOM VROOM</h1>
             <p style="font-size: 1.2em; margin-bottom: 10px;">A game about freedom, bureaucracy, and consequences</p>
             <p style="font-size: 0.9em; color: #888; margin-bottom: 30px;">Version <span id="gameVersion">1.0.0</span></p>
-            <button onclick="game.startNewGame()">NEW GAME</button>
-            <button onclick="game.loadGame()">LOAD GAME</button>
-            <button onclick="game.exportSaveCode()">EXPORT SAVE CODE</button>
-            <button onclick="game.showImportModal()">IMPORT SAVE CODE</button>
-            <button onclick="game.showModal('settingsModal')">SETTINGS</button>
-            <button onclick="game.showScreen('credits')">CREDITS</button>
+            <button class="pixel-button" onclick="game.startNewGame()">NEW GAME</button>
+            <button class="pixel-button" onclick="game.loadGame()">LOAD GAME</button>
+            <button class="pixel-button" onclick="game.exportSaveCode()">EXPORT SAVE CODE</button>
+            <button class="pixel-button" onclick="game.showImportModal()">IMPORT SAVE CODE</button>
+            <button class="pixel-button" onclick="game.showModal('settingsModal')">SETTINGS</button>
+            <button class="pixel-button" onclick="game.showScreen('credits')">CREDITS</button>
         </div>
 
         <!-- CHARACTER CREATION -->
@@ -1171,7 +1171,7 @@
                     </div>
                 </div>
 
-                <button onclick="game.finishCharacterCreation()">BEGIN YOUR JOURNEY</button>
+                <button class="pixel-button" onclick="game.finishCharacterCreation()">BEGIN YOUR JOURNEY</button>
             </div>
         </div>
 
@@ -1239,89 +1239,91 @@
                     <label>FORM 13-E: Please initial here to acknowledge that you acknowledged driving</label>
                     <input type="text" id="initial3" placeholder="Initials" maxlength="3">
                 </div>
-                <button onclick="game.submitCourtForms()">SUBMIT FORMS</button>
+                <button class="pixel-button" onclick="game.submitCourtForms()">SUBMIT FORMS</button>
             </div>
         </div>
 
         <!-- PRISON MENU -->
         <div id="prisonMenu" class="screen">
-            <h2>CORRECTIONAL FACILITY #7734</h2>
-            <div id="characterInfoDisplay" style="margin: 15px 20px; padding: 15px; background: rgba(0, 255, 0, 0.05); border: 1px solid #0f0; border-radius: 5px;"></div>
-            <div id="prisonTimeDisplay" style="margin: 10px 20px; opacity: 0.8;"></div>
-            <p style="margin: 20px; font-size: 1.1em;">Sentence: <span id="sentenceLength">5</span> years</p>
-            <p style="margin: 20px;">Time Served: <span id="timeServed">0</span> days</p>
-            <div id="corruptionDisplay" style="margin: 15px 20px;"></div>
+            <div class="prison-cell-bg">
+                <h2>CORRECTIONAL FACILITY #7734</h2>
+                <div id="characterInfoDisplay" style="margin: 15px 20px; padding: 15px; background: rgba(0, 255, 0, 0.05); border: 1px solid #0f0; border-radius: 5px;"></div>
+                <div id="prisonTimeDisplay" style="margin: 10px 20px; opacity: 0.8;"></div>
+                <p style="margin: 20px; font-size: 1.1em;">Sentence: <span id="sentenceLength">5</span> years</p>
+                <p style="margin: 20px;">Time Served: <span id="timeServed">0</span> days</p>
+                <div id="corruptionDisplay" style="margin: 15px 20px;"></div>
 
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div class="prison-activity" onclick="game.prisonActivity('weights')">
+                <div style="max-width: 800px; margin: 0 auto;">
+                <div class="prison-activity-card" onclick="game.prisonActivity('weights')">
                     <h3>LIFT WEIGHTS</h3>
                     <p>Channel your rage into physical fitness. The bar doesn't judge.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('eat')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('eat')">
                     <h3>EAT LUNCH</h3>
                     <p>Mystery meat and existential questions. Served daily at noon.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('read')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('read')">
                     <h3>READ LIBRARY BOOK</h3>
                     <p>Escape through literature. Currently available: "Traffic Laws: A History"</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('letter')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('letter')">
                     <h3>WRITE A LETTER</h3>
                     <p>Communicate with the outside world. Subject to review.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('cellmate')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('cellmate')">
                     <h3>TALK TO CELLMATE</h3>
                     <p>Your cellmate wants to discuss their feelings about traffic violations.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('tattoo')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('tattoo')">
                     <h3>GET PRISON TATTOO</h3>
                     <p>Express yourself through permanent body modification.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('commissary')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('commissary')">
                     <h3>VISIT COMMISSARY</h3>
                     <p>Spend your hard-earned prison wages on luxury items.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('gang')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('gang')">
                     <h3>JOIN A GANG</h3>
                     <p>The "Safe Drivers Club" is recruiting.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.prisonActivity('manicure')">
+                <div class="prison-activity-card" onclick="game.prisonActivity('manicure')">
                     <h3>GIVE MANICURE TO GUARD (Basic)</h3>
                     <p>Earn favor tokens through the ancient art of nail care. Guards love this.</p>
                     <p style="font-size: 0.9em; color: #ff0;">Favor Tokens: <span id="favorTokensDisplay">0</span></p>
                 </div>
 
-                <div class="prison-activity" onclick="game.showScreen('nailArtGuardSelection')">
+                <div class="prison-activity-card" onclick="game.showScreen('nailArtGuardSelection')">
                     <h3>💅 DECORATE GUARD NAILS (Advanced)</h3>
                     <p>Transform guard hands into dazzling works of pixel art. Full nail decoration system.</p>
                     <p style="font-size: 0.9em; color: #888;">15 colors, 20 stickers, chrome powder, holographic effects, glitter!</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.showNailArtGallery()">
+                <div class="prison-activity-card" onclick="game.showNailArtGallery()">
                     <h3>💅 VIEW NAIL ART GALLERY</h3>
                     <p>Admire your decorated guard hands. A testament to fabulous nail art.</p>
                     <p style="font-size: 0.9em; color: #888;">View all 5 guards' decorated hands</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.showGuardFavorsMenu()">
+                <div class="prison-activity-card" onclick="game.showGuardFavorsMenu()">
                     <h3>SPEND GUARD FAVORS</h3>
                     <p>Cash in your favor tokens for privileges, contraband, and rule violations.</p>
                 </div>
 
-                <div class="prison-activity" onclick="game.showEscapeMenu()">
+                <div class="prison-activity-card" onclick="game.showEscapeMenu()">
                     <h3>PLAN ESCAPE</h3>
                     <p>Freedom. It's possible. Probably. Maybe. Worth a try.</p>
                 </div>
 
-                <button onclick="game.endPrison()" style="margin-top: 30px;">SERVE TIME (SKIP AHEAD)</button>
+                <button class="pixel-button" onclick="game.endPrison()" style="margin-top: 30px;">SERVE TIME (SKIP AHEAD)</button>
+            </div>
             </div>
         </div>
 
@@ -1337,8 +1339,8 @@
                     <label>Message:</label>
                     <textarea id="letterMessage" placeholder="Dear friend, I am in prison for driving..."></textarea>
                 </div>
-                <button onclick="game.sendLetter()">SEND LETTER (Subject to Review)</button>
-                <button onclick="game.showScreen('prisonMenu')">CANCEL</button>
+                <button class="pixel-button" onclick="game.sendLetter()">SEND LETTER (Subject to Review)</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')">CANCEL</button>
             </div>
         </div>
 
@@ -1434,9 +1436,9 @@
                     <h3 style="color: #ff0; text-align: center; margin-bottom: 15px;">TATTOO AFTERCARE</h3>
                     <p style="color: #0f0; text-align: center; margin-bottom: 20px;">Clean the tattoo to prevent infection. Click the correct sequence!</p>
                     <div id="careSequence" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
-                        <button onclick="game.careAction('clean')" style="background: #003300;">CLEAN</button>
-                        <button onclick="game.careAction('bandage')" style="background: #333300;">BANDAGE</button>
-                        <button onclick="game.careAction('ignore')" style="background: #330000;">IGNORE</button>
+                        <button class="pixel-button" onclick="game.careAction('clean')" style="background: #003300;">CLEAN</button>
+                        <button class="pixel-button" onclick="game.careAction('bandage')" style="background: #333300;">BANDAGE</button>
+                        <button class="pixel-button" onclick="game.careAction('ignore')" style="background: #330000;">IGNORE</button>
                     </div>
                     <div id="careProgress" style="color: #0f0; text-align: center; font-size: 1.1em;">Progress: <span id="careScore">0</span>/3</div>
                 </div>
@@ -1492,7 +1494,7 @@
                     <button id="startWorkoutBtn" onclick="game.startWeightLifting()" style="font-size: 1.2em; padding: 20px 40px;">
                         BEGIN WORKOUT
                     </button>
-                    <button onclick="game.cancelWeightLifting()" style="font-size: 1em; padding: 15px 30px;">
+                    <button class="pixel-button" onclick="game.cancelWeightLifting()" style="font-size: 1em; padding: 15px 30px;">
                         RETURN TO PRISON MENU
                     </button>
                 </div>
@@ -1515,38 +1517,38 @@
                 <div class="form-container" style="margin-bottom: 30px;">
                     <h3 style="margin-bottom: 15px;">AVAILABLE ITEMS</h3>
 
-                    <div class="prison-activity" onclick="game.buyItem('cigarettes', 5)">
+                    <div class="prison-activity-card" onclick="game.buyItem('cigarettes', 5)">
                         <h3>CIGARETTES - 5 credits</h3>
                         <p>Prison currency. Trade with other inmates. Stock: <span id="stock-cigarettes">12</span></p>
                         <p style="font-size: 0.9em; color: #888;">You own: <span id="owned-cigarettes">0</span></p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.buyItem('candy', 3)">
+                    <div class="prison-activity-card" onclick="game.buyItem('candy', 3)">
                         <h3>CANDY BAR - 3 credits</h3>
                         <p>Sugar. Brief happiness. Instant regret. Stock: <span id="stock-candy">20</span></p>
                         <p style="font-size: 0.9em; color: #888;">You own: <span id="owned-candy">0</span></p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.buyItem('noodles', 4)">
+                    <div class="prison-activity-card" onclick="game.buyItem('noodles', 4)">
                         <h3>INSTANT NOODLES - 4 credits</h3>
                         <p>Better than mystery meat. That's not saying much. Stock: <span id="stock-noodles">15</span></p>
                         <p style="font-size: 0.9em; color: #888;">You own: <span id="owned-noodles">0</span></p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.buyItem('magazine', 6)">
+                    <div class="prison-activity-card" onclick="game.buyItem('magazine', 6)">
                         <h3>MAGAZINE - 6 credits</h3>
                         <p>"Traffic Safety Weekly". Still better than staring at walls. Stock: <span id="stock-magazine">8</span></p>
                         <p style="font-size: 0.9em; color: #888;">You own: <span id="owned-magazine">0</span></p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.buyItem('radio', 20)">
+                    <div class="prison-activity-card" onclick="game.buyItem('radio', 20)">
                         <h3>RADIO - 20 credits</h3>
                         <p>Connection to the outside world. All traffic reports, all the time. Stock: <span id="stock-radio">3</span></p>
                         <p style="font-size: 0.9em; color: #888;">You own: <span id="owned-radio">0</span></p>
                     </div>
                 </div>
 
-                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 20px;">RETURN TO CELL</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')" style="margin-top: 20px;">RETURN TO CELL</button>
             </div>
         </div>
 
@@ -1556,25 +1558,25 @@
             <p style="margin: 20px; font-size: 1.1em;">Books available: 3 | Intelligence: <span id="playerIntelligence">0</span></p>
 
             <div style="max-width: 800px; margin: 0 auto;">
-                <div class="prison-activity" onclick="game.selectBook(0)">
+                <div class="prison-activity-card" onclick="game.selectBook(0)">
                     <h3>Traffic Laws: A Bureaucratic History</h3>
                     <p>A comprehensive exploration of vehicular regulations and their enforcement. Mandatory reading.</p>
                     <p style="color: #ff0; font-size: 0.9em;">Progress: <span id="bookProgress0">Not Started</span></p>
                 </div>
 
-                <div class="prison-activity" onclick="game.selectBook(1)">
+                <div class="prison-activity-card" onclick="game.selectBook(1)">
                     <h3>The Count of Monte Cristo (Excerpt)</h3>
                     <p>Alexandre Dumas - A tale of imprisonment, escape, and revenge. Strangely relevant.</p>
                     <p style="color: #ff0; font-size: 0.9em;">Progress: <span id="bookProgress1">Not Started</span></p>
                 </div>
 
-                <div class="prison-activity" onclick="game.selectBook(2)">
+                <div class="prison-activity-card" onclick="game.selectBook(2)">
                     <h3>Walden (Excerpt)</h3>
                     <p>Henry David Thoreau - On freedom, nature, and living deliberately. Painfully ironic in here.</p>
                     <p style="color: #ff0; font-size: 0.9em;">Progress: <span id="bookProgress2">Not Started</span></p>
                 </div>
 
-                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO CELL</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO CELL</button>
             </div>
         </div>
 
@@ -1592,15 +1594,15 @@
                 </div>
 
                 <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <button onclick="game.previousPage()">PREVIOUS PAGE</button>
-                    <button onclick="game.bookmarkAndExit()">BOOKMARK & EXIT</button>
-                    <button onclick="game.nextPage()">NEXT PAGE</button>
+                    <button class="pixel-button" onclick="game.previousPage()">PREVIOUS PAGE</button>
+                    <button class="pixel-button" onclick="game.bookmarkAndExit()">BOOKMARK & EXIT</button>
+                    <button class="pixel-button" onclick="game.nextPage()">NEXT PAGE</button>
                 </div>
 
                 <div id="cellmateInterruption" style="display: none; margin-top: 20px; padding: 20px; border: 2px solid #ff0; background: rgba(255, 255, 0, 0.1);">
                     <p style="color: #ff0; font-weight: bold;">CELLMATE INTERRUPTS:</p>
                     <p id="cellmateText" style="color: #0f0; font-style: italic; margin-top: 10px;"></p>
-                    <button onclick="game.dismissInterruption()" style="margin-top: 10px;">CONTINUE READING</button>
+                    <button class="pixel-button" onclick="game.dismissInterruption()" style="margin-top: 10px;">CONTINUE READING</button>
                 </div>
             </div>
         </div>
@@ -1627,7 +1629,7 @@
                 </div>
 
                 <!-- Gang 1: Safe Drivers Club -->
-                <div class="prison-activity" style="border-color: #4A8BFF;">
+                <div class="prison-activity-card" style="border-color: #4A8BFF;">
                     <h3 style="color: #4A8BFF;">THE SAFE DRIVERS CLUB</h3>
                     <p style="color: #ccc; font-style: italic;">"We signaled our turns. We obeyed speed limits. And still, we ended up here."</p>
                     <div style="margin: 10px 0;">
@@ -1643,11 +1645,11 @@
                     <div style="margin: 10px 0;">
                         <strong>Enemies:</strong> Road Warriors
                     </div>
-                    <button onclick="game.interactWithGang('safedrivers')">INTERACT</button>
+                    <button class="pixel-button" onclick="game.interactWithGang('safedrivers')">INTERACT</button>
                 </div>
 
                 <!-- Gang 2: The Turn Signals -->
-                <div class="prison-activity" style="border-color: #FFB84A;">
+                <div class="prison-activity-card" style="border-color: #FFB84A;">
                     <h3 style="color: #FFB84A;">THE TURN SIGNALS</h3>
                     <p style="color: #ccc; font-style: italic;">"Communication is everything. On the road. In here. Everywhere."</p>
                     <div style="margin: 10px 0;">
@@ -1663,11 +1665,11 @@
                     <div style="margin: 10px 0;">
                         <strong>Enemies:</strong> None (neutral diplomats)
                     </div>
-                    <button onclick="game.interactWithGang('turnsignals')">INTERACT</button>
+                    <button class="pixel-button" onclick="game.interactWithGang('turnsignals')">INTERACT</button>
                 </div>
 
                 <!-- Gang 3: Road Warriors -->
-                <div class="prison-activity" style="border-color: #FF4A4A;">
+                <div class="prison-activity-card" style="border-color: #FF4A4A;">
                     <h3 style="color: #FF4A4A;">ROAD WARRIORS</h3>
                     <p style="color: #ccc; font-style: italic;">"We drove fast. We drove free. No regrets. Ever."</p>
                     <div style="margin: 10px 0;">
@@ -1683,10 +1685,10 @@
                     <div style="margin: 10px 0;">
                         <strong>Enemies:</strong> Safe Drivers Club
                     </div>
-                    <button onclick="game.interactWithGang('roadwarriors')">INTERACT</button>
+                    <button class="pixel-button" onclick="game.interactWithGang('roadwarriors')">INTERACT</button>
                 </div>
 
-                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
             </div>
         </div>
 
@@ -1699,13 +1701,13 @@
                 </div>
 
                 <div style="margin: 20px 0;">
-                    <button onclick="game.gangAction('talk')">TALK TO LEADER</button>
-                    <button onclick="game.gangAction('share_cigarettes')">SHARE CIGARETTES (Cost: 5)</button>
-                    <button onclick="game.gangAction('trade')">TRADE ITEMS</button>
-                    <button onclick="game.gangAction('join')">REQUEST TO JOIN GANG</button>
+                    <button class="pixel-button" onclick="game.gangAction('talk')">TALK TO LEADER</button>
+                    <button class="pixel-button" onclick="game.gangAction('share_cigarettes')">SHARE CIGARETTES (Cost: 5)</button>
+                    <button class="pixel-button" onclick="game.gangAction('trade')">TRADE ITEMS</button>
+                    <button class="pixel-button" onclick="game.gangAction('join')">REQUEST TO JOIN GANG</button>
                 </div>
 
-                <button onclick="game.showScreen('gangSystem')">BACK TO GANGS</button>
+                <button class="pixel-button" onclick="game.showScreen('gangSystem')">BACK TO GANGS</button>
             </div>
         </div>
 
@@ -1717,7 +1719,7 @@
 
             <div style="max-width: 900px; margin: 0 auto;">
                 <!-- Tunnel Route -->
-                <div class="prison-activity" onclick="game.showEscapeRoute('tunnel')">
+                <div class="prison-activity-card" onclick="game.showEscapeRoute('tunnel')">
                     <h3>TUNNEL ESCAPE</h3>
                     <p>Dig your way to freedom. Classic. Requires: spoon, time, and patience.</p>
                     <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
@@ -1728,7 +1730,7 @@
                 </div>
 
                 <!-- Bribe Route -->
-                <div class="prison-activity" onclick="game.showEscapeRoute('bribe')">
+                <div class="prison-activity-card" onclick="game.showEscapeRoute('bribe')">
                     <h3>BRIBE A GUARD</h3>
                     <p>Money talks. Guards listen. You need cigarettes, favors, and leverage.</p>
                     <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
@@ -1739,7 +1741,7 @@
                 </div>
 
                 <!-- Transfer Route -->
-                <div class="prison-activity" onclick="game.showEscapeRoute('transfer')">
+                <div class="prison-activity-card" onclick="game.showEscapeRoute('transfer')">
                     <h3>MANIPULATE TRANSFER</h3>
                     <p>Fake documents. Court order. Clerical "error". Bureaucracy is your weapon.</p>
                     <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
@@ -1750,7 +1752,7 @@
                 </div>
 
                 <!-- Riot Route -->
-                <div class="prison-activity" onclick="game.showEscapeRoute('riot')">
+                <div class="prison-activity-card" onclick="game.showEscapeRoute('riot')">
                     <h3>INCITE A RIOT</h3>
                     <p>Chaos is a ladder. You need allies, weapons, and perfect timing.</p>
                     <div style="margin-top: 10px; font-size: 0.9em; color: #0ff;">
@@ -1760,7 +1762,7 @@
                     </div>
                 </div>
 
-                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">BACK TO PRISON</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">BACK TO PRISON</button>
             </div>
         </div>
 
@@ -1787,7 +1789,7 @@
 
                 <div style="margin-top: 30px;">
                     <button id="executeEscapeBtn" onclick="game.executeEscape()" style="background: #f00; border-color: #f00; color: #000;">ATTEMPT ESCAPE</button>
-                    <button onclick="game.showScreen('escapeMenu')">BACK TO PLANNING</button>
+                    <button class="pixel-button" onclick="game.showScreen('escapeMenu')">BACK TO PLANNING</button>
                 </div>
             </div>
         </div>
@@ -1839,7 +1841,7 @@
                             <div id="soakTimerBar" style="background: #f00; height: 100%; width: 0%; transition: none;"></div>
                         </div>
                         <div style="text-align: center;">
-                            <button onclick="game.manicureSystem.stopSoakTimer()" style="font-size: 1.5em; padding: 20px 50px;">
+                            <button class="pixel-button" onclick="game.manicureSystem.stopSoakTimer()" style="font-size: 1.5em; padding: 20px 50px;">
                                 STOP TIMER
                             </button>
                         </div>
@@ -1869,10 +1871,10 @@
                             </div>
                         </div>
                         <div style="text-align: center;">
-                            <button onclick="game.manicureSystem.fileInput('⬅')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬅ LEFT</button>
-                            <button onclick="game.manicureSystem.fileInput('➡')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">➡ RIGHT</button>
-                            <button onclick="game.manicureSystem.fileInput('⬆')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬆ UP</button>
-                            <button onclick="game.manicureSystem.fileInput('⬇')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬇ DOWN</button>
+                            <button class="pixel-button" onclick="game.manicureSystem.fileInput('⬅')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬅ LEFT</button>
+                            <button class="pixel-button" onclick="game.manicureSystem.fileInput('➡')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">➡ RIGHT</button>
+                            <button class="pixel-button" onclick="game.manicureSystem.fileInput('⬆')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬆ UP</button>
+                            <button class="pixel-button" onclick="game.manicureSystem.fileInput('⬇')" style="font-size: 1.5em; padding: 15px 30px; margin: 5px;">⬇ DOWN</button>
                         </div>
                     </div>
 
@@ -1880,23 +1882,23 @@
                     <div id="polishGame" style="display: none;">
                         <p id="guardPreferredColor" style="text-align: center; margin-bottom: 25px; color: #ff0;"></p>
                         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
-                            <button onclick="game.manicureSystem.selectPolishColor('red')"
+                            <button class="pixel-button" onclick="game.manicureSystem.selectPolishColor('red')"
                                     style="background: #8B0000; color: #fff; padding: 30px 40px; font-size: 1.2em;">
                                 RED POLISH
                             </button>
-                            <button onclick="game.manicureSystem.selectPolishColor('clear')"
+                            <button class="pixel-button" onclick="game.manicureSystem.selectPolishColor('clear')"
                                     style="background: #E8E8E8; color: #000; padding: 30px 40px; font-size: 1.2em;">
                                 CLEAR POLISH
                             </button>
-                            <button onclick="game.manicureSystem.selectPolishColor('black')"
+                            <button class="pixel-button" onclick="game.manicureSystem.selectPolishColor('black')"
                                     style="background: #1A1A1A; color: #fff; padding: 30px 40px; font-size: 1.2em;">
                                 BLACK POLISH
                             </button>
-                            <button onclick="game.manicureSystem.selectPolishColor('pink')"
+                            <button class="pixel-button" onclick="game.manicureSystem.selectPolishColor('pink')"
                                     style="background: #FFB6C1; color: #000; padding: 30px 40px; font-size: 1.2em;">
                                 PINK POLISH
                             </button>
-                            <button onclick="game.manicureSystem.selectPolishColor('blue')"
+                            <button class="pixel-button" onclick="game.manicureSystem.selectPolishColor('blue')"
                                     style="background: #4169E1; color: #fff; padding: 30px 40px; font-size: 1.2em;">
                                 BLUE POLISH
                             </button>
@@ -1923,7 +1925,7 @@
                         <div id="manicureOutcome" style="padding: 20px; border: 2px solid #0f0;">
                             Outcome details
                         </div>
-                        <button onclick="game.manicureSystem.returnToPrison()" style="margin-top: 25px; font-size: 1.2em; padding: 20px 40px;">
+                        <button class="pixel-button" onclick="game.manicureSystem.returnToPrison()" style="margin-top: 25px; font-size: 1.2em; padding: 20px 40px;">
                             RETURN TO PRISON
                         </button>
                     </div>
@@ -1950,38 +1952,38 @@
                 <div class="form-container">
                     <h3 style="margin-bottom: 20px;">AVAILABLE FAVORS</h3>
 
-                    <div class="prison-activity" onclick="game.spendFavorToken('ignore')">
+                    <div class="prison-activity-card" onclick="game.spendFavorToken('ignore')">
                         <h3>IGNORE MINOR VIOLATION - 1 Token</h3>
                         <p>Guard pretends not to see your next rule violation. One-time use.</p>
                         <p style="font-size: 0.9em; color: #888;">Examples: Contraband possession, cell after hours, sass</p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.spendFavorToken('cigarettes')">
+                    <div class="prison-activity-card" onclick="game.spendFavorToken('cigarettes')">
                         <h3>SMUGGLE CIGARETTES (20-PACK) - 2 Tokens</h3>
                         <p>Guard looks the other way while you get a 20-pack of cigarettes.</p>
                         <p style="font-size: 0.9em; color: #888;">Prison currency. Trade value. Gang relationships.</p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.spendFavorToken('contraband')">
+                    <div class="prison-activity-card" onclick="game.spendFavorToken('contraband')">
                         <h3>GET CONTRABAND ITEM - 3 Tokens</h3>
                         <p>Guard sneaks you an item of your choice from the outside.</p>
                         <p style="font-size: 0.9em; color: #888;">Phone, tools, magazine, snacks, or other useful items</p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.spendFavorToken('escape')">
+                    <div class="prison-activity-card" onclick="game.spendFavorToken('escape')">
                         <h3>LOOK AWAY DURING ESCAPE PREP - 3 Tokens</h3>
                         <p>Guard conveniently ignores your escape planning activities for one day.</p>
                         <p style="font-size: 0.9em; color: #888;">+15% success rate to current escape route</p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.spendFavorToken('reduce')">
+                    <div class="prison-activity-card" onclick="game.spendFavorToken('reduce')">
                         <h3>REDUCE SENTENCE BY 7 DAYS - 4 Tokens</h3>
                         <p>Guard "adjusts" your paperwork. Clerical error. Totally legitimate.</p>
                         <p style="font-size: 0.9em; color: #888;">Shaves 7 days off your sentence. Stackable.</p>
                     </div>
                 </div>
 
-                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
             </div>
         </div>
 
@@ -2049,7 +2051,7 @@
                 <div class="form-container">
                     <h3 style="margin-bottom: 20px; color: #ff0;">SELECT A GUARD</h3>
 
-                    <div class="prison-activity" onclick="game.startNailArt('jenkins')">
+                    <div class="prison-activity-card" onclick="game.startNailArt('jenkins')">
                         <h3>GUARD JENKINS</h3>
                         <p>Strict and punctual. Prefers red or black, matte finish, NO stickers.</p>
                         <p style="font-size: 0.9em; color: #888;">
@@ -2058,7 +2060,7 @@
                         </p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.startNailArt('martinez')">
+                    <div class="prison-activity-card" onclick="game.startNailArt('martinez')">
                         <h3>GUARD MARTINEZ</h3>
                         <p>Detail-oriented perfectionist. Loves white/gold, chrome finish, perfect symmetry.</p>
                         <p style="font-size: 0.9em; color: #888;">
@@ -2067,7 +2069,7 @@
                         </p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.startNailArt('chen')">
+                    <div class="prison-activity-card" onclick="game.startNailArt('chen')">
                         <h3>GUARD CHEN</h3>
                         <p>Impatient and irritable. Prefers black/gray, matte, minimal decoration.</p>
                         <p style="font-size: 0.9em; color: #888;">
@@ -2076,7 +2078,7 @@
                         </p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.startNailArt('thompson')">
+                    <div class="prison-activity-card" onclick="game.startNailArt('thompson')">
                         <h3>GUARD THOMPSON</h3>
                         <p>Chatty and fun-loving. Adores pastels, glossy finish, ALL THE STICKERS!</p>
                         <p style="font-size: 0.9em; color: #888;">
@@ -2085,7 +2087,7 @@
                         </p>
                     </div>
 
-                    <div class="prison-activity" onclick="game.startNailArt('rodriguez')">
+                    <div class="prison-activity-card" onclick="game.startNailArt('rodriguez')">
                         <h3>GUARD RODRIGUEZ</h3>
                         <p>Secretly glamorous. Craves neon pink/gold, holographic finish, maximum dazzle.</p>
                         <p style="font-size: 0.9em; color: #888;">
@@ -2095,7 +2097,7 @@
                     </div>
                 </div>
 
-                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
             </div>
         </div>
 
@@ -2118,10 +2120,10 @@
                     </div>
 
                     <div style="display: flex; gap: 10px; justify-content: center; margin: 15px 0;">
-                        <button onclick="game.nailArtUndo()" style="padding: 10px 20px;">↶ UNDO</button>
-                        <button onclick="game.nailArtClearAll()" style="padding: 10px 20px;">🗑️ CLEAR ALL</button>
-                        <button onclick="game.nailArtSave()" style="padding: 10px 20px; background: #0f0; color: #000;">💾 SAVE & FINISH</button>
-                        <button onclick="game.showScreen('nailArtGuardSelection')" style="padding: 10px 20px;">✖ CANCEL</button>
+                        <button class="pixel-button" onclick="game.nailArtUndo()" style="padding: 10px 20px;">↶ UNDO</button>
+                        <button class="pixel-button" onclick="game.nailArtClearAll()" style="padding: 10px 20px;">🗑️ CLEAR ALL</button>
+                        <button class="pixel-button" onclick="game.nailArtSave()" style="padding: 10px 20px; background: #0f0; color: #000;">💾 SAVE & FINISH</button>
+                        <button class="pixel-button" onclick="game.showScreen('nailArtGuardSelection')" style="padding: 10px 20px;">✖ CANCEL</button>
                     </div>
                 </div>
 
@@ -2170,7 +2172,7 @@
 
                     <!-- Clear Current Nail -->
                     <div>
-                        <button onclick="game.nailArtClearCurrentNail()" style="width: 100%; padding: 10px; background: #444;">
+                        <button class="pixel-button" onclick="game.nailArtClearCurrentNail()" style="width: 100%; padding: 10px; background: #444;">
                             Clear Selected Nail
                         </button>
                     </div>
@@ -2191,7 +2193,7 @@
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
                         <!-- Guard hand previews -->
-                        <div id="galleryJenkins" class="prison-activity" onclick="game.viewNailArtDetail('jenkins')">
+                        <div id="galleryJenkins" class="prison-activity-card" onclick="game.viewNailArtDetail('jenkins')">
                             <h3>GUARD JENKINS</h3>
                             <canvas id="galleryCanvasJenkins" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
                             <p id="galleryStatsJenkins" style="font-size: 0.9em; color: #888; margin-top: 10px;">
@@ -2199,7 +2201,7 @@
                             </p>
                         </div>
 
-                        <div id="galleryMartinez" class="prison-activity" onclick="game.viewNailArtDetail('martinez')">
+                        <div id="galleryMartinez" class="prison-activity-card" onclick="game.viewNailArtDetail('martinez')">
                             <h3>GUARD MARTINEZ</h3>
                             <canvas id="galleryCanvasMartinez" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
                             <p id="galleryStatsMartinez" style="font-size: 0.9em; color: #888; margin-top: 10px;">
@@ -2207,7 +2209,7 @@
                             </p>
                         </div>
 
-                        <div id="galleryChen" class="prison-activity" onclick="game.viewNailArtDetail('chen')">
+                        <div id="galleryChen" class="prison-activity-card" onclick="game.viewNailArtDetail('chen')">
                             <h3>GUARD CHEN</h3>
                             <canvas id="galleryCanvasChen" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
                             <p id="galleryStatsChen" style="font-size: 0.9em; color: #888; margin-top: 10px;">
@@ -2215,7 +2217,7 @@
                             </p>
                         </div>
 
-                        <div id="galleryThompson" class="prison-activity" onclick="game.viewNailArtDetail('thompson')">
+                        <div id="galleryThompson" class="prison-activity-card" onclick="game.viewNailArtDetail('thompson')">
                             <h3>GUARD THOMPSON</h3>
                             <canvas id="galleryCanvasThompson" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
                             <p id="galleryStatsThompson" style="font-size: 0.9em; color: #888; margin-top: 10px;">
@@ -2223,7 +2225,7 @@
                             </p>
                         </div>
 
-                        <div id="galleryRodriguez" class="prison-activity" onclick="game.viewNailArtDetail('rodriguez')">
+                        <div id="galleryRodriguez" class="prison-activity-card" onclick="game.viewNailArtDetail('rodriguez')">
                             <h3>GUARD RODRIGUEZ</h3>
                             <canvas id="galleryCanvasRodriguez" width="400" height="300" style="width: 100%; border: 1px solid #333; background: #1a1a1a;"></canvas>
                             <p id="galleryStatsRodriguez" style="font-size: 0.9em; color: #888; margin-top: 10px;">
@@ -2233,7 +2235,7 @@
                     </div>
                 </div>
 
-                <button onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
+                <button class="pixel-button" onclick="game.showScreen('prisonMenu')" style="margin-top: 30px;">RETURN TO PRISON</button>
             </div>
         </div>
 
@@ -2248,22 +2250,22 @@
                 <div class="form-container">
                     <h3 style="margin-bottom: 20px; color: #ff0;">📍 CORE GAMEPLAY</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                        <div class="prison-activity" onclick="game.testJumpTo('driving')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('driving')">
                             <h3>DRIVING MODE</h3>
                             <p>Test the 3D driving system</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('courtroom')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('courtroom')">
                             <h3>COURTROOM</h3>
                             <p>Test the paperwork simulator</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('prison')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('prison')">
                             <h3>PRISON MENU</h3>
                             <p>Jump to main prison menu</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('character')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('character')">
                             <h3>CHARACTER CREATION</h3>
                             <p>Test car selection & voice preview</p>
                         </div>
@@ -2274,22 +2276,22 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 20px; color: #ff0;">🏋️ PRISON ACTIVITIES</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                        <div class="prison-activity" onclick="game.testJumpTo('weights')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('weights')">
                             <h3>WEIGHT LIFTING</h3>
                             <p>Test the weight lifting simulator</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('eating')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('eating')">
                             <h3>EATING SIMULATOR</h3>
                             <p>Test the meal eating system</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('library')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('library')">
                             <h3>LIBRARY SYSTEM</h3>
                             <p>Test book reading and intelligence</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('commissary')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('commissary')">
                             <h3>COMMISSARY SHOP</h3>
                             <p>Test the prison shop system</p>
                         </div>
@@ -2300,17 +2302,17 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 20px; color: #ff0;">💬 SOCIAL SYSTEMS</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                        <div class="prison-activity" onclick="game.testJumpTo('gang')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('gang')">
                             <h3>GANG SYSTEM</h3>
                             <p>Test gang alliances and reputation</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('cellmate')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('cellmate')">
                             <h3>CELLMATE CONVERSATION</h3>
                             <p>Test cellmate dialogue system</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('letter')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('letter')">
                             <h3>LETTER WRITING</h3>
                             <p>Test the letter writing system</p>
                         </div>
@@ -2321,22 +2323,22 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 20px; color: #ff0;">⭐ SPECIAL SYSTEMS</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                        <div class="prison-activity" onclick="game.testJumpTo('tattoo')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('tattoo')">
                             <h3>TATTOO SYSTEM</h3>
                             <p>Test the prison tattoo drawing system</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.showScreen('nailArtGuardSelection')">
+                        <div class="prison-activity-card" onclick="game.showScreen('nailArtGuardSelection')">
                             <h3>💅 NAIL ART DECORATION</h3>
                             <p>Test new isometric pixel art nail decoration system</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('favors')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('favors')">
                             <h3>GUARD FAVORS MENU</h3>
                             <p>Test spending favor tokens for privileges</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('escape')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('escape')">
                             <h3>ESCAPE SYSTEM</h3>
                             <p>Test escape planning and execution</p>
                         </div>
@@ -2347,12 +2349,12 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 20px; color: #ff0;">💾 SAVE SYSTEM</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                        <div class="prison-activity" onclick="game.testJumpTo('saveExport')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('saveExport')">
                             <h3>SAVE CODE EXPORT</h3>
                             <p>Test save code generation</p>
                         </div>
 
-                        <div class="prison-activity" onclick="game.testJumpTo('saveImport')">
+                        <div class="prison-activity-card" onclick="game.testJumpTo('saveImport')">
                             <h3>SAVE CODE IMPORT</h3>
                             <p>Test save code loading</p>
                         </div>
@@ -2363,10 +2365,10 @@
                 <div class="form-container" style="margin-top: 30px;">
                     <h3 style="margin-bottom: 15px; color: #0f0;">🛠️ RESOURCES & CURRENCY</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        <button onclick="game.testAddMoney(100)">Add 100 Credits</button>
-                        <button onclick="game.testAddCigarettes(20)">Add 20 Cigarettes</button>
-                        <button onclick="game.testAddGoodBehavior(20)">Add 20 Good Behavior</button>
-                        <button onclick="game.testAddFavorTokens(3)">Add 3 Favor Tokens</button>
+                        <button class="pixel-button" onclick="game.testAddMoney(100)">Add 100 Credits</button>
+                        <button class="pixel-button" onclick="game.testAddCigarettes(20)">Add 20 Cigarettes</button>
+                        <button class="pixel-button" onclick="game.testAddGoodBehavior(20)">Add 20 Good Behavior</button>
+                        <button class="pixel-button" onclick="game.testAddFavorTokens(3)">Add 3 Favor Tokens</button>
                     </div>
                 </div>
 
@@ -2374,10 +2376,10 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 15px; color: #0f0;">💪 PHYSICAL STATS</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        <button onclick="game.testSetStrength(100)">Max Strength (100)</button>
-                        <button onclick="game.testSetIntelligence(100)">Max Intelligence (100)</button>
-                        <button onclick="game.testSetHunger(0)">Reset Hunger (0)</button>
-                        <button onclick="game.testMaxAllStats()">Max All Stats</button>
+                        <button class="pixel-button" onclick="game.testSetStrength(100)">Max Strength (100)</button>
+                        <button class="pixel-button" onclick="game.testSetIntelligence(100)">Max Intelligence (100)</button>
+                        <button class="pixel-button" onclick="game.testSetHunger(0)">Reset Hunger (0)</button>
+                        <button class="pixel-button" onclick="game.testMaxAllStats()">Max All Stats</button>
                     </div>
                 </div>
 
@@ -2385,10 +2387,10 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 15px; color: #0f0;">⏰ TIME CONTROLS</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        <button onclick="game.testAddDays(10)">Add 10 Days Served</button>
-                        <button onclick="game.testSkipDays(1)">Skip 1 Day Forward</button>
-                        <button onclick="game.testReduceSentence(1)">Reduce Sentence 1 Year</button>
-                        <button onclick="game.testSetSentence(1)">Set Sentence to 1 Year</button>
+                        <button class="pixel-button" onclick="game.testAddDays(10)">Add 10 Days Served</button>
+                        <button class="pixel-button" onclick="game.testSkipDays(1)">Skip 1 Day Forward</button>
+                        <button class="pixel-button" onclick="game.testReduceSentence(1)">Reduce Sentence 1 Year</button>
+                        <button class="pixel-button" onclick="game.testSetSentence(1)">Set Sentence to 1 Year</button>
                     </div>
                 </div>
 
@@ -2396,10 +2398,10 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 15px; color: #0f0;">🧪 SPECIAL TESTING</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        <button onclick="game.testInfectTattoo()">Infect Random Tattoo</button>
-                        <button onclick="game.testShowStats()">View All Player Stats</button>
-                        <button onclick="game.testMaxGangRep()">Max All Gang Reps</button>
-                        <button onclick="game.testAddContraband()">Add Random Contraband</button>
+                        <button class="pixel-button" onclick="game.testInfectTattoo()">Infect Random Tattoo</button>
+                        <button class="pixel-button" onclick="game.testShowStats()">View All Player Stats</button>
+                        <button class="pixel-button" onclick="game.testMaxGangRep()">Max All Gang Reps</button>
+                        <button class="pixel-button" onclick="game.testAddContraband()">Add Random Contraband</button>
                     </div>
                 </div>
 
@@ -2407,13 +2409,13 @@
                 <div class="form-container" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 15px; color: #f00;">⚠️ SYSTEM CONTROLS</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        <button onclick="game.testVoicePreviews()">Preview All Voices</button>
-                        <button onclick="game.testApiKey()">Test Gemini API Key</button>
-                        <button onclick="game.testResetProgress()">Reset All Progress</button>
+                        <button class="pixel-button" onclick="game.testVoicePreviews()">Preview All Voices</button>
+                        <button class="pixel-button" onclick="game.testApiKey()">Test Gemini API Key</button>
+                        <button class="pixel-button" onclick="game.testResetProgress()">Reset All Progress</button>
                     </div>
                 </div>
 
-                <button onclick="game.showScreen('mainMenu')" style="margin-top: 30px;">BACK TO MAIN MENU</button>
+                <button class="pixel-button" onclick="game.showScreen('mainMenu')" style="margin-top: 30px;">BACK TO MAIN MENU</button>
             </div>
         </div>
 
@@ -2442,7 +2444,7 @@
 
                 <p style="margin-top: 100px; font-size: 2em;">VROOM VROOM</p>
 
-                <button onclick="game.showScreen('mainMenu')" style="margin-top: 50px;">RETURN TO MENU</button>
+                <button class="pixel-button" onclick="game.showScreen('mainMenu')" style="margin-top: 50px;">RETURN TO MENU</button>
             </div>
         </div>
 
