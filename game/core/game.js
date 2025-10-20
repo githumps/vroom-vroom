@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '3.2.0'; // DRIVER'S LICENSE + AUDIO + VIRAL FEATURES
+        this.VERSION = '3.2.1'; // CRITICAL BUG FIXES (CharacterSprites, scene renderer, color validation)
 
         this.scene = null;
         this.camera = null;
