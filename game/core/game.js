@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '3.2.2'; // FIX: CharacterOrigins/Archetypes errors + character preview skin tone updates
+        this.VERSION = '4.0.0-beta.1'; // THE VIRAL UPDATE - Achievement System integrated! 7 achievements working!
 
         this.scene = null;
         this.camera = null;
@@ -674,6 +674,9 @@ class VroomVroomGame {
         // Initialize Sound System
         this.soundSystem = new SoundSystem();
 
+        // Initialize Achievement System (30 achievements) - NEW v4.0.0
+        this.achievementTracker = null; // Will be initialized after player data loads
+
         // Initialize Gemini Random Events System
         this.geminiEvents = new GeminiRandomEventGenerator(this.apiKeyManager);
         this.ambientTimer = new AmbientEventTimer(this.geminiEvents, this.soundSystem);
@@ -734,6 +737,14 @@ class VroomVroomGame {
                     this.audioManager.playEnvironment('menu', { playMusic: true, playAmbient: true });
                 }
             }, { once: true });
+        }
+
+        // Initialize Achievement System (30 achievements)
+        if (typeof AchievementTracker !== 'undefined') {
+            console.log('[VROOM] Initializing Achievement System...');
+            this.achievementTracker = new AchievementTracker(this);
+            this.achievementTracker.init();
+            console.log('[VROOM] ✅ Achievement System ready - 30 achievements tracking');
         }
 
         // Display version number
@@ -1003,6 +1014,25 @@ class VroomVroomGame {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
         this.currentScreen = screenId;
+
+        // === AUDIO INTEGRATION: Play music and ambient for each screen ===
+        if (this.audioManager && this.audioManager.initialized) {
+            // Screen transition whoosh
+            this.audioManager.playTransitionWhoosh();
+
+            // Play appropriate audio environment
+            if (screenId === 'mainMenu' || screenId === 'credits' || screenId === 'settings') {
+                this.audioManager.playEnvironment('menu', { playMusic: true, playAmbient: true });
+            } else if (screenId === 'characterCreation' || screenId === 'carSelection') {
+                this.audioManager.playEnvironment('characterCreation', { playMusic: true, playAmbient: false });
+            } else if (screenId === 'courtroom' || screenId === 'courtroomForm') {
+                this.audioManager.playEnvironment('courtroom', { playMusic: true, playAmbient: true });
+            } else if (screenId.includes('prison') || screenId === 'weightLifting' || screenId === 'cafeteria' ||
+                       screenId === 'letterWriting' || screenId === 'prisonLibrary' || screenId === 'tattooStudio' ||
+                       screenId === 'commissaryShop' || screenId === 'gangSystem' || screenId === 'nailArtGuardSelection') {
+                this.audioManager.playEnvironment('prison', { playMusic: true, playAmbient: true });
+            }
+        }
 
         if (screenId === 'credits') {
             // Restart animation
@@ -1982,7 +2012,7 @@ class VroomVroomGame {
             speed: this.player.speed
         });
 
-        // Display judge dialogue
+        // Display judge dialogue (for legacy HTML display)
         document.getElementById('judgeStatement').innerHTML = `
             <p style="color: #f00; font-weight: bold; margin-bottom: 10px;">"${response.text}"</p>
             <p style="color: #0f0; margin-top: 10px;">Now complete these forms. And don't waste my time.</p>
@@ -1992,13 +2022,16 @@ class VroomVroomGame {
         document.getElementById('moodLevel').textContent = newMood;
         document.getElementById('patienceLevel').textContent = this.judge.patience;
 
-        // Show Ace Attorney courtroom (stays visible during entire courtroom session)
+        // Start Ace Attorney courtroom with judge's current patience level
         this.aceCourtroom.start(this.judge.patience);
-        this.aceCourtroom.showDialogue('JUDGE HARDCASTLE', response.text, () => {
-            // Don't stop the ace courtroom - keep judge visible!
-            // Just hide the dialogue box and show the form interface
+
+        // Show dramatic opening dialogue
+        const openingText = `${response.text}\n\nNow complete these forms. ALL of them. And don't waste my time.`;
+        this.aceCourtroom.showDialogue('JUDGE HARDCASTLE', openingText, () => {
+            // After opening dialogue, hide dialogue and show forms
             this.aceCourtroom.hideDialogue();
             document.getElementById('judgeDialogue').style.display = 'block';
+            document.getElementById('courtForms').style.display = 'block';
         });
 
         // Add listeners for form interactions to trigger judge commentary
@@ -2078,11 +2111,18 @@ class VroomVroomGame {
         const judgeStatement = document.getElementById('judgeStatement');
         const currentHtml = judgeStatement.innerHTML;
 
-        // Add new comment
+        // Add new comment to HTML (legacy display)
         judgeStatement.innerHTML = `
             <p style="color: #f00; font-weight: bold; animation: fadeIn 0.3s;">${comment}</p>
             <p style="color: #666; font-size: 0.9em; margin-top: 10px; font-style: normal;">Previous: ${currentHtml.replace(/<[^>]*>/g, ' ').substring(0, 100)}...</p>
         `;
+
+        // ALSO show in Ace Attorney courtroom for dramatic effect
+        if (this.aceCourtroom && this.aceCourtroom.isActive) {
+            // Remove quotes from comment for dialogue display
+            const cleanComment = comment.replace(/^"/, '').replace(/"$/, '');
+            this.aceCourtroom.triggerFormError(cleanComment);
+        }
     }
 
     submitCourtForms() {
@@ -2134,7 +2174,34 @@ class VroomVroomGame {
             this.licenseRenderer.update(); // Update license with new arrest data
         }
 
-        // Display final sentencing
+        // Check achievement: Arrest milestones (First Timer, Frequent Flyer, Career Criminal)
+        if (this.achievementTracker) {
+            if (this.player.arrests === 1) {
+                this.achievementTracker.unlockAchievement('first_timer');
+            }
+            if (this.player.arrests === 10) {
+                this.achievementTracker.unlockAchievement('frequent_flyer');
+            }
+            if (this.player.arrests === 100) {
+                this.achievementTracker.unlockAchievement('career_criminal');
+            }
+        }
+
+        // Check achievement: Absurd sentences (Eternal Prisoner, Lifer, Immortal, Time Lord)
+        if (this.achievementTracker) {
+            const sentenceInDays = sentenceYears * 365;
+            if (sentenceInDays >= 36500000) { // 100,000 years
+                this.achievementTracker.unlockAchievement('time_lord');
+            } else if (sentenceInDays >= 3650000) { // 10,000 years
+                this.achievementTracker.unlockAchievement('immortal');
+            } else if (sentenceInDays >= 365000) { // 1,000 years
+                this.achievementTracker.unlockAchievement('lifer');
+            } else if (sentenceInDays >= 36500) { // 100 years
+                this.achievementTracker.unlockAchievement('eternal_prisoner');
+            }
+        }
+
+        // Display final sentencing (legacy HTML)
         document.getElementById('judgeStatement').innerHTML = `
             <p style="color: #f00; font-weight: bold; font-size: 1.2em; margin-bottom: 15px; text-transform: uppercase;">
                 VERDICT: GUILTY
@@ -2159,23 +2226,41 @@ class VroomVroomGame {
             el.disabled = true;
         });
 
+        // Hide forms for dramatic verdict
+        document.getElementById('courtForms').style.display = 'none';
+
         this.showMessage('GUILTY. Sentence: ' + sentenceYears + ' years. Welcome to prison.', 4000);
 
-        // Show dramatic judgment and gavel cinematic
-        setTimeout(() => {
-            // Play gavel strike sound
-            this.soundSystem.playGavelStrike();
+        // Show DRAMATIC Ace Attorney verdict
+        if (this.aceCourtroom && this.aceCourtroom.isActive) {
+            const verdictText = `VERDICT: GUILTY!\n\n${response.sentencing}\n\nYour sentence: ${sentenceYears} YEARS!\n\nMay this serve as a lesson. Which it won't. I'll see you again.`;
 
-            this.cinematics.play('judgment', () => {
-                // Play prison door clang sound
-                this.soundSystem.playPrisonDoorClang();
-
-                // Then show prison entrance
-                this.cinematics.play('prison', () => {
-                    this.startPrison();
-                });
+            this.aceCourtroom.triggerVerdict(sentenceYears, verdictText, () => {
+                // After verdict animation, continue to cinematics
+                this.proceedToJudgmentCinematic();
             });
-        }, 5000);
+        } else {
+            // Fallback to old behavior if Ace Attorney courtroom not available
+            setTimeout(() => {
+                this.proceedToJudgmentCinematic();
+            }, 5000);
+        }
+    }
+
+    // Separate method for judgment cinematic (called after verdict)
+    proceedToJudgmentCinematic() {
+        // Play gavel strike sound
+        this.soundSystem.playGavelStrike();
+
+        this.cinematics.play('judgment', () => {
+            // Play prison door clang sound
+            this.soundSystem.playPrisonDoorClang();
+
+            // Then show prison entrance
+            this.cinematics.play('prison', () => {
+                this.startPrison();
+            });
+        });
     }
 
     startPrison() {
