@@ -1544,5 +1544,136 @@ body {
 }
 
 /* ============================================================================
+   DRIVING HUD - Pixel Art Overlay
+   ============================================================================ */
+
+.pixel-hud {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    font-family: 'Courier New', 'Consolas', monospace;
+}
+
+.hud-panel {
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid var(--color-primary-cyan, #00B4D8);
+    border-radius: 4px;
+    padding: 15px;
+    min-width: 200px;
+    box-shadow:
+        0 0 20px rgba(0, 180, 216, 0.5),
+        inset 2px 2px 0 rgba(255, 255, 255, 0.1),
+        inset -2px -2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.hud-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    padding: 8px 10px;
+    background: rgba(0, 180, 216, 0.1);
+    border-left: 3px solid var(--color-primary-cyan, #00B4D8);
+}
+
+.hud-label {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-primary-cyan, #00B4D8);
+    text-shadow: 0 0 5px rgba(0, 180, 216, 0.5);
+}
+
+.hud-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.8),
+        2px 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* Speed indicator (green when safe) */
+.hud-speed .hud-value {
+    color: var(--color-primary-teal, #06D6A0);
+    text-shadow:
+        0 0 10px rgba(6, 214, 160, 0.8),
+        2px 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* Wanted level (red when wanted) */
+.hud-wanted .hud-value {
+    color: #FF6B9D;
+    text-shadow:
+        0 0 10px rgba(255, 107, 157, 0.8),
+        2px 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* Instruction banner */
+.hud-instruction {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(255, 169, 64, 0.2);
+    border: 2px solid var(--color-accent-orange, #FFA940);
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(255, 169, 64, 0.3);
+}
+
+.instruction-blink {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-accent-orange, #FFA940);
+    text-shadow:
+        0 0 10px rgba(255, 169, 64, 0.8),
+        2px 2px 0 rgba(0, 0, 0, 0.8);
+    animation: blinkInstruction 2s ease-in-out infinite;
+}
+
+@keyframes blinkInstruction {
+    0%, 100% {
+        opacity: 1;
+        text-shadow:
+            0 0 10px rgba(255, 169, 64, 0.8),
+            2px 2px 0 rgba(0, 0, 0, 0.8);
+    }
+    50% {
+        opacity: 0.6;
+        text-shadow:
+            0 0 5px rgba(255, 169, 64, 0.4),
+            2px 2px 0 rgba(0, 0, 0, 0.8);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .pixel-hud {
+        top: 10px;
+        right: 10px;
+    }
+
+    .hud-panel {
+        min-width: 160px;
+        padding: 10px;
+    }
+
+    .hud-label {
+        font-size: 10px;
+    }
+
+    .hud-value {
+        font-size: 14px;
+    }
+
+    .instruction-blink {
+        font-size: 11px;
+    }
+}
+
+/* ============================================================================
    END OF VISUAL SYSTEM
    ============================================================================ */
