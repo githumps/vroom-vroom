@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '2.2.0-phase5';
+        this.VERSION = '2.3.0-phase6';
 
         this.scene = null;
         this.camera = null;
@@ -1153,6 +1153,7 @@ class VroomVroomGame {
             this.updateCharacterInfoDisplay();
             this.updatePrisonTimeDisplay();
             this.updateCorruptionDisplay();
+            this.updateStatsPanel();  // Update pixel art stats panel
         }
     }
 
@@ -1245,6 +1246,63 @@ class VroomVroomGame {
                 </div>
             </div>
         `;
+    }
+
+    updateStatsPanel() {
+        // Update pixel art stats panel in prison menu
+        if (!this.player) return;
+
+        // Money (max display: 100 credits)
+        const moneyBar = document.getElementById('moneyBar');
+        const moneyValue = document.getElementById('moneyValue');
+        if (moneyBar && moneyValue) {
+            const moneyPercent = Math.min((this.player.money / 100) * 100, 100);
+            moneyBar.style.width = moneyPercent + '%';
+            moneyValue.textContent = this.player.money;
+        }
+
+        // Hunger (0-100%)
+        const hungerBar = document.getElementById('hungerBar');
+        const hungerValue = document.getElementById('hungerValue');
+        if (hungerBar && hungerValue) {
+            hungerBar.style.width = this.player.hunger + '%';
+            hungerValue.textContent = this.player.hunger;
+        }
+
+        // Strength (max display: 100)
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthValue = document.getElementById('strengthValue-stats');
+        if (strengthBar && strengthValue) {
+            const strengthPercent = Math.min((this.player.strength / 100) * 100, 100);
+            strengthBar.style.width = strengthPercent + '%';
+            strengthValue.textContent = this.player.strength;
+        }
+
+        // Intelligence (max display: 100)
+        const intelligenceBar = document.getElementById('intelligenceBar');
+        const intelligenceValue = document.getElementById('intelligenceValue-stats');
+        if (intelligenceBar && intelligenceValue) {
+            const intelligencePercent = Math.min((this.player.intelligence / 100) * 100, 100);
+            intelligenceBar.style.width = intelligencePercent + '%';
+            intelligenceValue.textContent = this.player.intelligence;
+        }
+
+        // Good Behavior (0-100)
+        const behaviorBar = document.getElementById('behaviorBar');
+        const behaviorValue = document.getElementById('behaviorValue');
+        if (behaviorBar && behaviorValue) {
+            const behavior = this.player.goodBehavior || 100;
+            behaviorBar.style.width = behavior + '%';
+            behaviorValue.textContent = behavior;
+        }
+
+        console.log('[VROOM] Stats panel updated:', {
+            money: this.player.money,
+            hunger: this.player.hunger,
+            strength: this.player.strength,
+            intelligence: this.player.intelligence,
+            behavior: this.player.goodBehavior
+        });
     }
 
     // Modal Management

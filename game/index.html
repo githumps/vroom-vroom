@@ -1248,6 +1248,67 @@
             <div class="prison-cell-bg">
                 <h2>CORRECTIONAL FACILITY #7734</h2>
                 <div id="characterInfoDisplay" style="margin: 15px 20px; padding: 15px; background: rgba(0, 255, 0, 0.05); border: 1px solid #0f0; border-radius: 5px;"></div>
+
+                <!-- PIXEL ART STATS PANEL -->
+                <div class="prison-stats-panel">
+                    <h3 class="stats-panel-title">INMATE STATUS</h3>
+
+                    <div class="stat-row">
+                        <div class="stat-label">
+                            <span class="stat-icon">💰</span>
+                            <span class="stat-name">Money</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar money-bar" id="moneyBar" style="width: 0%"></div>
+                            <span class="stat-value" id="moneyValue">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-row">
+                        <div class="stat-label">
+                            <span class="stat-icon">🍔</span>
+                            <span class="stat-name">Hunger</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar hunger-bar" id="hungerBar" style="width: 100%"></div>
+                            <span class="stat-value" id="hungerValue">100</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-row">
+                        <div class="stat-label">
+                            <span class="stat-icon">💪</span>
+                            <span class="stat-name">Strength</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar strength-bar" id="strengthBar" style="width: 0%"></div>
+                            <span class="stat-value" id="strengthValue-stats">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-row">
+                        <div class="stat-label">
+                            <span class="stat-icon">🧠</span>
+                            <span class="stat-name">Intelligence</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar intelligence-bar" id="intelligenceBar" style="width: 0%"></div>
+                            <span class="stat-value" id="intelligenceValue-stats">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-row">
+                        <div class="stat-label">
+                            <span class="stat-icon">😇</span>
+                            <span class="stat-name">Good Behavior</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar behavior-bar" id="behaviorBar" style="width: 100%"></div>
+                            <span class="stat-value" id="behaviorValue">100</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="prisonTimeDisplay" style="margin: 10px 20px; opacity: 0.8;"></div>
                 <p style="margin: 20px; font-size: 1.1em;">Sentence: <span id="sentenceLength">5</span> years</p>
                 <p style="margin: 20px;">Time Served: <span id="timeServed">0</span> days</p>
