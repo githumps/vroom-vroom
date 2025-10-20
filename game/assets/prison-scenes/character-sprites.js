@@ -7,7 +7,7 @@
  * ANIMATIONS: Walk cycles, idle states, activity-specific
  */
 
-const CharacterSprites = {
+const PrisonCharacterSprites = {
     metadata: {
         sprite_size: { width: 32, height: 48 },
         scale: 2,

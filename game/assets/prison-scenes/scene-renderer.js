@@ -115,6 +115,12 @@ class PrisonSceneRenderer {
     renderElement(element, ctx, timestamp) {
         const { type, position, size, pixelData } = element;
 
+        // Validate position exists
+        if (!position || typeof position.x !== 'number' || typeof position.y !== 'number') {
+            console.warn('[Scene Renderer] Element missing valid position:', element);
+            return; // Skip rendering this element
+        }
+
         ctx.save();
         ctx.translate(position.x, position.y);
 
@@ -228,11 +234,12 @@ class PrisonSceneRenderer {
                 const bookHeight = shelfHeight - 8;
                 const bookColor = this.getRandomBookColor();
 
-                ctx.fillStyle = palette[bookColor] || palette.book_spine_1;
+                const bookSpineColor = palette[bookColor] || palette.book_spine_1;
+                ctx.fillStyle = bookSpineColor;
                 ctx.fillRect(bookX, y + 4, bookWidth, bookHeight);
 
                 // Book spine highlight
-                ctx.fillStyle = this.adjustColor(palette[bookColor], 0.2);
+                ctx.fillStyle = this.adjustColor(bookSpineColor, 0.2);
                 ctx.fillRect(bookX, y + 4, 1, bookHeight);
 
                 bookX += bookWidth + 1;
@@ -636,6 +643,12 @@ class PrisonSceneRenderer {
     }
 
     adjustColor(hex, amount) {
+        // Validate hex color input
+        if (!hex || typeof hex !== 'string' || !hex.startsWith('#')) {
+            console.warn('[Scene Renderer] Invalid hex color:', hex);
+            return '#808080'; // Return gray as fallback
+        }
+
         const num = parseInt(hex.slice(1), 16);
         const r = Math.min(255, Math.max(0, (num >> 16) + amount * 255));
         const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount * 255));

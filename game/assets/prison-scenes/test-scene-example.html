@@ -202,7 +202,7 @@
             document.getElementById('sceneDescription').textContent = sceneInfo[sceneName].description;
 
             // Add player character
-            const playerSprite = Object.assign({}, CharacterSprites.inmates.base_inmate);
+            const playerSprite = Object.assign({}, PrisonCharacterSprites.inmates.base_inmate);
             currentRenderer.addCharacter(playerSprite, { x: 400, y: 350 });
 
             // Add some NPCs
@@ -217,28 +217,28 @@
 
         function addNPCs(sceneName) {
             if (sceneName === 'gym') {
-                const bigGuy = CharacterSprites.inmates.archetypes.find(a => a.id === 'big_guy');
+                const bigGuy = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'big_guy');
                 currentRenderer.addCharacter(bigGuy, { x: 280, y: 350 });
 
-                const troublemaker = CharacterSprites.inmates.archetypes.find(a => a.id === 'troublemaker');
+                const troublemaker = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'troublemaker');
                 currentRenderer.addCharacter(troublemaker, { x: 620, y: 250 });
             } else if (sceneName === 'library') {
-                const bookworm = CharacterSprites.inmates.archetypes.find(a => a.id === 'bookworm');
+                const bookworm = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'bookworm');
                 currentRenderer.addCharacter(bookworm, { x: 250, y: 450 });
 
-                const oldTimer = CharacterSprites.inmates.archetypes.find(a => a.id === 'old_timer');
+                const oldTimer = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'old_timer');
                 currentRenderer.addCharacter(oldTimer, { x: 680, y: 420 });
             } else if (sceneName === 'cafeteria') {
-                const conArtist = CharacterSprites.inmates.archetypes.find(a => a.id === 'con_artist');
+                const conArtist = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'con_artist');
                 currentRenderer.addCharacter(conArtist, { x: 220, y: 500 });
 
-                const newbie = CharacterSprites.inmates.archetypes.find(a => a.id === 'nervous_newbie');
+                const newbie = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'nervous_newbie');
                 currentRenderer.addCharacter(newbie, { x: 540, y: 500 });
             } else if (sceneName === 'yard') {
-                const gangLeader = CharacterSprites.inmates.archetypes.find(a => a.id === 'gang_leader');
+                const gangLeader = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'gang_leader');
                 currentRenderer.addCharacter(gangLeader, { x: 250, y: 520 });
 
-                const quietGiant = CharacterSprites.inmates.archetypes.find(a => a.id === 'quiet_giant');
+                const quietGiant = PrisonCharacterSprites.inmates.archetypes.find(a => a.id === 'quiet_giant');
                 currentRenderer.addCharacter(quietGiant, { x: 480, y: 470 });
             }
         }

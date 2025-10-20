@@ -73,6 +73,13 @@ class CharacterPreviewRenderer {
         const spriteData = CharacterSprites.base_character;
         const palette = CharacterSprites.palette;
 
+        // Validate sprite data exists
+        if (!spriteData || !spriteData.pixelData || !palette) {
+            console.warn('[Character Preview] Invalid sprite data');
+            this.drawFallback();
+            return;
+        }
+
         // Get skin tone colors (0-5 maps to skin_1 through skin_6)
         const skinToneIndex = this.character.skinTone + 1;
         const skinKey = `skin_${skinToneIndex}`;
