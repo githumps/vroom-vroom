@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '2.1.0-phase4';
+        this.VERSION = '2.2.0-phase5';
 
         this.scene = null;
         this.camera = null;
@@ -703,6 +703,9 @@ class VroomVroomGame {
             this.initNailArtSystem();
         }
 
+        // Generate pixel art main menu background
+        this.initMainMenuBackground();
+
         // Display version number
         document.getElementById('gameVersion').textContent = this.VERSION;
 
@@ -798,6 +801,33 @@ class VroomVroomGame {
 
         // Start render loop
         this.animate();
+    }
+
+    initMainMenuBackground() {
+        // Generate gorgeous pixel art background for main menu
+        if (typeof PixelArtGenerator !== 'undefined') {
+            try {
+                console.log('[VROOM] Generating pixel art main menu background...');
+                const generator = new PixelArtGenerator();
+                const bgData = generator.generateMainMenuBackground();
+
+                // Apply to main menu as background image
+                const mainMenu = document.getElementById('mainMenu');
+                if (mainMenu && bgData && bgData.dataUrl) {
+                    mainMenu.style.backgroundImage = `url(${bgData.dataUrl})`;
+                    mainMenu.style.backgroundSize = 'cover';
+                    mainMenu.style.backgroundPosition = 'center';
+                    mainMenu.style.backgroundRepeat = 'no-repeat';
+                    console.log('[VROOM] ✅ Main menu background applied! (800x600px isometric cityscape)');
+                } else {
+                    console.warn('[VROOM] Main menu element not found or background generation failed');
+                }
+            } catch (error) {
+                console.error('[VROOM] Error generating main menu background:', error);
+            }
+        } else {
+            console.warn('[VROOM] PixelArtGenerator not loaded - skipping main menu background');
+        }
     }
 
     createWorld() {
