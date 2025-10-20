@@ -6,6 +6,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <title>VROOM VROOM - A Game About Freedom and Bureaucracy</title>
+
+    <!-- Master Visual System (Vibey Pixel Art Aesthetic) -->
+    <link rel="stylesheet" href="visual-system.css">
+
     <style>
         * {
             margin: 0;
@@ -2607,6 +2611,20 @@
     </button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Design Tokens (Master Color Palette & Design System) -->
+    <script>
+        // Load design tokens for JavaScript access
+        let DESIGN_TOKENS = null;
+        fetch('design-tokens.json')
+            .then(r => r.json())
+            .then(data => {
+                DESIGN_TOKENS = data;
+                console.log('[VROOM] Design tokens loaded:', Object.keys(data).length, 'categories');
+            })
+            .catch(err => console.warn('[VROOM] Design tokens not found, using defaults'));
+    </script>
+
     <script src="rendering/soundsystem.js"></script>
     <script src="systems/tattoo-system.js"></script>
     <script src="systems/car-selection.js"></script>
