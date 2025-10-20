@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver's License UI - Visual Demo</title>
+    <link rel="stylesheet" href="drivers-license-ui.css">
+    <style>
+        body {
+            background: #1A1A1A;
+            padding: 40px;
+            font-family: 'Courier New', monospace;
+            color: #F5E6D3;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #FF8C42;
+            margin-bottom: 40px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .demo-item {
+            background: #2A2A2E;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #4A4A4E;
+        }
+
+        .demo-item h2 {
+            color: #FFD670;
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .demo-item p {
+            font-size: 12px;
+            color: #C5B6A3;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .license-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+        }
+
+        /* Demo-specific positioning */
+        .demo-item .drivers-license-container {
+            position: relative;
+            top: 0;
+            left: 0;
+        }
+
+        .controls {
+            background: #2A2A2E;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #4A4A4E;
+            margin-top: 40px;
+        }
+
+        .controls h2 {
+            color: #FFD670;
+            margin-bottom: 15px;
+        }
+
+        .controls button {
+            background: #FF8C42;
+            color: #1A1A1A;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .controls button:hover {
+            background: #FFB380;
+            transform: scale(1.05);
+        }
+
+        .controls button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🚗 DRIVER'S LICENSE UI - VISUAL DEMO 🚗</h1>
+
+        <div class="demo-grid">
+            <!-- Clean License (0 arrests) -->
+            <div class="demo-item">
+                <h2>Clean License (0 Arrests)</h2>
+                <p>Pristine government document, ACTIVE status</p>
+                <div class="license-wrapper">
+                    <div class="drivers-license-container expanded">
+                        <div class="drivers-license-card">
+                            <div class="license-header">
+                                DYSTOPIAN DEPARTMENT OF MOTOR VEHICLES
+                                <div class="license-header-subtext">Official Driver Identification</div>
+                            </div>
+                            <div class="license-mugshot-container">
+                                <canvas class="license-mugshot-canvas" width="80" height="100"></canvas>
+                                <div class="license-prisoner-number">#102938</div>
+                            </div>
+                            <div class="license-barcode">
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                            </div>
+                            <div class="license-id-number">ID: DMV-102938</div>
+                            <div class="license-info-section">
+                                <div class="license-field">
+                                    <span class="license-field-label">Full Name</span>
+                                    <span class="license-field-value">JOHN DOE</span>
+                                </div>
+                                <div class="license-field-row">
+                                    <div class="license-field">
+                                        <span class="license-field-label">Height</span>
+                                        <span class="license-field-value">5'10"</span>
+                                    </div>
+                                    <div class="license-field">
+                                        <span class="license-field-label">Skin Tone</span>
+                                        <span class="license-field-value">Medium</span>
+                                    </div>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Vehicle Class</span>
+                                    <span class="license-field-value">THE BEATER</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Status</span>
+                                    <span class="license-field-value" style="color: #6ABF69;">ACTIVE</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Violations</span>
+                                    <span class="license-field-value">0</span>
+                                </div>
+                            </div>
+                            <div class="license-status-bar">
+                                <div class="license-stat" title="Credits">💰 <span class="license-stat-value">100</span></div>
+                                <div class="license-stat" title="Hunger">🍽️ <span class="license-stat-value">50</span></div>
+                                <div class="license-stat" title="Strength">💪 <span class="license-stat-value">10</span></div>
+                                <div class="license-stat" title="Intelligence">🧠 <span class="license-stat-value">15</span></div>
+                            </div>
+                            <button class="license-toggle-btn">−</button>
+                            <canvas class="license-stamp-canvas" width="320" height="180"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- First Violation (1-2 arrests) -->
+            <div class="demo-item">
+                <h2>First Violations (2 Arrests)</h2>
+                <p>CAUTION and HIGH RISK stamps applied</p>
+                <div class="license-wrapper">
+                    <div class="drivers-license-container expanded">
+                        <div class="drivers-license-card">
+                            <div class="license-header">
+                                DYSTOPIAN DEPARTMENT OF MOTOR VEHICLES
+                                <div class="license-header-subtext">Official Driver Identification</div>
+                            </div>
+                            <div class="license-mugshot-container">
+                                <canvas class="license-mugshot-canvas" width="80" height="100"></canvas>
+                                <div class="license-prisoner-number">#102938</div>
+                            </div>
+                            <div class="license-barcode">
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                            </div>
+                            <div class="license-id-number">ID: DMV-102938</div>
+                            <div class="license-info-section">
+                                <div class="license-field">
+                                    <span class="license-field-label">Full Name</span>
+                                    <span class="license-field-value">JOHN DOE</span>
+                                </div>
+                                <div class="license-field-row">
+                                    <div class="license-field">
+                                        <span class="license-field-label">Height</span>
+                                        <span class="license-field-value">5'10"</span>
+                                    </div>
+                                    <div class="license-field">
+                                        <span class="license-field-label">Skin Tone</span>
+                                        <span class="license-field-value">Medium</span>
+                                    </div>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Vehicle Class</span>
+                                    <span class="license-field-value">THE BEATER</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Status</span>
+                                    <span class="license-field-value" style="color: #FFD670;">PROBATION</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Violations</span>
+                                    <span class="license-field-value">2</span>
+                                </div>
+                            </div>
+                            <div class="license-status-bar">
+                                <div class="license-stat">💰 <span class="license-stat-value">75</span></div>
+                                <div class="license-stat">🍽️ <span class="license-stat-value">35</span></div>
+                                <div class="license-stat">💪 <span class="license-stat-value">12</span></div>
+                                <div class="license-stat">🧠 <span class="license-stat-value">14</span></div>
+                            </div>
+                            <button class="license-toggle-btn">−</button>
+                            <canvas class="license-stamp-canvas" width="320" height="180"></canvas>
+                            <!-- Stamps -->
+                            <div class="license-stamp" style="top: 50px; right: 40px; --stamp-rotation: 5deg; color: #FFD670; font-size: 16px;">CAUTION</div>
+                            <div class="license-stamp" style="top: 110px; right: 30px; --stamp-rotation: 8deg; color: #D84448; font-size: 14px;">HIGH RISK</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Serious Violations (5 arrests) -->
+            <div class="demo-item">
+                <h2>Serious Violations (5 Arrests)</h2>
+                <p>Multiple red stamps, SUSPENDED status</p>
+                <div class="license-wrapper">
+                    <div class="drivers-license-container expanded">
+                        <div class="drivers-license-card">
+                            <div class="license-header">
+                                DYSTOPIAN DEPARTMENT OF MOTOR VEHICLES
+                                <div class="license-header-subtext">Official Driver Identification</div>
+                            </div>
+                            <div class="license-mugshot-container">
+                                <canvas class="license-mugshot-canvas" width="80" height="100"></canvas>
+                                <div class="license-prisoner-number">#102938</div>
+                            </div>
+                            <div class="license-barcode">
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                            </div>
+                            <div class="license-id-number">ID: DMV-102938</div>
+                            <div class="license-info-section">
+                                <div class="license-field">
+                                    <span class="license-field-label">Full Name</span>
+                                    <span class="license-field-value">JOHN DOE</span>
+                                </div>
+                                <div class="license-field-row">
+                                    <div class="license-field">
+                                        <span class="license-field-label">Height</span>
+                                        <span class="license-field-value">5'10"</span>
+                                    </div>
+                                    <div class="license-field">
+                                        <span class="license-field-label">Skin Tone</span>
+                                        <span class="license-field-value">Medium</span>
+                                    </div>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Vehicle Class</span>
+                                    <span class="license-field-value">THE BEATER</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Status</span>
+                                    <span class="license-field-value" style="color: #D84448;">SUSPENDED</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Violations</span>
+                                    <span class="license-field-value">5</span>
+                                </div>
+                            </div>
+                            <div class="license-status-bar">
+                                <div class="license-stat">💰 <span class="license-stat-value">30</span></div>
+                                <div class="license-stat">🍽️ <span class="license-stat-value">20</span></div>
+                                <div class="license-stat">💪 <span class="license-stat-value">15</span></div>
+                                <div class="license-stat">🧠 <span class="license-stat-value">10</span></div>
+                            </div>
+                            <button class="license-toggle-btn">−</button>
+                            <canvas class="license-stamp-canvas" width="320" height="180"></canvas>
+                            <!-- Many stamps -->
+                            <div class="license-stamp revoked" style="top: 40px; right: 20px; --stamp-rotation: 8deg;">REVOKED</div>
+                            <div class="license-stamp" style="top: 85px; right: 60px; --stamp-rotation: -12deg; color: #D84448; font-size: 18px; border: 3px solid #D84448; padding: 4px 8px;">DANGER</div>
+                            <div class="license-stamp" style="bottom: 45px; left: 105px; --stamp-rotation: -8deg; color: #D84448; font-size: 12px; border: 2px solid #D84448; padding: 2px 6px;">DO NOT<br>OPERATE</div>
+                            <div class="license-stamp" style="top: 130px; right: 40px; --stamp-rotation: -7deg; color: #4A6AA8; font-size: 12px; border: 2px solid #4A6AA8; padding: 2px 5px;">CONFISCATED</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Violations (10+ arrests) -->
+            <div class="demo-item">
+                <h2>Terminal Violations (10+ Arrests)</h2>
+                <p>License destroyed, PERMANENTLY BANNED</p>
+                <div class="license-wrapper">
+                    <div class="drivers-license-container expanded">
+                        <div class="drivers-license-card">
+                            <div class="license-header">
+                                DYSTOPIAN DEPARTMENT OF MOTOR VEHICLES
+                                <div class="license-header-subtext">Official Driver Identification</div>
+                            </div>
+                            <div class="license-mugshot-container">
+                                <canvas class="license-mugshot-canvas" width="80" height="100"></canvas>
+                                <div class="license-prisoner-number">#102938</div>
+                            </div>
+                            <div class="license-barcode">
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                                <div class="license-barcode-bar"></div>
+                            </div>
+                            <div class="license-id-number">ID: DMV-102938</div>
+                            <div class="license-info-section">
+                                <div class="license-field">
+                                    <span class="license-field-label">Full Name</span>
+                                    <span class="license-field-value">JOHN DOE</span>
+                                </div>
+                                <div class="license-field-row">
+                                    <div class="license-field">
+                                        <span class="license-field-label">Height</span>
+                                        <span class="license-field-value">5'10"</span>
+                                    </div>
+                                    <div class="license-field">
+                                        <span class="license-field-label">Skin Tone</span>
+                                        <span class="license-field-value">Medium</span>
+                                    </div>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Vehicle Class</span>
+                                    <span class="license-field-value">THE BEATER</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Status</span>
+                                    <span class="license-field-value" style="color: #B83838;">REVOKED</span>
+                                </div>
+                                <div class="license-field">
+                                    <span class="license-field-label">Violations</span>
+                                    <span class="license-field-value">12</span>
+                                </div>
+                            </div>
+                            <div class="license-status-bar">
+                                <div class="license-stat">💰 <span class="license-stat-value">0</span></div>
+                                <div class="license-stat">🍽️ <span class="license-stat-value">5</span></div>
+                                <div class="license-stat">💪 <span class="license-stat-value">22</span></div>
+                                <div class="license-stat">🧠 <span class="license-stat-value">8</span></div>
+                            </div>
+                            <button class="license-toggle-btn">−</button>
+                            <canvas class="license-stamp-canvas" width="320" height="180"></canvas>
+                            <!-- Complete destruction -->
+                            <div class="license-stamp void" style="top: 60px; left: 100px; --stamp-rotation: -15deg;">V O I D</div>
+                            <div class="license-stamp void" style="top: 100px; right: 40px; --stamp-rotation: 12deg; opacity: 0.6;">V O I D</div>
+                            <div class="license-stamp" style="top: 130px; left: 120px; --stamp-rotation: -5deg; color: #D84448; font-size: 9px; border: 2px solid #D84448; padding: 2px 4px;">PERMANENTLY<br>BANNED</div>
+                            <div class="license-stamp" style="top: 40px; right: 30px; --stamp-rotation: 15deg; color: #B83838; font-size: 24px;">DENIED</div>
+                            <div class="license-stamp" style="bottom: 50px; right: 60px; --stamp-rotation: -6deg; color: #B83838; font-size: 14px;">REPEAT<br>OFFENDER</div>
+                            <div class="license-stamp" style="top: 100px; left: 230px; --stamp-rotation: 12deg; color: #7A4A8A; font-size: 10px; border: 2px solid #7A4A8A; padding: 2px 6px;">MENACE TO<br>SOCIETY</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h2>Interactive Demo Controls</h2>
+            <p style="margin-bottom: 15px; color: #C5B6A3;">Click buttons to test license states and animations:</p>
+            <button onclick="testToggle()">Toggle Collapse/Expand</button>
+            <button onclick="testInspection()">Start Inspection Animation</button>
+            <button onclick="testViolation()">Apply Random Stamp</button>
+            <button onclick="testShake()">Violation Shake</button>
+            <button onclick="resetDemo()">Reset All</button>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #2A2A2E; border-radius: 8px; border: 2px solid #4A4A4E;">
+            <h2 style="color: #FFD670; margin-bottom: 10px;">📦 Files Delivered</h2>
+            <ul style="color: #C5B6A3; line-height: 1.8;">
+                <li><strong>drivers-license-ui.css</strong> - Complete visual styling (16 KB)</li>
+                <li><strong>drivers-license-assets.js</strong> - Stamp sprites and icons (25 KB)</li>
+                <li><strong>drivers-license-renderer.js</strong> - Canvas rendering system (20 KB)</li>
+                <li><strong>DRIVERS_LICENSE_INTEGRATION.md</strong> - Integration guide (19 KB)</li>
+                <li><strong>DRIVERS_LICENSE_VISUAL_REFERENCE.md</strong> - Design reference (20 KB)</li>
+            </ul>
+            <p style="margin-top: 15px; color: #6ABF69; font-weight: bold;">✅ Total: 100 KB of production-ready pixel art UI</p>
+        </div>
+    </div>
+
+    <script>
+        // Simple demo interactions
+        function testToggle() {
+            document.querySelectorAll('.drivers-license-container').forEach(container => {
+                container.classList.toggle('collapsed');
+                container.classList.toggle('expanded');
+                const btn = container.querySelector('.license-toggle-btn');
+                btn.textContent = container.classList.contains('collapsed') ? '+' : '−';
+            });
+        }
+
+        function testInspection() {
+            const container = document.querySelector('.drivers-license-container');
+            container.classList.add('inspection');
+            setTimeout(() => {
+                container.classList.remove('inspection');
+            }, 4000);
+        }
+
+        function testViolation() {
+            document.querySelectorAll('.drivers-license-container').forEach(container => {
+                container.classList.add('violation');
+                setTimeout(() => {
+                    container.classList.remove('violation');
+                }, 500);
+            });
+        }
+
+        function testShake() {
+            testViolation();
+        }
+
+        function resetDemo() {
+            document.querySelectorAll('.drivers-license-container').forEach(container => {
+                container.classList.remove('collapsed', 'inspection', 'violation');
+                container.classList.add('expanded');
+                const btn = container.querySelector('.license-toggle-btn');
+                btn.textContent = '−';
+            });
+        }
+
+        // Draw simple placeholder mugshots on load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.license-mugshot-canvas').forEach(canvas => {
+                const ctx = canvas.getContext('2d');
+
+                // Black background
+                ctx.fillStyle = '#1A1A1A';
+                ctx.fillRect(0, 0, 80, 100);
+
+                // Measurement lines
+                ctx.strokeStyle = '#2A2A2A';
+                ctx.lineWidth = 1;
+                for (let y = 0; y < 100; y += 10) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(80, y);
+                    ctx.stroke();
+                }
+
+                // Simple face placeholder
+                ctx.fillStyle = '#A8A8A8';
+                ctx.fillRect(25, 20, 30, 35); // Head
+
+                ctx.fillStyle = '#2A2A2A';
+                ctx.fillRect(30, 30, 5, 5); // Left eye
+                ctx.fillRect(45, 30, 5, 5); // Right eye
+                ctx.fillRect(35, 45, 10, 2); // Mouth
+
+                ctx.fillStyle = '#D8D8D8';
+                ctx.fillRect(15, 55, 50, 35); // Body/uniform
+            });
+        });
+    </script>
+</body>
+</html>

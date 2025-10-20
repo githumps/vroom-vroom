@@ -1,0 +1,413 @@
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║                    VROOM VROOM - PRISON UI VISUAL MOCKUP                         ║
+║                         Cozy Dystopian Pixel Art UI                              ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ DESKTOP LAYOUT (1920×1080)                                                     │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ░░░░░░░░░░░░░░░░░░░░░░ PRISON CELL BACKGROUND ░░░░░░░░░░░░░░░░░░░░░░░░░       ║
+║  ░░░░░░░ (Warm grey gradient, concrete texture, light beam) ░░░░░░░░░░░        ║
+║                                                                                  ║
+║  ┌─────────────────┐  ┌────────────────────────────────────────────────────┐   ║
+║  │ STATS PANEL     │  │            YOUR CELL                               │   ║
+║  ├─────────────────┤  │                                                    │   ║
+║  │                 │  │  ┌──────────────────────────────────────────────┐ │   ║
+║  │ PRISONER #1337  │  │  │ ⏰ DAY 5  │  ⏳ SENTENCE 25d                  │ │   ║
+║  │                 │  │  └──────────────────────────────────────────────┘ │   ║
+║  │ 💰 150 Credits  │  │                                                    │   ║
+║  │ 🚬 12 Cigs      │  │  ┌─ ACTIVITY CARD ────────────────────────────┐   │   ║
+║  │                 │  │  │▊ 💪 LIFT WEIGHTS                           │   │   ║
+║  │ HUNGER          │  │  │▊                                           │   │   ║
+║  │ [████████░░] 80 │  │  │▊ Build strength in the prison yard.        │   │   ║
+║  │                 │  │  │▊ Might help in a fight. Or not.            │   │   ║
+║  │ STRENGTH        │  │  │▊                                           │   │   ║
+║  │ [████░░░░░░] 40 │  │  │▊ Cost: FREE • Gain: +1 STRENGTH             │   │   ║
+║  │                 │  │  └────────────────────────────────────────────┘   │   ║
+║  │ INTELLIGENCE    │  │        ↑ Hover effect: Card slides right,        │   ║
+║  │ [██████░░░░] 60 │  │          accent bar glows, background darkens    │   ║
+║  │                 │  │                                                    │   ║
+║  └─────────────────┘  │  ┌─ ACTIVITY CARD ────────────────────────────┐   │   ║
+║    Fixed: 280px       │  │▊ 🍽️ EAT IN CAFETERIA                       │   │   ║
+║    Position: Left     │  │▊                                           │   │   ║
+║                       │  │▊ Consume questionable food. Reduces hunger. │   │   ║
+║                       │  │▊ Sometimes. Maybe. Probably not.           │   │   ║
+║                       │  │▊                                           │   │   ║
+║                       │  │▊ Cost: FREE • Gain: +20 HUNGER              │   │   ║
+║                       │  └────────────────────────────────────────────┘   │   ║
+║                       │                                                    │   ║
+║                       │  ┌─ ACTIVITY CARD ────────────────────────────┐   │   ║
+║                       │  │▊ 📚 VISIT LIBRARY                          │   │   ║
+║                       │  │▊                                           │   │   ║
+║                       │  │▊ Read books. Expand your mind, if that's   │   │   ║
+║                       │  │▊ still possible in this place.             │   │   ║
+║                       │  │▊                                           │   │   ║
+║                       │  │▊ Cost: FREE • Gain: +1 INTELLIGENCE         │   │   ║
+║                       │  └────────────────────────────────────────────┘   │   ║
+║                       │                                                    │   ║
+║                       │  ... [8 more activity cards] ...                  │   ║
+║                       │                                                    │   ║
+║                       │  ┌────────────────────────────────────────────┐   │   ║
+║                       │  │      SERVE TIME (SKIP AHEAD)              │   │   ║
+║                       │  └────────────────────────────────────────────┘   │   ║
+║                       │         ↑ Primary button (orange)                 │   ║
+║                       │                                                    │   ║
+║                       └────────────────────────────────────────────────────┘   ║
+║                         Max-width: 800px, margin-left: 320px                   ║
+║                                                                                  ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ BUTTON STATES                                                                  │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+DEFAULT STATE:
+┌───────────────────────────────┐
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│  Background: #3A3A3E (dark grey)
+│▓▓                           ▓▓│  Border: 2px #FF8C42 (orange)
+│▓▓    BUTTON TEXT            ▓▓│  Text: #F5E6D3 (warm white)
+│▓▓                           ▓▓│  Shadow: 0 4px 0 rgba(0,0,0,0.3)
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│
+└───────────────────────────────┘
+    ▓▓▓▓ Drop shadow
+
+HOVER STATE:
+┌───────────────────────────────┐
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│  Background: #FF8C42 (orange)
+│▓▓                           ▓▓│  Border: 2px #D97028 (dark orange)
+│▓▓    BUTTON TEXT            ▓▓│  Text: #2A2A2E (dark)
+│▓▓                           ▓▓│  Transform: translateY(-2px)
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│  Shadow: 0 6px 0 + glow
+└───────────────────────────────┘
+      ▓▓▓▓ Bigger shadow
+       ↑ Lifted 2px
+
+ACTIVE STATE:
+┌───────────────────────────────┐
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│  Background: #FF8C42 (orange)
+│▓▓                           ▓▓│  Border: 2px #D97028 (dark orange)
+│▓▓    BUTTON TEXT            ▓▓│  Transform: translateY(2px)
+│▓▓                           ▓▓│  Shadow: 0 1px 0 (minimal)
+│▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░▓▓▓│  Inset shadow (pressed look)
+└───────────────────────────────┘
+▓▓ Minimal shadow
+ ↓ Pressed down 2px
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ ACTIVITY CARD STATES                                                           │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+DEFAULT STATE:
+┌─────────────────────────────────────────────────────┐
+│▊ ┌────┐ LIFT WEIGHTS                                │
+│▊ │ 💪 │                                              │  Accent bar: 4px orange
+│▊ └────┘ Build strength in the prison yard.          │  Background: #3A3A3E
+│▊        Might help in a fight.                      │  Border: 2px #FF8C42
+│▊                                                     │
+│▊        Cost: FREE • Gain: +1 STRENGTH               │
+└─────────────────────────────────────────────────────┘
+  ▓▓▓▓ Drop shadow (4×4px)
+
+HOVER STATE:
+┌─────────────────────────────────────────────────────┐
+│▊▊ ┌────┐ LIFT WEIGHTS                               │
+│▊▊ │ 💪 │                                             │  Accent bar: 8px (glowing)
+│▊▊ └────┘ Build strength in the prison yard.         │  Background: #2A2A2E (darker)
+│▊▊        Might help in a fight.                     │  Border: 2px #FFB380 (light orange)
+│▊▊                                                    │  Transform: translateX(4px)
+│▊▊        Cost: FREE • Gain: +1 STRENGTH              │  Shadow: 6×6px (bigger)
+└─────────────────────────────────────────────────────┘
+     ▓▓▓▓▓▓ Bigger shadow
+      →→ Slides 4px right
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ STAT BAR ANATOMY                                                               │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+Full Bar (100%):
+HUNGER    [████████████████████] 100
+          ↑                      ↑
+      Dark container       Warm yellow fill
+      with inset shadow    Striped texture
+
+Partial Bar (60%):
+STRENGTH  [████████████░░░░░░░░] 60
+          ↑             ↑        ↑
+      Green fill    Empty grey   Value display
+      Animated      background
+
+With Change Indicator:
+                        +10 ←─── Floats up and fades
+                         ↑       (1s animation)
+INTELL.   [██████████████░░░░░░] 70
+          ↑                      ↑
+      Blue fill            Width animates
+      Pixel stripes        (0.3s transition)
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ MODAL DIALOG                                                                   │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░░ Dark Overlay (80%) ░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░╔═══════════════════════════════╗░░░
+        ░░░║▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓║░░░  ← 4px orange border
+        ░░░║▓▓                           ▓▓║░░░    with dual outline
+        ░░░║▓▓    CONFIRM ACTION         ▓▓║░░░  ← Modal title
+        ░░░║▓▓    ─────────              ▓▓║░░░  ← Accent underline
+        ░░░║▓▓                           ▓▓║░░░
+        ░░░║▓▓  Are you sure you want to ▓▓║░░░  ← Modal body
+        ░░░║▓▓  perform this action?     ▓▓║░░░    (scrollable)
+        ░░░║▓▓                           ▓▓║░░░
+        ░░░║▓▓  This cannot be undone.   ▓▓║░░░
+        ░░░║▓▓                           ▓▓║░░░
+        ░░░║▓▓  ────────────────────────  ▓▓║░░░  ← Footer divider
+        ░░░║▓▓                           ▓▓║░░░
+        ░░░║▓▓  [CANCEL]    [CONFIRM]    ▓▓║░░░  ← Action buttons
+        ░░░║▓▓                           ▓▓║░░░
+        ░░░║▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓║░░░
+        ░░░╚═══════════════════════════════╝░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░  ▓▓▓▓▓▓▓ Drop shadow ░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ TOAST NOTIFICATION                                                             │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+                                      ┌────────────────────────────┐
+                                      │▓▓░░░░░░░░░░░░░░░░░░░░░░░▓▓│ ←─ Success
+                                      │▓▓                        ▓▓│    (green border)
+                                      │▓▓ Strength increased!   ▓▓│
+                                      │▓▓                        ▓▓│
+                                      │▓▓░░░░░░░░░░░░░░░░░░░░░░░▓▓│
+                                      └────────────────────────────┘
+                                        ▓▓▓ Shadow
+                                         ↑
+                                    Slides in from right
+                                    Auto-dismisses after 3s
+
+Toast Types:
+┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│ Default (orange) │  │ Success (green)  │  │ Warning (yellow) │  │ Error (red)      │
+│ General message  │  │ Positive action  │  │ Caution needed   │  │ Something wrong  │
+└──────────────────┘  └──────────────────┘  └──────────────────┘  └──────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ TIME DISPLAY                                                                   │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│
+│▓▓                                                                        ▓▓│
+│▓▓     DAY              TIME                 SENTENCE                    ▓▓│
+│▓▓                                                                        ▓▓│
+│▓▓      5               12:45                  25d                       ▓▓│
+│▓▓   (label)          (digital)             (remaining)                 ▓▓│
+│▓▓                                                                        ▓▓│
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│
+└────────────────────────────────────────────────────────────────────────────┘
+  ▓▓ Shadow (inset top, outset bottom)
+
+Numbers glow with warm yellow:
+  5  ←─ text-shadow: 0 0 4px rgba(255,214,112,0.5)
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ MOBILE LAYOUT (375×667, iPhone 8)                                             │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────┐
+│ ░░░░░░░░░░░░░░░░░░░░ │  Prison cell background
+│ ░░░ (responsive) ░░░ │  (full width, scrollable)
+│ ░░░░░░░░░░░░░░░░░░░░ │
+│                      │
+│ ┌──────────────────┐ │  Stats panel (static, top)
+│ │ PRISONER #1337   │ │  Full width, compressed layout
+│ │ 💰150  🚬12      │ │
+│ │ HUNGER  [████]80 │ │
+│ │ STR     [██]40   │ │
+│ │ INT     [███]60  │ │
+│ └──────────────────┘ │
+│                      │
+│   YOUR CELL          │  Main content (centered)
+│                      │
+│ ┌──────────────────┐ │  Time display (wraps)
+│ │ DAY 5 │ SENT 25d │ │
+│ └──────────────────┘ │
+│                      │
+│ ┌─ ACTIVITY CARD ──┐ │  Cards stack vertically
+│ │▊ 💪              │ │  Full width, reduced padding
+│ │▊ LIFT WEIGHTS    │ │
+│ │▊ Build strength  │ │
+│ │▊ FREE • +1 STR   │ │
+│ └──────────────────┘ │
+│                      │
+│ ┌─ ACTIVITY CARD ──┐ │
+│ │▊ 🍽️             │ │  Icon + title stack on
+│ │▊ EAT             │ │  very small screens
+│ │▊ Reduce hunger   │ │
+│ │▊ FREE • +20 HUN  │ │
+│ └──────────────────┘ │
+│                      │
+│ ... [more cards] ... │
+│                      │
+│ ┌──────────────────┐ │  Buttons full width
+│ │ SERVE TIME       │ │  Increased touch target
+│ └──────────────────┘ │  (48px+ height)
+│                      │
+└──────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ ATMOSPHERIC EFFECTS (Layered CSS)                                             │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+LAYER 1: Base Gradient
+┌──────────────────────────────────────────────────────┐
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  Linear gradient
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  #3E3E42 → #2A2A2E
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  135deg diagonal
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │
+└──────────────────────────────────────────────────────┘
+
+LAYER 2: Concrete Texture (::before)
+┌────┬────┬────┬────┬────┬────┬────┬────┬────┬────┐
+│    │    │    │    │    │    │    │    │    │    │  40×40px grid
+├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤  Subtle white lines
+│    │    │    │    │    │    │    │    │    │    │  Opacity: 0.5
+├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤
+│    │    │    │    │    │    │    │    │    │    │
+└────┴────┴────┴────┴────┴────┴────┴────┴────┴────┘
+
+LAYER 3: Window Light Beam (::after, animated)
+┌──────────────────────────────────────────────────────┐
+│                      ╱╱                              │  Diagonal beam
+│                     ╱╱                               │  200px wide
+│                    ╱╱                                │  Warm yellow
+│                   ╱╱ ←─ Animated                     │  Opacity 0.4-0.6
+│                  ╱╱    position shift                │  8s loop
+│                 ╱╱     (0-20px translateX)           │
+│                ╱╱                                    │
+└──────────────────────────────────────────────────────┘
+
+LAYER 4: Scanlines (background-image)
+────────────────────────────────────────────────────────  Repeating pattern
+────────────────────────────────────────────────────────  Every 3px
+────────────────────────────────────────────────────────  rgba(0,0,0,0.1)
+────────────────────────────────────────────────────────
+
+COMBINED RESULT:
+╔══════════════════════════════════════════════════════════╗
+║  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╱╱░░░░░░░░░░  ║
+║  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╱╱░░░░░░░░░░░░  ║  Warm, textured,
+║  ────────────────────────────────────╱╱────────────────  ║  atmospheric
+║  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╱╱░░░░░░░░░░░░░░░░  ║  Cozy dystopia
+║  ────────────────────────────────╱╱──────────────────  ║
+║  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╱╱░░░░░░░░░░░░░░░░░░░  ║
+╚══════════════════════════════════════════════════════════╝
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ ACCESSIBILITY FEATURES                                                         │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+KEYBOARD FOCUS INDICATOR:
+┌───────────────────────────────┐
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│
+│▓▓                           ▓▓│  3px solid yellow outline
+│▓▓    BUTTON TEXT            ▓▓│  2px offset for visibility
+│▓▓                           ▓▓│  High contrast: 4.5:1
+│▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓│
+└───────────────────────────────┘
+   ▓▓▓▓
+  ████ ← Yellow focus ring (#FFD670)
+
+TAB ORDER (Logical Flow):
+  Stats Panel → Activity Cards → Buttons
+        ↓              ↓            ↓
+   (skip to        (one by one) (actions)
+    content)
+
+TOUCH TARGETS (Minimum 48×48px):
+┌────────────┐
+│            │
+│   BUTTON   │  Height: 48px minimum
+│            │  Width: Auto (with padding)
+└────────────┘  Adequate spacing: 12px+
+
+┌──────────────────┐
+│▊ ACTIVITY CARD   │
+│▊                 │  Height: 80px+ minimum
+│▊                 │  Full width on mobile
+└──────────────────┘  Touch-friendly
+
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║                              COLOR PALETTE SWATCH                                ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+PRISON ORANGE FAMILY:
+████ #FF8C42  Prison Orange       (Main accent, buttons, borders)
+████ #D97028  Orange Dark         (Hover states, active borders)
+████ #FFB380  Orange Light        (Highlights, accent bar glow)
+
+CONCRETE/BACKGROUND TONES:
+████ #3E3E42  Concrete Dark       (Dark walls, gradients)
+████ #5A5A60  Concrete Mid        (Mid walls)
+████ #7A7A80  Concrete Light      (Light concrete, disabled text)
+████ #2A2A2E  UI Background Dark  (Modals, panels)
+████ #3A3A3E  UI Background Mid   (Cards, buttons)
+
+WARM ACCENT COLORS:
+████ #FFD670  Warm Yellow         (Light beam, time display, warnings)
+████ #FFA940  Warm Amber          (Lamp glow effects)
+████ #B85450  Rust Red            (Danger, errors, health bar)
+████ #F5E6D3  Warm White          (Primary text, readable)
+████ #C5B6A3  Text Secondary      (Descriptions, labels)
+
+STAT COLORS:
+████ #FFD670  Hunger Fill         (Yellow - food/energy)
+████ #6ABF69  Strength Fill       (Green - health/vitality)
+████ #6AB5FF  Intelligence Fill   (Blue - mind/knowledge)
+████ #B85450  Health Fill         (Red - damage/danger)
+
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║                              COMPLETE SYSTEM READY                               ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+Files Created:
+✅ prison-ui.css (21 KB)
+✅ prison-ui-helpers.js (15 KB)
+✅ PRISON_UI_INTEGRATION.md
+✅ PRISON_UI_VISUAL_REFERENCE.md
+✅ PRISON_UI_DELIVERY_SUMMARY.md
+✅ PRISON_UI_MOCKUP.txt (this file)
+
+Ready for Integration:
+✅ Production-ready code
+✅ Complete documentation
+✅ Responsive mobile design
+✅ Accessibility features
+✅ Professional polish
+✅ Cozy dystopian aesthetic achieved
+
+Next Steps:
+1. Add CSS to HTML
+2. Update prison menu structure
+3. Integrate JavaScript helpers
+4. Test on desktop and mobile
+5. Enjoy the vibes!
+
+Created with pixel-perfect care by isometric-pixel-artist
+VROOM VROOM v1.5.0 • 2025-10-19

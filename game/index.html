@@ -13,6 +13,9 @@
     <!-- Prison UI System (Cozy Dystopian Pixel Art) -->
     <link rel="stylesheet" href="assets/ui/prison-ui.css">
 
+    <!-- Driver's License UI System (Always-Visible Bureaucratic Document) -->
+    <link rel="stylesheet" href="assets/ui/drivers-license-ui.css">
+
     <style>
         * {
             margin: 0;
@@ -2582,21 +2585,52 @@
         <div class="modal-content">
             <div class="modal-title">Settings</div>
 
-            <!-- SOUND SETTINGS -->
+            <!-- COMPREHENSIVE AUDIO SETTINGS -->
             <div class="modal-text">
-                <strong>Sound Settings</strong>
+                <strong>Audio Settings</strong>
             </div>
 
+            <!-- Master Volume -->
             <div style="margin: 20px 0;">
                 <label style="display: block; margin-bottom: 10px;">
-                    Volume: <span id="volumeDisplay">50</span>%
+                    Master Volume: <span id="masterVolumeDisplay">70</span>%
                 </label>
-                <input type="range" id="volumeSlider" min="0" max="100" value="50"
-                       style="width: 100%;" oninput="game.updateVolume(this.value)">
+                <input type="range" id="masterVolumeSlider" min="0" max="100" value="70"
+                       style="width: 100%;" oninput="game.audioManager.setMasterVolume(this.value / 100); document.getElementById('masterVolumeDisplay').textContent = this.value;">
             </div>
 
+            <!-- Music Volume -->
             <div style="margin: 20px 0;">
-                <button class="modal-button" onclick="game.toggleMute()" id="muteButton">Mute</button>
+                <label style="display: block; margin-bottom: 10px;">
+                    Music Volume: <span id="musicVolumeDisplay">30</span>%
+                </label>
+                <input type="range" id="musicVolumeSlider" min="0" max="100" value="30"
+                       style="width: 100%;" oninput="game.audioManager.setMusicVolume(this.value / 100); document.getElementById('musicVolumeDisplay').textContent = this.value;">
+            </div>
+
+            <!-- SFX Volume -->
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin-bottom: 10px;">
+                    SFX Volume: <span id="sfxVolumeDisplay">50</span>%
+                </label>
+                <input type="range" id="sfxVolumeSlider" min="0" max="100" value="50"
+                       style="width: 100%;" oninput="game.audioManager.setSFXVolume(this.value / 100); document.getElementById('sfxVolumeDisplay').textContent = this.value;">
+            </div>
+
+            <!-- Ambient Volume -->
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin-bottom: 10px;">
+                    Ambient Volume: <span id="ambientVolumeDisplay">15</span>%
+                </label>
+                <input type="range" id="ambientVolumeSlider" min="0" max="100" value="15"
+                       style="width: 100%;" oninput="game.audioManager.setAmbientVolume(this.value / 100); document.getElementById('ambientVolumeDisplay').textContent = this.value;">
+            </div>
+
+            <!-- Audio Control Buttons -->
+            <div style="margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="modal-button" onclick="game.audioManager.toggleMute(); this.textContent = game.audioManager.muted ? 'Unmute' : 'Mute';" id="muteButton">Mute</button>
+                <button class="modal-button" onclick="game.audioManager.resetSettings(); game.updateAudioSettingsUI();">Reset Audio</button>
+                <button class="modal-button" onclick="game.audioManager.playButtonClick();">Test SFX</button>
             </div>
 
             <hr style="border: 1px solid #0f0; margin: 30px 0;">
@@ -2724,8 +2758,17 @@
 
     <script src="rendering/soundsystem.js"></script>
 
+    <!-- Comprehensive Audio System (Music, Ambient, AudioManager) -->
+    <script src="audio/music-system.js"></script>
+    <script src="audio/ambient-audio-system.js"></script>
+    <script src="audio/audio-manager.js"></script>
+
     <!-- Prison UI Helpers (Stats, Toasts, Modals) -->
     <script src="assets/ui/prison-ui-helpers.js"></script>
+
+    <!-- Driver's License System (Bureaucratic Comedy Document) -->
+    <script src="assets/ui/drivers-license-assets.js"></script>
+    <script src="rendering/drivers-license-renderer.js"></script>
 
     <script src="systems/tattoo-system.js"></script>
     <script src="systems/car-selection.js"></script>

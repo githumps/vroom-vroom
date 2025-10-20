@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '3.1.0'; // SIDESCROLLER UPDATE
+        this.VERSION = '3.2.0'; // DRIVER'S LICENSE + AUDIO + VIRAL FEATURES
 
         this.scene = null;
         this.camera = null;
@@ -579,6 +579,8 @@ class VroomVroomGame {
         this.policecar = null;
         this.carPreview = null;
         this.characterPreview = null; // Character preview renderer
+        this.licenseRenderer = null; // NEW: Driver's license UI renderer
+        this.audioManager = null; // NEW: Comprehensive audio system
         this.gameState = 'menu'; // menu, character, driving, courtroom, prison
         this.player = {
             name: '',
@@ -607,6 +609,7 @@ class VroomVroomGame {
             drivingTime: 0,
             prisonDays: 0,
             sentence: 5,
+            arrests: 0, // NEW: Track total arrests for license stamps
             tattoos: [],
             gangMember: false,
             letters: [],
@@ -710,6 +713,28 @@ class VroomVroomGame {
 
         // Initialize prison scene renderers
         this.initPrisonScenes();
+
+        // Initialize Driver's License UI System
+        if (typeof DriversLicenseRenderer !== 'undefined') {
+            console.log('[VROOM] Initializing Driver\'s License System...');
+            this.licenseRenderer = new DriversLicenseRenderer(this);
+            console.log('[VROOM] ✅ Driver\'s License UI ready - always-visible bureaucratic document');
+        }
+
+        // Initialize Audio System (Music, SFX, Ambient)
+        if (typeof AudioManager !== 'undefined') {
+            console.log('[VROOM] Initializing Comprehensive Audio System...');
+            this.audioManager = new AudioManager();
+            console.log('[VROOM] ✅ Audio System ready - music, SFX, and ambient audio');
+
+            // Initialize on first user interaction (Web Audio API requirement)
+            document.addEventListener('click', () => {
+                if (!this.audioManager.initialized) {
+                    this.audioManager.init();
+                    this.audioManager.playEnvironment('menu', { playMusic: true, playAmbient: true });
+                }
+            }, { once: true });
+        }
 
         // Display version number
         document.getElementById('gameVersion').textContent = this.VERSION;
@@ -1881,11 +1906,18 @@ class VroomVroomGame {
         // Play arrest sound (siren + handcuff click)
         this.soundSystem.playArrestSound();
 
-        // Show dramatic arrest cinematic
-        this.cinematics.play('arrest', () => {
-            this.showScreen('courtroom');
-            this.setupCourtroom();
-        });
+        // Cop inspects driver's license (4-second animation)
+        if (this.licenseRenderer) {
+            this.licenseRenderer.startInspection(4000);
+        }
+
+        // Show dramatic arrest cinematic (after license inspection)
+        setTimeout(() => {
+            this.cinematics.play('arrest', () => {
+                this.showScreen('courtroom');
+                this.setupCourtroom();
+            });
+        }, 4500); // After inspection completes
     }
 
     async setupCourtroom() {
@@ -2082,6 +2114,13 @@ class VroomVroomGame {
         const sentenceYears = Math.max(1, baseSentence + this.judge.arrestCount);
         this.player.sentence = sentenceYears;
         this.player.prisonDays = 0;
+
+        // Increment arrest count and add stamp to license
+        this.player.arrests++;
+        if (this.licenseRenderer) {
+            this.licenseRenderer.addStamp(this.player.arrests);
+            this.licenseRenderer.update(); // Update license with new arrest data
+        }
 
         // Display final sentencing
         document.getElementById('judgeStatement').innerHTML = `

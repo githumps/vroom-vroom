@@ -652,6 +652,8 @@ vroom-vroom/
 | **Code Examples** | docs/systems/LOGGING_EXAMPLES.md |
 | **Comedy/Tone Guidelines** | docs/systems/COMEDY_HOOK_SYSTEM.md |
 | **Agent Consultation** | docs/integration/COMEDY_HOOK_INTEGRATION.md |
+| **Critical Analysis & Viral Gaps** | docs/CRITICAL_ANALYSIS_VIRAL_GAPS.md (65 pages) |
+| **Viral Gaps Quick Reference** | docs/VIRAL_GAPS_QUICK_REFERENCE.md (8 pages) |
 
 ---
 
