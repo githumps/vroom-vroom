@@ -1,0 +1,386 @@
+{
+  "version": "2.0.0",
+  "name": "VROOM VROOM Visual System",
+  "description": "Cozy cyberpunk dystopia design tokens",
+
+  "colors": {
+    "primary": {
+      "pink": {
+        "base": "#FF6B9D",
+        "bright": "#FF85B3",
+        "dark": "#D94F7C",
+        "glow": "rgba(255, 107, 157, 0.4)"
+      },
+      "purple": {
+        "base": "#9D4EDD",
+        "bright": "#B565F2",
+        "dark": "#7B3AB8",
+        "glow": "rgba(157, 78, 221, 0.4)"
+      },
+      "teal": {
+        "base": "#06D6A0",
+        "bright": "#1FFFC8",
+        "dark": "#049B75",
+        "glow": "rgba(6, 214, 160, 0.4)"
+      },
+      "cyan": {
+        "base": "#00B4D8",
+        "bright": "#0DD9FF",
+        "dark": "#0090B3",
+        "glow": "rgba(0, 180, 216, 0.4)"
+      }
+    },
+    "accent": {
+      "orange": {
+        "base": "#FFA07A",
+        "bright": "#FFB896",
+        "dark": "#E88A60"
+      },
+      "yellow": {
+        "base": "#FFE66D",
+        "bright": "#FFF299",
+        "dark": "#E5C950"
+      },
+      "rose": {
+        "base": "#F4ACB7",
+        "bright": "#FFC1CC",
+        "dark": "#D98D9A"
+      },
+      "lavender": {
+        "base": "#B8A1E3",
+        "bright": "#CDB8F0",
+        "dark": "#9B82C7"
+      }
+    },
+    "background": {
+      "deepest": "#0A0A0F",
+      "deep": "#12121A",
+      "medium": "#1A1A28",
+      "elevated": "#252535"
+    },
+    "surface": {
+      "dark": "#1E1E2E",
+      "medium": "#2A2A40",
+      "light": "#363650",
+      "overlay": "rgba(26, 26, 40, 0.95)"
+    },
+    "text": {
+      "primary": "#F8F8F8",
+      "secondary": "#B8B8C8",
+      "tertiary": "#808090",
+      "disabled": "#505060"
+    },
+    "border": {
+      "subtle": "#303045",
+      "medium": "#404055",
+      "strong": "#505065",
+      "glow": "rgba(157, 78, 221, 0.2)"
+    },
+    "semantic": {
+      "success": "#06D6A0",
+      "warning": "#FFA07A",
+      "error": "#FF5566",
+      "info": "#00B4D8"
+    }
+  },
+
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px",
+    "2xl": "48px",
+    "3xl": "64px"
+  },
+
+  "borderRadius": {
+    "none": "0px",
+    "sm": "2px",
+    "md": "4px",
+    "lg": "8px",
+    "xl": "12px",
+    "full": "9999px"
+  },
+
+  "pixelGrid": {
+    "1x": "4px",
+    "2x": "8px",
+    "3x": "12px",
+    "4x": "16px"
+  },
+
+  "typography": {
+    "fontFamily": {
+      "pixel": "'Press Start 2P', 'Courier New', monospace",
+      "mono": "'Courier New', 'Courier', monospace"
+    },
+    "fontSize": {
+      "xs": "10px",
+      "sm": "12px",
+      "base": "14px",
+      "lg": "16px",
+      "xl": "20px",
+      "2xl": "24px",
+      "3xl": "32px",
+      "4xl": "48px"
+    },
+    "lineHeight": {
+      "tight": 1.2,
+      "normal": 1.5,
+      "relaxed": 1.75
+    }
+  },
+
+  "animation": {
+    "duration": {
+      "instant": "0ms",
+      "fast": "100ms",
+      "normal": "200ms",
+      "slow": "300ms",
+      "slower": "500ms"
+    },
+    "easing": {
+      "in": "cubic-bezier(0.4, 0, 1, 1)",
+      "out": "cubic-bezier(0, 0, 0.2, 1)",
+      "inOut": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+    }
+  },
+
+  "zIndex": {
+    "background": -1,
+    "base": 0,
+    "elevated": 10,
+    "dropdown": 100,
+    "sticky": 200,
+    "modal": 1000,
+    "toast": 2000,
+    "tooltip": 3000
+  },
+
+  "iconSet": {
+    "actions": [
+      "drive",
+      "accelerate",
+      "turn-left",
+      "turn-right",
+      "brake",
+      "surrender",
+      "arrest",
+      "handcuffs",
+      "paperwork",
+      "stamp",
+      "signature",
+      "form",
+      "checkbox",
+      "prison-door",
+      "prison-bars",
+      "exercise",
+      "library",
+      "cafeteria",
+      "shower",
+      "yard",
+      "tattoo-gun",
+      "stencil",
+      "ink",
+      "placement",
+      "care",
+      "clinic",
+      "medical-cross",
+      "bandage",
+      "simon-says",
+      "conjugal-visit",
+      "conversation",
+      "contraband",
+      "search",
+      "manicure",
+      "nail-file",
+      "polish",
+      "favor-token",
+      "escape-tunnel",
+      "bribe",
+      "transfer",
+      "riot",
+      "gang-patch",
+      "reputation",
+      "good-behavior"
+    ],
+    "stats": [
+      "money",
+      "cigarettes",
+      "hunger",
+      "strength",
+      "intelligence",
+      "sentence",
+      "days-served",
+      "behavior-points",
+      "health",
+      "infection",
+      "gang-rep",
+      "escape-progress",
+      "time-day",
+      "time-night"
+    ],
+    "items": [
+      "car-beater",
+      "car-box",
+      "car-clunker",
+      "car-rust-bucket",
+      "tattoo",
+      "infected-tattoo",
+      "cigarette-pack",
+      "credits",
+      "escape-tools",
+      "weapon",
+      "drugs",
+      "letter",
+      "book",
+      "photo",
+      "food-tray",
+      "soap",
+      "blanket",
+      "pillow"
+    ],
+    "navigation": [
+      "menu",
+      "close",
+      "back",
+      "next",
+      "settings",
+      "save",
+      "load",
+      "export",
+      "import",
+      "info",
+      "help",
+      "volume-on",
+      "volume-off",
+      "fullscreen",
+      "minimize",
+      "refresh"
+    ],
+    "ui": [
+      "checkmark",
+      "x-mark",
+      "warning",
+      "error",
+      "success",
+      "info",
+      "question",
+      "lock",
+      "unlock",
+      "star",
+      "heart",
+      "skull",
+      "clock",
+      "calendar",
+      "location",
+      "person",
+      "group",
+      "speech-bubble",
+      "thought-bubble",
+      "arrow-up",
+      "arrow-down",
+      "arrow-left",
+      "arrow-right",
+      "chevron-up",
+      "chevron-down",
+      "chevron-left",
+      "chevron-right",
+      "plus",
+      "minus",
+      "search",
+      "filter",
+      "sort"
+    ],
+    "mood": [
+      "happy",
+      "sad",
+      "angry",
+      "surprised",
+      "scared",
+      "neutral",
+      "confused",
+      "suspicious",
+      "smug",
+      "defeated"
+    ],
+    "total": 120
+  },
+
+  "breakpoints": {
+    "mobile": "640px",
+    "tablet": "1024px",
+    "desktop": "1280px",
+    "wide": "1600px"
+  },
+
+  "componentStates": {
+    "button": {
+      "default": {
+        "background": "var(--color-bg-deep)",
+        "border": "2px solid",
+        "shadow": "0 0 10px currentColor"
+      },
+      "hover": {
+        "transform": "translateY(-2px)",
+        "shadow": "0 0 20px currentColor, 0 4px 8px rgba(0,0,0,0.4)"
+      },
+      "active": {
+        "transform": "translateY(0)",
+        "shadow": "0 0 10px currentColor, inset 0 0 10px currentColor"
+      },
+      "disabled": {
+        "opacity": 0.4,
+        "cursor": "not-allowed"
+      }
+    },
+    "input": {
+      "default": {
+        "background": "var(--color-bg-medium)",
+        "border": "2px solid var(--color-border-medium)"
+      },
+      "focus": {
+        "border": "2px solid var(--color-primary-cyan)",
+        "shadow": "0 0 20px var(--color-glow-cyan)"
+      },
+      "error": {
+        "border": "2px solid var(--color-error)"
+      },
+      "success": {
+        "border": "2px solid var(--color-success)"
+      }
+    },
+    "card": {
+      "default": {
+        "background": "var(--color-surface-dark)",
+        "border": "2px solid var(--color-border-medium)"
+      },
+      "hover": {
+        "transform": "translateY(-4px)",
+        "border": "2px solid var(--color-primary-cyan)",
+        "shadow": "0 0 20px var(--color-glow-cyan)"
+      }
+    }
+  },
+
+  "atmosphericEffects": {
+    "vignette": {
+      "gradient": "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%)"
+    },
+    "scanlines": {
+      "pattern": "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px)"
+    },
+    "chromaticAberration": {
+      "offsetX": "2px",
+      "opacity": 0.5
+    },
+    "glow": {
+      "pink": "0 0 20px var(--color-primary-pink-glow)",
+      "purple": "0 0 20px var(--color-primary-purple-glow)",
+      "teal": "0 0 20px var(--color-primary-teal-glow)",
+      "cyan": "0 0 20px var(--color-primary-cyan-glow)"
+    }
+  }
+}

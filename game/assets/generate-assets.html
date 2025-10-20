@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM VROOM - Pixel Art Asset Generator</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a0f2e;
+            color: #ff6ec7;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px #ff6ec7;
+        }
+
+        .controls {
+            background: #2a1f3d;
+            border: 2px solid #ff6ec7;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #1a0f2e;
+            color: #ff6ec7;
+            border: 2px solid #ff6ec7;
+            padding: 12px 24px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #ff6ec7;
+            color: #1a0f2e;
+            box-shadow: 0 0 15px #ff6ec7;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .preview-card {
+            background: #2a1f3d;
+            border: 2px solid #4a3d5c;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .preview-card h3 {
+            color: #52ffe8;
+            margin-bottom: 10px;
+        }
+
+        .preview-canvas {
+            background: #0d0616;
+            border: 1px solid #ff6ec7;
+            margin: 10px 0;
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .code-output {
+            background: #0d0616;
+            border: 2px solid #52ffe8;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+
+        .code-output pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #52ffe8;
+        }
+
+        .info {
+            background: #2d1b3d;
+            border-left: 4px solid #ffd700;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffd700;
+        }
+
+        .success {
+            background: #1f3d2a;
+            border-left: 4px solid #52ffe8;
+            padding: 15px;
+            margin: 20px 0;
+            color: #52ffe8;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 VROOM VROOM - Pixel Art Generator</h1>
+
+    <div class="info">
+        <strong>Instructions:</strong> Click "Generate All Assets" to create professional pixel art for the main menu and character creation screens. All assets will be displayed below with base64-encoded data ready for integration.
+    </div>
+
+    <div class="controls">
+        <h2>Asset Generation</h2>
+        <button onclick="generateAllAssets()">🚀 Generate All Assets</button>
+        <button onclick="downloadManifest()">💾 Download JSON Manifest</button>
+        <button onclick="copyCSS()">📋 Copy CSS Code</button>
+        <button onclick="clearPreviews()">🗑️ Clear Previews</button>
+    </div>
+
+    <div id="statusMessage"></div>
+
+    <div class="preview-grid" id="previewGrid"></div>
+
+    <div class="code-output" id="codeOutput" style="display: none;">
+        <h3>JSON Manifest (copy this):</h3>
+        <pre id="manifestCode"></pre>
+    </div>
+
+    <div class="code-output" id="cssOutput" style="display: none;">
+        <h3>CSS Integration Code (copy this):</h3>
+        <pre id="cssCode"></pre>
+    </div>
+
+    <script src="pixel-art-generator.js"></script>
+    <script>
+        let generator = null;
+        let manifestData = null;
+
+        function generateAllAssets() {
+            showStatus('Generating pixel art assets...', 'info');
+
+            generator = new PixelArtGenerator();
+            const previewGrid = document.getElementById('previewGrid');
+            previewGrid.innerHTML = '';
+
+            // Generate all assets
+            const assets = [
+                { name: 'Main Menu Background', fn: () => generator.generateMainMenuBackground() },
+                { name: 'VROOM VROOM Logo', fn: () => generator.generateLogo() },
+                { name: 'UI Frame (9-slice)', fn: () => generator.generateUIFrame() },
+                { name: 'Button States', fn: () => generator.generateButton() },
+                { name: 'UI Icons', fn: () => generator.generateIcons() },
+                { name: 'Character Sprite', fn: () => generator.generateCharacterSprite(2, 'short', '#3d2f1f') }
+            ];
+
+            assets.forEach(asset => {
+                const sprite = asset.fn();
+                displayPreview(asset.name, sprite);
+            });
+
+            // Generate manifest
+            manifestData = generator.exportManifest();
+
+            showStatus('✅ All assets generated successfully!', 'success');
+
+            // Show code outputs
+            document.getElementById('codeOutput').style.display = 'block';
+            document.getElementById('manifestCode').textContent = manifestData;
+        }
+
+        function displayPreview(title, sprite) {
+            const previewGrid = document.getElementById('previewGrid');
+
+            const card = document.createElement('div');
+            card.className = 'preview-card';
+
+            const heading = document.createElement('h3');
+            heading.textContent = title;
+            card.appendChild(heading);
+
+            const img = document.createElement('img');
+            img.className = 'preview-canvas';
+            img.src = sprite.dataUrl;
+            img.width = sprite.width;
+            img.height = sprite.height;
+            card.appendChild(img);
+
+            const info = document.createElement('p');
+            info.innerHTML = `<strong>Size:</strong> ${sprite.width}x${sprite.height}px<br>`;
+            info.innerHTML += `<strong>Name:</strong> ${sprite.name}`;
+            card.appendChild(info);
+
+            const copyBtn = document.createElement('button');
+            copyBtn.textContent = 'Copy Base64';
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(sprite.dataUrl);
+                showStatus(`✅ Copied ${sprite.name} to clipboard!`, 'success');
+            };
+            card.appendChild(copyBtn);
+
+            previewGrid.appendChild(card);
+        }
+
+        function downloadManifest() {
+            if (!manifestData) {
+                showStatus('⚠️ Generate assets first!', 'info');
+                return;
+            }
+
+            const blob = new Blob([manifestData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'vroom-vroom-pixel-art-manifest.json';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showStatus('✅ Manifest downloaded!', 'success');
+        }
+
+        function copyCSS() {
+            if (!generator) {
+                showStatus('⚠️ Generate assets first!', 'info');
+                return;
+            }
+
+            const css = generateCSSCode();
+            document.getElementById('cssOutput').style.display = 'block';
+            document.getElementById('cssCode').textContent = css;
+
+            navigator.clipboard.writeText(css);
+            showStatus('✅ CSS code copied to clipboard!', 'success');
+        }
+
+        function generateCSSCode() {
+            const sheets = generator.spriteSheets;
+
+            return `/* VROOM VROOM - Pixel Art Integration CSS
+ * Generated: ${new Date().toISOString()}
+ *
+ * Add this to your index.html <style> section
+ */
+
+/* Main Menu Background */
+#mainMenu {
+    background-image: url('${sheets.mainMenuBg.dataUrl}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* VROOM VROOM Logo */
+#mainMenu h1 {
+    background-image: url('${sheets.logo.dataUrl}');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-indent: -9999px; /* Hide text, show background */
+    width: 400px;
+    height: 80px;
+    margin: 20px auto;
+}
+
+/* UI Frame (9-slice border) */
+.form-container {
+    border-image-source: url('${sheets.uiFrame.dataUrl}');
+    border-image-slice: 16 16 16 16 fill;
+    border-image-width: 16px;
+    border-image-repeat: stretch;
+    border-width: 16px;
+    border-style: solid;
+}
+
+/* Button States (sprite sheet) */
+button {
+    background-image: url('${sheets.button.dataUrl}');
+    background-size: 200px 150px;
+    background-position: 0 0; /* Normal state */
+    background-repeat: no-repeat;
+    width: 200px;
+    height: 50px;
+    border: none;
+    color: transparent;
+    text-indent: -9999px;
+}
+
+button:hover {
+    background-position: 0 -50px; /* Hover state */
+}
+
+button:active {
+    background-position: 0 -100px; /* Active state */
+}
+
+/* Icon Sprites */
+.icon-save { background: url('${sheets.icons.dataUrl}') 0 0; width: 32px; height: 32px; }
+.icon-load { background: url('${sheets.icons.dataUrl}') -32px 0; width: 32px; height: 32px; }
+.icon-settings { background: url('${sheets.icons.dataUrl}') -64px 0; width: 32px; height: 32px; }
+.icon-export { background: url('${sheets.icons.dataUrl}') -96px 0; width: 32px; height: 32px; }
+.icon-import { background: url('${sheets.icons.dataUrl}') -128px 0; width: 32px; height: 32px; }
+.icon-credits { background: url('${sheets.icons.dataUrl}') -160px 0; width: 32px; height: 32px; }
+
+/* Character Preview (for creation screen) */
+#characterPreview {
+    background-image: url('${sheets.character.dataUrl}');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* Pixel-perfect rendering */
+.pixel-art {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* Color Palette (CSS Variables) */
+:root {
+    --vroom-sky-dark: #1a0f2e;
+    --vroom-sky-mid: #2d1b3d;
+    --vroom-sky-light: #4a2d5c;
+    --vroom-neon-pink: #ff6ec7;
+    --vroom-neon-purple: #bf5af2;
+    --vroom-neon-teal: #52ffe8;
+    --vroom-neon-yellow: #ffd700;
+    --vroom-ui-dark: #1f1833;
+    --vroom-ui-mid: #332d47;
+    --vroom-ui-light: #4a4363;
+    --vroom-ui-accent: #ff6ec7;
+}
+
+/* Atmospheric Screen Effects */
+.screen {
+    background: linear-gradient(
+        180deg,
+        var(--vroom-sky-dark) 0%,
+        var(--vroom-sky-mid) 40%,
+        var(--vroom-sky-light) 70%
+    );
+}
+
+.screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 110, 199, 0.1) 0%,
+        transparent 70%
+    );
+    pointer-events: none;
+}
+`;
+        }
+
+        function clearPreviews() {
+            document.getElementById('previewGrid').innerHTML = '';
+            document.getElementById('codeOutput').style.display = 'none';
+            document.getElementById('cssOutput').style.display = 'none';
+            generator = null;
+            manifestData = null;
+            showStatus('🗑️ Previews cleared', 'info');
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = type;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Auto-generate on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                generateAllAssets();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

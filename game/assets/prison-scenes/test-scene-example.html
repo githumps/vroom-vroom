@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prison Scenes - Test Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f0;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #000;
+            color: #0f0;
+            border: 2px solid #0f0;
+            padding: 10px 20px;
+            margin: 5px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #0f0;
+            color: #000;
+        }
+
+        button.active {
+            background: #0f0;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 2px solid #0f0;
+            box-shadow: 0 0 20px #0f0;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .info {
+            text-align: center;
+            color: #0f0;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #0f0;
+        }
+
+        .info h2 {
+            margin-bottom: 10px;
+        }
+
+        .info p {
+            margin: 5px 0;
+        }
+
+        .time-controls {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .time-controls button {
+            padding: 5px 15px;
+            font-size: 12px;
+        }
+
+        #eventLog {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            padding: 10px;
+            margin-top: 10px;
+            height: 100px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>PRISON SCENES - PIXEL ART TEST</h1>
+
+    <div class="controls">
+        <button id="btnGym" class="active" onclick="loadScene('gym')">GYM</button>
+        <button id="btnLibrary" onclick="loadScene('library')">LIBRARY</button>
+        <button id="btnCafeteria" onclick="loadScene('cafeteria')">CAFETERIA</button>
+        <button id="btnYard" onclick="loadScene('yard')">YARD</button>
+    </div>
+
+    <div class="time-controls" id="timeControls" style="display: none;">
+        <strong>Time of Day:</strong>
+        <button onclick="setTimeOfDay('morning')">Morning</button>
+        <button onclick="setTimeOfDay('noon')">Noon</button>
+        <button onclick="setTimeOfDay('afternoon')">Afternoon</button>
+        <button onclick="setTimeOfDay('evening')">Evening</button>
+        <button onclick="setTimeOfDay('night')">Night</button>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="sceneCanvas" width="800" height="600"></canvas>
+    </div>
+
+    <div class="info">
+        <h2 id="sceneTitle">GYM</h2>
+        <p id="sceneDescription">Click interactive elements to test hotspots.</p>
+        <p><strong>Instructions:</strong> Hover over elements to see tooltips. Click to trigger interactions.</p>
+
+        <div id="eventLog">
+            <div class="log-entry">[SYSTEM] Scene renderer initialized</div>
+        </div>
+    </div>
+
+    <!-- Load scene data -->
+    <script src="gym-scene.js"></script>
+    <script src="library-scene.js"></script>
+    <script src="cafeteria-scene.js"></script>
+    <script src="yard-scene.js"></script>
+    <script src="character-sprites.js"></script>
+    <script src="scene-renderer.js"></script>
+
+    <script>
+        // Test application
+        let currentRenderer = null;
+        let currentScene = 'gym';
+
+        const sceneData = {
+            gym: GymScene,
+            library: LibraryScene,
+            cafeteria: CafeteriaScene,
+            yard: YardScene
+        };
+
+        const sceneInfo = {
+            gym: {
+                title: 'PRISON GYM',
+                description: 'Interactive elements: Bench Press, Punching Bag, Pull-up Bar'
+            },
+            library: {
+                title: 'PRISON LIBRARY',
+                description: 'Interactive elements: Reading Tables, Nook, Bookshelves, Book Cart'
+            },
+            cafeteria: {
+                title: 'CAFETERIA',
+                description: 'Interactive elements: Serving Line, Eating Spot, Beverage Dispenser'
+            },
+            yard: {
+                title: 'EXERCISE YARD',
+                description: 'Interactive elements: Basketball Court, Pull-up Bar, Bench, Socialize'
+            }
+        };
+
+        function loadScene(sceneName) {
+            // Update active button
+            document.querySelectorAll('.controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn${sceneName.charAt(0).toUpperCase() + sceneName.slice(1)}`).classList.add('active');
+
+            // Show/hide time controls (only for yard)
+            document.getElementById('timeControls').style.display = sceneName === 'yard' ? 'block' : 'none';
+
+            // Destroy old renderer
+            if (currentRenderer) {
+                currentRenderer.destroy();
+            }
+
+            // Create new renderer
+            const canvas = document.getElementById('sceneCanvas');
+            currentRenderer = new PrisonSceneRenderer(canvas, sceneData[sceneName]);
+
+            // Update info
+            document.getElementById('sceneTitle').textContent = sceneInfo[sceneName].title;
+            document.getElementById('sceneDescription').textContent = sceneInfo[sceneName].description;
+
+            // Add player character
+            const playerSprite = Object.assign({}, CharacterSprites.inmates.base_inmate);
+            currentRenderer.addCharacter(playerSprite, { x: 400, y: 350 });
+
+            // Add some NPCs
+            addNPCs(sceneName);
+
+            // Listen for interactions
+            canvas.addEventListener('sceneInteraction', handleInteraction);
+
+            currentScene = sceneName;
+            logEvent(`Loaded scene: ${sceneInfo[sceneName].title}`);
+        }
+
+        function addNPCs(sceneName) {
+            if (sceneName === 'gym') {
+                const bigGuy = CharacterSprites.inmates.archetypes.find(a => a.id === 'big_guy');
+                currentRenderer.addCharacter(bigGuy, { x: 280, y: 350 });
+
+                const troublemaker = CharacterSprites.inmates.archetypes.find(a => a.id === 'troublemaker');
+                currentRenderer.addCharacter(troublemaker, { x: 620, y: 250 });
+            } else if (sceneName === 'library') {
+                const bookworm = CharacterSprites.inmates.archetypes.find(a => a.id === 'bookworm');
+                currentRenderer.addCharacter(bookworm, { x: 250, y: 450 });
+
+                const oldTimer = CharacterSprites.inmates.archetypes.find(a => a.id === 'old_timer');
+                currentRenderer.addCharacter(oldTimer, { x: 680, y: 420 });
+            } else if (sceneName === 'cafeteria') {
+                const conArtist = CharacterSprites.inmates.archetypes.find(a => a.id === 'con_artist');
+                currentRenderer.addCharacter(conArtist, { x: 220, y: 500 });
+
+                const newbie = CharacterSprites.inmates.archetypes.find(a => a.id === 'nervous_newbie');
+                currentRenderer.addCharacter(newbie, { x: 540, y: 500 });
+            } else if (sceneName === 'yard') {
+                const gangLeader = CharacterSprites.inmates.archetypes.find(a => a.id === 'gang_leader');
+                currentRenderer.addCharacter(gangLeader, { x: 250, y: 520 });
+
+                const quietGiant = CharacterSprites.inmates.archetypes.find(a => a.id === 'quiet_giant');
+                currentRenderer.addCharacter(quietGiant, { x: 480, y: 470 });
+            }
+        }
+
+        function handleInteraction(event) {
+            const { id, action } = event.detail;
+            logEvent(`Interaction: ${id} → ${action}()`);
+            alert(`Interaction triggered!\n\nID: ${id}\nAction: ${action}()\n\nIn the real game, this would call:\ngame.${action}()`);
+        }
+
+        function setTimeOfDay(time) {
+            if (currentRenderer && currentScene === 'yard') {
+                currentRenderer.setTimeOfDay(time);
+                logEvent(`Time of day changed to: ${time}`);
+            }
+        }
+
+        function logEvent(message) {
+            const log = document.getElementById('eventLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${timestamp}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Initialize with gym scene
+        window.addEventListener('load', () => {
+            loadScene('gym');
+            logEvent('Test application initialized');
+            logEvent('Hover over elements to see tooltips');
+            logEvent('Click interactive areas to test hotspots');
+        });
+    </script>
+</body>
+</html>

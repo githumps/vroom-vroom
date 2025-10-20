@@ -1,0 +1,611 @@
+/**
+ * VROOM VROOM - Pixel Art Styles
+ *
+ * Professional isometric pixel art integration
+ * Style: Vibey cyberpunk with warm neon aesthetic
+ * Generated: 2025-10-19
+ * Agent: isometric-pixel-artist
+ *
+ * INSTRUCTIONS:
+ * 1. Generate assets using game/assets/generate-assets.html
+ * 2. Replace [DATA_URL] placeholders with actual base64 strings
+ * 3. Include this file in index.html OR copy styles to <style> section
+ */
+
+/* ===== COLOR PALETTE ===== */
+
+:root {
+    /* Sky & Background Gradients */
+    --vroom-sky-dark: #1a0f2e;
+    --vroom-sky-mid: #2d1b3d;
+    --vroom-sky-light: #4a2d5c;
+    --vroom-horizon-pink: #8b4d6f;
+    --vroom-horizon-orange: #c96a5e;
+
+    /* Neon Accent Colors */
+    --vroom-neon-pink: #ff6ec7;
+    --vroom-neon-purple: #bf5af2;
+    --vroom-neon-teal: #52ffe8;
+    --vroom-neon-yellow: #ffd700;
+
+    /* Building/Structure Colors */
+    --vroom-building-dark: #2a1f3d;
+    --vroom-building-mid: #4a3d5c;
+    --vroom-building-light: #6b5d7c;
+    --vroom-window-light: #ffeb8a;
+    --vroom-window-dark: #8b7355;
+
+    /* UI Elements */
+    --vroom-ui-dark: #1f1833;
+    --vroom-ui-mid: #332d47;
+    --vroom-ui-light: #4a4363;
+    --vroom-ui-accent: #ff6ec7;
+    --vroom-ui-highlight: #ffffff;
+
+    /* Shadows & Depth */
+    --vroom-shadow-dark: #0d0616;
+    --vroom-shadow-mid: #1a0f2e;
+
+    /* Character Skin Tones */
+    --vroom-skin-1: #ffdfc4;
+    --vroom-skin-2: #e8b892;
+    --vroom-skin-3: #c98b6f;
+    --vroom-skin-4: #a66e4a;
+    --vroom-skin-5: #7d5436;
+    --vroom-skin-6: #5a3825;
+}
+
+/* ===== PIXEL PERFECT RENDERING ===== */
+
+.pixel-art,
+img.pixel-art,
+canvas.pixel-art,
+#mainMenu h1,
+#characterPreview,
+.icon,
+button[data-pixel-art="true"] {
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+}
+
+/* ===== MAIN MENU BACKGROUND ===== */
+
+#mainMenu {
+    /* Replace [MAIN_MENU_BG_DATA_URL] with actual base64 from generator */
+    background-image: url('[MAIN_MENU_BG_DATA_URL]');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Atmospheric glow overlay */
+#mainMenu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 110, 199, 0.15) 0%,
+        rgba(191, 90, 242, 0.08) 50%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Ensure content is above overlay */
+#mainMenu > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ===== LOGO ===== */
+
+#mainMenu h1 {
+    /* Replace [LOGO_DATA_URL] with actual base64 from generator */
+    background-image: url('[LOGO_DATA_URL]');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 400px;
+    height: 80px;
+    margin: 20px auto 30px;
+    text-indent: -9999px; /* Hide text, show pixel art */
+    overflow: hidden;
+
+    /* Neon glow effect */
+    filter: drop-shadow(0 0 20px var(--vroom-neon-pink))
+            drop-shadow(0 0 40px var(--vroom-neon-teal));
+
+    /* Subtle animation */
+    animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+    0% {
+        filter: drop-shadow(0 0 15px var(--vroom-neon-pink))
+                drop-shadow(0 0 30px var(--vroom-neon-teal));
+    }
+    100% {
+        filter: drop-shadow(0 0 25px var(--vroom-neon-pink))
+                drop-shadow(0 0 50px var(--vroom-neon-teal));
+    }
+}
+
+/* Mobile responsive logo */
+@media (max-width: 600px) {
+    #mainMenu h1 {
+        width: 300px;
+        height: 60px;
+    }
+}
+
+/* ===== UI FRAME (9-SLICE BORDER) ===== */
+
+.form-container {
+    /* Replace [UI_FRAME_DATA_URL] with actual base64 from generator */
+    border-image-source: url('[UI_FRAME_DATA_URL]');
+    border-image-slice: 16 16 16 16 fill;
+    border-image-width: 16px;
+    border-image-repeat: stretch;
+    border-width: 16px;
+    border-style: solid;
+    background: var(--vroom-ui-dark);
+    position: relative;
+}
+
+/* Inner glow effect for frames */
+.form-container::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(255, 110, 199, 0.2);
+    pointer-events: none;
+}
+
+/* ===== BUTTONS ===== */
+
+button {
+    /* Replace [BUTTON_SPRITE_DATA_URL] with actual base64 from generator */
+    background-image: url('[BUTTON_SPRITE_DATA_URL]');
+    background-size: 200px 150px;
+    background-position: 0 0; /* Normal state */
+    background-repeat: no-repeat;
+    background-color: transparent;
+
+    width: 200px;
+    min-width: 200px;
+    height: 50px;
+    border: none;
+
+    /* Text styling */
+    color: var(--vroom-neon-pink);
+    text-shadow: 0 0 10px var(--vroom-neon-pink);
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 50px;
+
+    cursor: pointer;
+    transition: background-position 0.1s ease,
+                color 0.1s ease,
+                text-shadow 0.1s ease;
+
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+button:hover {
+    background-position: 0 -50px; /* Hover state */
+    color: var(--vroom-ui-highlight);
+    text-shadow: 0 0 15px var(--vroom-neon-pink),
+                 0 0 25px var(--vroom-neon-teal);
+}
+
+button:active {
+    background-position: 0 -100px; /* Active/pressed state */
+    color: var(--vroom-ui-dark);
+    text-shadow: none;
+}
+
+button:disabled {
+    background-position: 0 0;
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+}
+
+/* Mobile responsive buttons */
+@media (max-width: 600px) {
+    button {
+        width: 180px;
+        min-width: 180px;
+        font-size: 0.9em;
+    }
+}
+
+/* ===== ICON SPRITES ===== */
+
+.icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    /* Replace [ICONS_SPRITE_DATA_URL] with actual base64 from generator */
+    background-image: url('[ICONS_SPRITE_DATA_URL]');
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    margin-right: 8px;
+    image-rendering: pixelated;
+}
+
+.icon-save    { background-position: 0 0; }
+.icon-load    { background-position: -32px 0; }
+.icon-settings { background-position: -64px 0; }
+.icon-export  { background-position: -96px 0; }
+.icon-import  { background-position: -128px 0; }
+.icon-credits { background-position: -160px 0; }
+
+/* Icon glow on hover (when inside button) */
+button:hover .icon {
+    filter: drop-shadow(0 0 5px currentColor);
+}
+
+/* ===== CHARACTER PREVIEW ===== */
+
+#characterPreview {
+    width: 128px;
+    height: 128px;
+    /* Replace [CHARACTER_SPRITE_DATA_URL] with actual base64 from generator */
+    background-image: url('[CHARACTER_SPRITE_DATA_URL]');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 20px auto;
+    border: 2px solid var(--vroom-ui-light);
+    border-radius: 4px;
+    background-color: var(--vroom-ui-dark);
+
+    /* Subtle animation */
+    animation: characterBreathe 2s ease-in-out infinite alternate;
+}
+
+@keyframes characterBreathe {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.02); }
+}
+
+/* ===== CHARACTER CREATION SCREEN ===== */
+
+#characterCreation {
+    background: linear-gradient(
+        180deg,
+        var(--vroom-sky-dark) 0%,
+        var(--vroom-sky-mid) 50%,
+        var(--vroom-sky-light) 100%
+    );
+    position: relative;
+}
+
+#characterCreation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent);
+    background-size: 200px 200px;
+    opacity: 0.3;
+    pointer-events: none;
+    animation: twinkle 5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+}
+
+/* ===== SCREEN TRANSITIONS ===== */
+
+.screen {
+    background: linear-gradient(
+        180deg,
+        var(--vroom-sky-dark) 0%,
+        var(--vroom-sky-mid) 40%,
+        var(--vroom-sky-light) 70%,
+        var(--vroom-horizon-pink) 90%,
+        var(--vroom-horizon-orange) 100%
+    );
+}
+
+/* Fade in animation for screens */
+.screen.active {
+    animation: screenFadeIn 0.5s ease-out;
+}
+
+@keyframes screenFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== FORM ELEMENTS ===== */
+
+/* Enhanced input fields */
+input[type="text"],
+input[type="range"],
+select,
+textarea {
+    background: var(--vroom-ui-dark);
+    color: var(--vroom-neon-teal);
+    border: 2px solid var(--vroom-ui-light);
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--vroom-neon-pink);
+    box-shadow: 0 0 10px rgba(255, 110, 199, 0.3);
+}
+
+/* Range slider styling */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--vroom-ui-mid);
+    border: 2px solid var(--vroom-ui-light);
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--vroom-neon-pink);
+    border: 2px solid var(--vroom-ui-highlight);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--vroom-neon-pink);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--vroom-neon-pink);
+    border: 2px solid var(--vroom-ui-highlight);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--vroom-neon-pink);
+}
+
+/* Labels */
+label {
+    color: var(--vroom-neon-teal);
+    text-shadow: 0 0 5px rgba(82, 255, 232, 0.5);
+    font-weight: bold;
+}
+
+/* ===== MODAL ENHANCEMENTS ===== */
+
+.modal {
+    background: rgba(13, 6, 22, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.modal-content {
+    background: linear-gradient(
+        135deg,
+        var(--vroom-ui-dark) 0%,
+        var(--vroom-ui-mid) 100%
+    );
+    border: 3px solid var(--vroom-neon-pink);
+    box-shadow: 0 0 30px rgba(255, 110, 199, 0.5),
+                inset 0 0 20px rgba(255, 110, 199, 0.1);
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+
+.screen::-webkit-scrollbar {
+    width: 12px;
+}
+
+.screen::-webkit-scrollbar-track {
+    background: var(--vroom-ui-dark);
+    border-left: 2px solid var(--vroom-ui-mid);
+}
+
+.screen::-webkit-scrollbar-thumb {
+    background: var(--vroom-neon-pink);
+    border-radius: 6px;
+    border: 2px solid var(--vroom-ui-dark);
+}
+
+.screen::-webkit-scrollbar-thumb:hover {
+    background: var(--vroom-neon-teal);
+    box-shadow: 0 0 10px var(--vroom-neon-teal);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet (portrait) */
+@media (max-width: 768px) {
+    #mainMenu h1 {
+        width: 300px;
+        height: 60px;
+    }
+
+    button {
+        width: 180px;
+        min-width: 180px;
+        font-size: 0.9em;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    #characterPreview {
+        width: 96px;
+        height: 96px;
+    }
+}
+
+/* Mobile (phone) */
+@media (max-width: 480px) {
+    #mainMenu h1 {
+        width: 250px;
+        height: 50px;
+    }
+
+    button {
+        width: 160px;
+        min-width: 160px;
+        height: 45px;
+        font-size: 0.85em;
+        line-height: 45px;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 4px;
+    }
+
+    #characterPreview {
+        width: 80px;
+        height: 80px;
+    }
+
+    .form-container {
+        padding: 15px;
+        border-width: 12px;
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    button {
+        border: 3px solid currentColor;
+    }
+
+    input, select, textarea {
+        border: 3px solid currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+
+@media print {
+    #mainMenu::before,
+    #characterCreation::before {
+        display: none;
+    }
+
+    button {
+        background: none;
+        border: 2px solid black;
+        color: black;
+    }
+}
+
+/* ===== UTILITIES ===== */
+
+/* Pixel perfect container */
+.pixel-container {
+    image-rendering: pixelated;
+    transform: translateZ(0); /* Force GPU rendering */
+}
+
+/* Neon glow text */
+.neon-text-pink {
+    color: var(--vroom-neon-pink);
+    text-shadow: 0 0 10px var(--vroom-neon-pink),
+                 0 0 20px var(--vroom-neon-pink);
+}
+
+.neon-text-teal {
+    color: var(--vroom-neon-teal);
+    text-shadow: 0 0 10px var(--vroom-neon-teal),
+                 0 0 20px var(--vroom-neon-teal);
+}
+
+.neon-text-purple {
+    color: var(--vroom-neon-purple);
+    text-shadow: 0 0 10px var(--vroom-neon-purple),
+                 0 0 20px var(--vroom-neon-purple);
+}
+
+/* Pixel border effect */
+.pixel-border {
+    border: 4px solid;
+    border-image: repeating-linear-gradient(
+        45deg,
+        var(--vroom-neon-pink) 0px,
+        var(--vroom-neon-pink) 4px,
+        var(--vroom-neon-teal) 4px,
+        var(--vroom-neon-teal) 8px
+    ) 4;
+}
+
+/* ===== DEBUG HELPERS ===== */
+
+/* Uncomment to see sprite sheet boundaries */
+/*
+button {
+    outline: 2px dashed red !important;
+}
+
+.icon {
+    outline: 2px dashed lime !important;
+}
+
+#characterPreview {
+    outline: 2px dashed yellow !important;
+}
+*/
+
+/* ===== END OF PIXEL ART STYLES ===== */
