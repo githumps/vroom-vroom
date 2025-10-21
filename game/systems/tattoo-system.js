@@ -275,6 +275,19 @@ class TattooSystem {
 
         this.game.player.tattoos.push(tattooData);
 
+        // Achievement tracking: Ink addict (10 tattoos) - v4.0.0
+        if (this.game.achievementTracker && this.game.player.tattoos.length >= 10) {
+            this.game.achievementTracker.unlockAchievement('ink_addict');
+        }
+
+        // Track for completionist
+        if (!this.game.player.activitiesCompleted) {
+            this.game.player.activitiesCompleted = [];
+        }
+        if (!this.game.player.activitiesCompleted.includes('tattoo')) {
+            this.game.player.activitiesCompleted.push('tattoo');
+        }
+
         // Hide care game
         document.getElementById('careGame').style.display = 'none';
 

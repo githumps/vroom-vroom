@@ -1,7 +1,7 @@
 # VROOM VROOM - COMPLETE SYSTEMS DOCUMENTATION
 
-**Version:** 3.1.0
-**Last Updated:** 2025-10-19
+**Version:** 4.0.0-beta.2
+**Last Updated:** 2025-10-20
 **Game:** Dystopian prison driving simulator with Disco Elysium aesthetic
 
 This document provides a comprehensive overview of ALL game systems in VROOM VROOM. For detailed documentation on each system, see the linked reference documents.
@@ -380,6 +380,54 @@ Prison is the core gameplay hub with 12+ activities.
 **Documentation:** [docs/integration/GUARD_MANICURE_IMPLEMENTATION.md](docs/integration/GUARD_MANICURE_IMPLEMENTATION.md)
 **Status:** ✅ Enhanced v1.4.0 (visual mini-game + clinic exploitation)
 **Cost:** 30 minutes
+
+#### 13. **Random Events System** ⭐ NEW v4.0.0-beta.2
+- **20 unique prison events** that trigger randomly during gameplay
+- **10% chance per prison day** to trigger an event
+- **Choice-driven outcomes** - each event has 2-4 player choices
+- **Stat requirements** - choices locked behind Intelligence, Strength, Good Behavior, etc.
+- **Consequences** - choices affect stats, sentence length, resources
+- **Event history tracking** - prevents repeat events within 7 prison days
+- **Pixel art modal UI** with yellow border and pulsing title
+
+**Event Categories:**
+1. **Theft & Shakedowns** - Cellmate steals cigarettes, guard searches
+2. **Medical Emergencies** - Food poisoning, tattoo infections
+3. **Social Encounters** - New inmates, riots, gang initiations
+4. **Opportunities** - Work detail, contraband offers, bribery
+5. **Consequences** - Parole hearings, solitary confinement, visitor gifts
+
+**Example Events:**
+- **Cellmate Theft** - Confront (Str 40+), Let it go, Report (Int 30+)
+- **Guard Shakedown** - Cooperate, Hide contraband (Int 50+), Argue
+- **Yard Riot** - Join (Str 60+), Hide, Mediate (Int 70+)
+- **Parole Hearing** - Show remorse (Behavior 80+), Argue case (Int 90+), Stay silent
+- **Work Detail** - Kitchen, Laundry, Maintenance (Str 45+), Refuse
+
+**Stat-Gated Choices:**
+- Strength 40-70: Physical confrontations, tough it out, manual labor
+- Intelligence 30-90: Legal knowledge, clever solutions, negotiations
+- Good Behavior 60-80: Trust-based rewards, early release opportunities
+- Money/Cigarettes: Bribery, purchases, avoiding consequences
+
+**Outcomes:**
+- Sentence reduction: -3 to -50 years (rare, high requirements)
+- Sentence increase: +3 to +5 years (arguing, violence, violations)
+- Stat changes: ±5 to ±20 points (strength, intelligence, hunger)
+- Resource gains/losses: ±5 to ±200 credits, ±5 to ±100 cigarettes
+- Good behavior: ±5 to ±40 points
+- Time penalty: +1 to +7 prison days (medical, solitary, lockdown)
+
+**Technical Implementation:**
+- `RandomEventManager` class manages all events
+- Event modal with pixel art styling (yellow theme)
+- Disabled buttons show stat requirements clearly
+- Event history syncs to player save data
+- Integrates with existing prison activity system
+
+**File Location:** `game/systems/random-events-manager.js`
+**Status:** ✅ Fully Integrated v4.0.0-beta.2
+**Trigger:** 10% chance after each prison activity
 
 ### Prison Stats Tracked
 - Days served

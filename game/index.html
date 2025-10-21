@@ -583,6 +583,102 @@
             border-color: #f00 !important;
         }
 
+        /* Random Event Modal Styles */
+        .event-modal-content {
+            max-width: 700px;
+            background: #000;
+            border: 4px solid #ff0;
+            box-shadow: 0 0 50px #ff0, inset 0 0 20px rgba(255, 255, 0, 0.1);
+        }
+
+        .event-title {
+            font-size: 2.2em;
+            color: #ff0;
+            text-shadow: 0 0 15px #ff0, 0 0 30px #ff0;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ff0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 15px #ff0, 0 0 30px #ff0; }
+            50% { text-shadow: 0 0 20px #ff0, 0 0 40px #ff0, 0 0 60px #ff0; }
+        }
+
+        .event-description-container {
+            background: rgba(255, 255, 0, 0.05);
+            border: 2px solid #ff0;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .event-description {
+            color: #ff0;
+            font-size: 1.2em;
+            line-height: 1.8;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .event-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .event-choice-btn {
+            background: #000;
+            border: 3px solid #0f0;
+            color: #0f0;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .event-choice-btn:hover:not(.disabled) {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            transform: translateX(5px);
+            border-color: #0ff;
+            color: #0ff;
+        }
+
+        .event-choice-btn:active:not(.disabled) {
+            transform: translateX(8px) scale(0.98);
+        }
+
+        .event-choice-btn.disabled {
+            border-color: #555;
+            color: #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+            box-shadow: none;
+        }
+
+        .event-choice-btn::before {
+            content: '►';
+            position: absolute;
+            left: -20px;
+            transition: left 0.3s;
+            font-size: 1.5em;
+        }
+
+        .event-choice-btn:hover:not(.disabled)::before {
+            left: 10px;
+        }
+
+        .event-choice-btn:not(.disabled) {
+            padding-left: 45px;
+        }
+
         /* Mobile Touch Controls */
         #mobileControls {
             display: none;
@@ -1201,66 +1297,8 @@
 
         <!-- COURTROOM -->
         <div id="courtroom" class="screen">
-            <!-- Ace Attorney Judge Canvas (ALWAYS VISIBLE IN BACKGROUND) -->
-            <canvas id="judgeCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></canvas>
-
-            <!-- Ace Attorney Dialogue (OVERLAYS CANVAS) -->
-            <div id="aceDialogueContainer" style="position: relative; z-index: 10;"></div>
-
-            <!-- Title and Instructions -->
-            <div style="position: relative; z-index: 10;">
-                <h2>PAPERWORK SIMULATOR 3000</h2>
-                <p style="margin: 20px; font-size: 1.1em;">You have been pulled over. Please complete ALL forms in triplicate.</p>
-            </div>
-
-            <!-- Judge Hardcastle Dialogue Box -->
-            <div id="judgeDialogue" class="form-container" style="max-width: 900px; margin-bottom: 20px; display: none; position: relative; z-index: 10; background: rgba(0, 0, 0, 0.95);">
-                <h3 style="color: #f00; text-align: center; margin-bottom: 15px;">⚖️ JUDGE HARDCASTLE ⚖️</h3>
-                <div id="judgeCharges" style="margin: 15px 0; padding: 15px; border: 1px solid #f00; background: rgba(255, 0, 0, 0.05);">
-                    <strong style="color: #f00;">CHARGES:</strong>
-                    <ul id="chargesList" style="margin-top: 10px; padding-left: 20px;"></ul>
-                </div>
-                <div id="judgeStatement" style="margin: 15px 0; padding: 15px; border: 1px solid #f00; font-style: italic; line-height: 1.6;">
-                </div>
-                <div id="judgeMood" style="text-align: right; color: #f00; font-size: 0.9em; margin-top: 10px;">
-                    Mood: <span id="moodLevel">IRRITATED</span> | Patience: <span id="patienceLevel">100</span>%
-                </div>
-            </div>
-
-            <!-- Court Forms (OVERLAYS CANVAS, HIDDEN BY DEFAULT) -->
-            <div id="courtForms" class="form-container" style="display: none; position: relative; z-index: 10; background: rgba(0, 0, 0, 0.95);">
-                <div class="form-field">
-                    <label>FORM 27-B: Reason for Driving</label>
-                    <textarea id="reasonForDriving" placeholder="Explain in detail why you were operating a motor vehicle..."></textarea>
-                </div>
-                <div class="form-field">
-                    <label>FORM 42-A: Description of Vehicle</label>
-                    <input type="text" id="vehicleDesc" placeholder="Color, make, model, year of manufacture...">
-                </div>
-                <div class="form-field">
-                    <label>FORM 99-Z: Statement of Intent</label>
-                    <select id="intentStatement">
-                        <option value="">Select your intent...</option>
-                        <option value="grocery">I was going to buy groceries</option>
-                        <option value="work">I was going to work</option>
-                        <option value="joy">I was experiencing joy</option>
-                        <option value="exist">I was simply existing</option>
-                    </select>
-                </div>
-                <div class="form-field">
-                    <label>FORM 13-C: Please initial here to acknowledge you were driving</label>
-                    <input type="text" id="initial1" placeholder="Initials" maxlength="3">
-                </div>
-                <div class="form-field">
-                    <label>FORM 13-D: Please initial here to acknowledge you know you were driving</label>
-                    <input type="text" id="initial2" placeholder="Initials" maxlength="3">
-                </div>
-                <div class="form-field">
-                    <label>FORM 13-E: Please initial here to acknowledge that you acknowledged driving</label>
-                    <input type="text" id="initial3" placeholder="Initials" maxlength="3">
-                </div>
-                <button class="pixel-button" onclick="game.submitCourtForms()">SUBMIT FORMS</button>
-            </div>
+            <!-- Pixel Art Courtroom Canvas (Judge + Forms integrated) -->
+            <canvas id="courtroomCanvas" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 600px; max-width: 100%; max-height: 100%; image-rendering: pixelated; image-rendering: crisp-edges;"></canvas>
         </div>
 
         <!-- PRISON MENU -->
@@ -2717,6 +2755,21 @@
         </div>
     </div>
 
+    <!-- RANDOM EVENT MODAL -->
+    <div id="randomEventModal" class="modal">
+        <div class="modal-content event-modal-content">
+            <div class="modal-title event-title" id="eventTitle">RANDOM EVENT</div>
+            <div class="event-description-container">
+                <div class="event-description" id="eventDescription">
+                    Something has happened in prison...
+                </div>
+            </div>
+            <div class="event-choices" id="eventChoices">
+                <!-- Choices populated dynamically -->
+            </div>
+        </div>
+    </div>
+
     <!-- CINEMATIC OVERLAY -->
     <div id="cinematicOverlay" class="cinematic-overlay">
         <div class="letterbox letterbox-top"></div>
@@ -2790,6 +2843,8 @@
     <script src="assets/courtroom/courtroom-background-data.js"></script>
     <script src="assets/courtroom/paperwork-ui-data.js"></script>
     <script src="systems/courtroom-pixel-renderer.js"></script>
+    <script src="systems/pixel-art-forms.js"></script>
+    <script src="systems/enhanced-courtroom-controller.js"></script>
 
     <!-- Pixel Art Generator (Main Menu & Character Creation) -->
     <script src="assets/pixel-art-generator.js"></script>
@@ -2818,6 +2873,14 @@
     <script src="rendering/nail-art-palette.js"></script>
     <script src="rendering/nail-art-effects.js"></script>
     <script src="rendering/nail-art-renderer.js"></script>
+
+    <!-- Stat Threshold System - Must load BEFORE game.js -->
+    <script src="systems/stat-thresholds.js"></script>
+    <script src="systems/stat-effects.js"></script>
+
+    <!-- Random Events System - Must load BEFORE game.js -->
+    <script src="systems/random-events-manager.js"></script>
+
     <script src="core/game.js"></script>
     <!-- Nail Art Integration (extends VroomVroomGame.prototype - must load AFTER game.js) -->
     <script src="systems/nail-art-integration.js"></script>

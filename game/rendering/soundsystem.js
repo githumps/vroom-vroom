@@ -1273,4 +1273,88 @@ class SoundSystem {
 
         noise.start(now);
     }
+
+    // ACHIEVEMENT UNLOCK SOUND - Triumphant fanfare based on rarity
+    playAchievementUnlock(rarity = 'common') {
+        if (!this.initialized) return;
+
+        const now = this.audioContext.currentTime;
+
+        // Base frequencies based on rarity
+        const rarityConfigs = {
+            common: { baseFreq: 440, duration: 0.8, volume: 0.3 },
+            uncommon: { baseFreq: 523, duration: 1.0, volume: 0.35 },
+            rare: { baseFreq: 659, duration: 1.2, volume: 0.4 },
+            legendary: { baseFreq: 880, duration: 1.5, volume: 0.45 }
+        };
+
+        const config = rarityConfigs[rarity] || rarityConfigs.common;
+
+        // Main triumphant tone (ascending chord)
+        const notes = [
+            config.baseFreq,           // Root
+            config.baseFreq * 1.25,    // Major third
+            config.baseFreq * 1.5,     // Perfect fifth
+            config.baseFreq * 2        // Octave
+        ];
+
+        notes.forEach((freq, index) => {
+            const osc = this.audioContext.createOscillator();
+            const gain = this.audioContext.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now);
+
+            const delay = index * 0.08; // Arpeggiate the notes
+            gain.gain.setValueAtTime(0, now + delay);
+            gain.gain.linearRampToValueAtTime(config.volume / notes.length, now + delay + 0.05);
+            gain.gain.setValueAtTime(config.volume / notes.length, now + delay + config.duration - 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + delay + config.duration);
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+
+            osc.start(now + delay);
+            osc.stop(now + delay + config.duration);
+        });
+
+        // Sparkle effect (high frequency shimmer)
+        for (let i = 0; i < 5; i++) {
+            const sparkle = this.audioContext.createOscillator();
+            const sparkleGain = this.audioContext.createGain();
+
+            sparkle.type = 'sine';
+            sparkle.frequency.setValueAtTime(1600 + Math.random() * 800, now);
+
+            const sparkleTime = now + (i * 0.15);
+            sparkleGain.gain.setValueAtTime(0, sparkleTime);
+            sparkleGain.gain.linearRampToValueAtTime(0.15, sparkleTime + 0.02);
+            sparkleGain.gain.exponentialRampToValueAtTime(0.01, sparkleTime + 0.15);
+
+            sparkle.connect(sparkleGain);
+            sparkleGain.connect(this.masterGain);
+
+            sparkle.start(sparkleTime);
+            sparkle.stop(sparkleTime + 0.15);
+        }
+
+        // Sub-bass impact for legendary achievements
+        if (rarity === 'legendary') {
+            const bass = this.audioContext.createOscillator();
+            const bassGain = this.audioContext.createGain();
+
+            bass.type = 'sine';
+            bass.frequency.setValueAtTime(55, now); // Low A
+            bass.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+
+            bassGain.gain.setValueAtTime(0.5, now);
+            bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+            bass.connect(bassGain);
+            bassGain.connect(this.masterGain);
+
+            bass.start(now);
+            bass.stop(now + 0.4);
+        }
+    }
 }

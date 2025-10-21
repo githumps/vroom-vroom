@@ -11,8 +11,148 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Hospital/Clinic System** - Medical treatment for infected tattoos (designed, pending integration)
 - **Conjugal Visit System** - Good behavior rewards with contraband mechanics (designed, pending integration)
 - **Dev Mode & Debugging** - Comprehensive logging and API monitoring (files created, pending integration)
-- **20 Random Prison Events** - Daily events for replayability (designed, pending integration)
 - **Reputation System** - Guards, inmates, warden, legend tracking (designed, pending integration)
+
+---
+
+## [4.0.0-beta.2] - 2025-10-20
+
+### Added - RANDOM EVENTS SYSTEM 🎲🎭
+
+**Prison life just got unpredictable! 20 unique events trigger randomly during gameplay.**
+
+#### **Random Prison Events System**
+- **20 unique events** with choice-driven outcomes
+- **10% trigger chance** per prison day activity
+- **Event history tracking** - No repeat events within 7 days
+- **Stat-gated choices** - Requires Intelligence 30-90, Strength 40-70, Good Behavior 60-80+
+- **Meaningful consequences** - Affects sentence length, stats, resources, reputation
+
+#### **Event Categories**
+1. **Theft & Shakedowns** - Cellmate steals cigarettes, guard searches
+2. **Medical Emergencies** - Food poisoning, tattoo infections
+3. **Social Encounters** - New inmates, riots, gang initiations
+4. **Opportunities** - Work detail assignments, contraband offers
+5. **Consequences** - Parole hearings, solitary confinement, visitor gifts
+
+#### **Example Events with Stat Requirements**
+- **Cellmate Theft** → Confront (Str 40+) | Let it go | Report (Int 30+)
+- **Yard Riot** → Join (Str 60+) | Hide | Mediate (Int 70+)
+- **Parole Hearing** → Show remorse (Behavior 80+) | Argue case (Int 90+) | Stay silent
+- **Guard Shakedown** → Cooperate | Hide contraband (Int 50+) | Argue
+- **Work Detail** → Kitchen | Laundry | Maintenance (Str 45+) | Refuse
+
+#### **Outcomes & Consequences**
+- **Sentence reduction:** -3 to -50 years (rare, high stat requirements)
+- **Sentence increase:** +3 to +5 years (arguing, violence, violations)
+- **Stat changes:** ±5 to ±20 intelligence, strength, hunger
+- **Resource changes:** ±5 to ±200 credits, ±5 to ±100 cigarettes
+- **Good behavior:** ±5 to ±40 points
+- **Time penalties:** +1 to +7 prison days (medical, solitary, lockdown)
+
+#### **Visual Design**
+- **Pixel art modal** with yellow (#ff0) border and pulsing title
+- **Choice buttons** with green (#0f0) text, hover effects with cyan glow
+- **Disabled choices** show stat requirements clearly (grayed out)
+- **Arrow indicators** (►) animate on hover
+- **Smooth transitions** and responsive design
+
+#### **Technical Implementation**
+- **New file:** `game/systems/random-events-manager.js` (800+ lines)
+- **New HTML:** Event modal with pixel art styling
+- **New CSS:** 100+ lines of event-specific styles
+- **Player property:** `randomEventHistory` array tracks last 7 days
+- **Integration:** Triggers in `prisonActivity()` function
+- **Save compatibility:** Event history syncs to save data
+
+#### **Files Modified**
+- `game/index.html` - Added event modal HTML + CSS styles
+- `game/core/game.js` - Integrated RandomEventManager, added event trigger
+- `SYSTEMS.md` - Added Random Events System documentation
+- `CHANGELOG.md` - This entry
+
+**Play Experience:** Every prison day has a 10% chance of something unexpected happening. Your choices matter - high stats unlock better options, poor choices extend your sentence or cost resources. Events don't repeat for 7 days, ensuring variety across playthroughs.
+
+---
+
+## [4.1.0-alpha] - 2025-10-20
+
+### Added - STAT THRESHOLD SYSTEM 📊💪🧠
+
+**Player stats now actually matter in gameplay!**
+
+Intelligence, Strength, Hunger, and Good Behavior now have threshold-based effects that unlock abilities, modify outcomes, and create meaningful progression.
+
+#### **Stat Threshold System** (`game/systems/stat-thresholds.js`)
+- **6 tiers per stat** - Each stat (0-100) divided into meaningful ranges
+- **Threshold effects** - Locked/unlocked activities, price modifiers, special abilities
+- **Visual tier display** - Color-coded tier names with descriptions
+- **Next tier preview** - Shows what you need to unlock next
+
+#### **Stat Effects System** (`game/systems/stat-effects.js`)
+- **Daily passive effects** - Stats change over time based on conditions
+- **Activity modifiers** - Hunger affects stat gains, strength affects gym gains
+- **Price modifiers** - Intelligence and behavior give discounts
+- **Special events** - Collapse from starvation, solitary from bad behavior
+- **Achievement unlocks** - Milestone achievements at perfect stats (100)
+
+#### **Intelligence Thresholds (0-100)**
+- **0-19 Illiterate:** Library blocked, court forms 2x slower, miss loopholes
+- **20-39 Basic:** Simple books, tutor inmates (+5 credits/day)
+- **40-59 Smart:** All books, law library (-5% sentence), gang strategy role
+- **60-79 Very Smart:** Legal loopholes (-10% sentence), mentor (+10 credits/day), 25% auto-fill forms
+- **80-99 Genius:** Prison blueprints (ventilation escape), 20% discounts, 50% auto-fill, negotiate with guards
+- **100 Maximum:** Represent yourself in court, auto-win challenges, 100% auto-fill, achievement unlock
+
+#### **Strength Thresholds (0-100)**
+- **0-19 Weak:** Bullied (lose 5 cigarettes/day), gym blocked, beaten up in events
+- **20-39 Average:** 50% defend chance, basic gym access
+- **40-59 Strong:** 80% defend chance, intimidate bullies, yard respect, 50% faster strength gains
+- **60-79 Very Strong:** Never bullied, win fights (+20 credits), bouncer job (+15 credits/day)
+- **80-99 Champion:** Fight bets (+50 credits), gang leader alliance, train others (+25 credits/day)
+- **100 Unstoppable:** Break through wall (new escape route), auto-win fights, guards fear you
+
+#### **Hunger Thresholds (0-100, lower = hungrier)**
+- **0-19 Starving:** CRITICAL - Lose 2 STR + 1 INT per day, 10% collapse risk, activities 2x time, no stat gains
+- **20-39 Very Hungry:** Lose 1 STR per day, activities 2x time, distracted reading
+- **40-59 Normal:** No penalties or bonuses
+- **60-79 Well-Fed:** +10% stat gains, faster recovery, +1 INT bonus
+- **80-99 Full:** +20% stat gains, immune to illness, extra energy, better events
+- **100 Food Coma:** Sleep bonus (+5 all stats), then drops to 50
+
+#### **Good Behavior Thresholds (0-100+)**
+- **0-19 Troublemaker:** 5% solitary risk per day, guards harass, 25% higher prices
+- **20-39 Problematic:** Guards watching, normal prices
+- **40-59 Decent:** All activities available, library privileges
+- **60-79 Good:** Guards grant favors, visitation rights, work release (+20 credits/day), 10% discount
+- **80-99 Model:** Early parole, best cell, guards overlook infractions, 20% discount, conjugal visits
+- **100+ Perfect:** 50% sentence reduction, trustee status, leave grounds, guards as allies
+
+#### **Integration Status (50% Complete)**
+- ✅ Systems loaded in index.html
+- ✅ Initialized in game.js constructor
+- ✅ Player stats initialized (intelligence, strength, hunger, goodBehaviorPoints)
+- ✅ Workout system modified (strength gains use stat modifiers)
+- 🟡 Daily effects system (needs time advancement hookup)
+- 🟡 Activity gating (gym/library need stat checks)
+- 🟡 Price modifiers (commissary needs integration)
+- 🟡 UI threshold displays (need HTML elements)
+
+#### **Technical Files**
+- `game/systems/stat-thresholds.js` (801 lines) - Threshold definitions and checks
+- `game/systems/stat-effects.js` (567 lines) - Daily effects and modifiers
+- `docs/integration/STAT_THRESHOLD_INTEGRATION.md` - Complete integration guide
+
+### Changed
+- **Workout system** - Strength gains now modified by hunger and current strength level
+- **Player object** - Added `strength: 0`, `hunger: 50`, `goodBehaviorPoints: 50`
+- **Version** - Updated to 4.1.0-alpha (partial feature implementation)
+
+### Technical Notes
+- System is functional but requires additional hookups for full effect
+- Daily effects system ready but needs time advancement integration
+- Comprehensive integration guide in `docs/integration/`
+- Estimated 4 hours to complete full integration
 
 ---
 

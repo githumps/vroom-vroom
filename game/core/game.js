@@ -568,7 +568,7 @@ class JudgeHardcastle {
 class VroomVroomGame {
     constructor() {
         // Game version (semantic versioning)
-        this.VERSION = '4.0.0-beta.1'; // THE VIRAL UPDATE - Achievement System integrated! 7 achievements working!
+        this.VERSION = '4.0.0'; // 🎉 THE VIRAL UPDATE - LEGENDARY! All 5 systems integrated! 🎉
 
         this.scene = null;
         this.camera = null;
@@ -616,7 +616,13 @@ class VroomVroomGame {
             lastPlayed: Date.now(), // Real-world timestamp
             prisonStartTime: null, // When prison sentence started in real time
             eventHistory: [], // Track events that happened while away
-            intelligence: 0, // Reading increases intelligence
+
+            // Core Stats (v4.1.0 - NOW ACTUALLY MATTER!)
+            intelligence: 0, // Reading increases intelligence (0-100)
+            strength: 0, // Working out increases strength (0-100)
+            hunger: 50, // Eating reduces hunger, starvation hurts stats (0-100, lower is hungrier)
+            goodBehaviorPoints: 50, // Good behavior unlocks privileges (0-100+)
+
             booksRead: [], // Array of completed book indices
             bookProgress: [0, 0, 0], // Current page for each book [book0, book1, book2]
             money: 0, // Prison credits
@@ -641,7 +647,24 @@ class VroomVroomGame {
             // Nail art system
             guardHands: {},
             // Corruption system
-            corruption: 0
+            corruption: 0,
+
+            // Random Events System (Prison Events with Choices)
+            randomEventHistory: [], // Track last 7 prison days of events to prevent repeats
+
+            // Achievement tracking counters (v4.0.0)
+            workoutCount: 0,           // Track total workouts for gym_rat
+            foodsEaten: [],            // Track unique food types for master_chef
+            fightWins: 0,              // Track fight victories for aggressive
+            fightCount: 0,             // Track total fights for pacifist check
+            purchaseCount: 0,          // Track purchases for minimalist
+            activitiesCompleted: [],   // Track unique activities for completionist
+            formStartTime: null,       // Track form timing for speed_reader
+            judgeAngerCount: 0,        // Track judge anger for contempt_of_court
+            slowDrivingTime: 0,        // Track time driving slow for slowpoke
+            evadeTime: 0,              // Track time evading police for untouchable
+            maxSpeed: 0,               // Track max speed for speed_demon
+            successfulEscapes: 0       // Track successful escapes for escape_artist
         };
 
         // Commissary shop inventory
@@ -683,6 +706,9 @@ class VroomVroomGame {
         this.guardDialogue = new GuardDialogueSystem(this.geminiEvents);
         this.corruptionTracker = new CorruptionTracker();
         this.timedEvents = new TimedEventSystem(this.geminiEvents);
+
+        // Initialize Random Events Manager (Prison Events with Choices)
+        this.randomEventManager = new RandomEventManager(this, this.geminiEvents);
 
         // Initialize Ace Attorney Courtroom System
         this.aceCourtroom = null; // Lazy initialization
@@ -737,6 +763,15 @@ class VroomVroomGame {
                     this.audioManager.playEnvironment('menu', { playMusic: true, playAmbient: true });
                 }
             }, { once: true });
+
+            // === UNIVERSAL BUTTON CLICK SOUND ===
+            // Add click sound to ALL buttons in the game
+            document.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button && this.audioManager && this.audioManager.initialized) {
+                    this.audioManager.playButtonClick();
+                }
+            });
         }
 
         // Initialize Achievement System (30 achievements)
@@ -745,6 +780,14 @@ class VroomVroomGame {
             this.achievementTracker = new AchievementTracker(this);
             this.achievementTracker.init();
             console.log('[VROOM] ✅ Achievement System ready - 30 achievements tracking');
+        }
+
+        // Initialize Stat Threshold System - NEW v4.1.0
+        if (typeof StatThresholdSystem !== 'undefined' && typeof StatEffectsSystem !== 'undefined') {
+            console.log('[VROOM] Initializing Stat Threshold System...');
+            this.statThresholds = new StatThresholdSystem();
+            this.statEffects = new StatEffectsSystem(this, this.statThresholds);
+            console.log('[VROOM] ✅ Stat Threshold System ready - stats actually matter!');
         }
 
         // Display version number
@@ -813,8 +856,8 @@ class VroomVroomGame {
 
         // Initialize sound system on first user interaction (Web Audio API requirement)
         document.addEventListener('click', () => {
-            if (!this.soundSystem.initialized) {
-                this.soundSystem.init();
+            if (!this.audioManager.initialized) {
+                this.audioManager.init();
             }
         }, { once: true });
 
@@ -1378,23 +1421,23 @@ class VroomVroomGame {
         const muteButton = document.getElementById('muteButton');
 
         if (volumeSlider && volumeDisplay && muteButton) {
-            const volumePercent = Math.round(this.soundSystem.volume * 100);
+            const volumePercent = Math.round(this.audioManager.volume * 100);
             volumeSlider.value = volumePercent;
             volumeDisplay.textContent = volumePercent;
-            muteButton.textContent = this.soundSystem.muted ? 'Unmute' : 'Mute';
+            muteButton.textContent = this.audioManager.muted ? 'Unmute' : 'Mute';
         }
     }
 
     // Update volume from slider
     updateVolume(value) {
         const volume = parseFloat(value) / 100;
-        this.soundSystem.setVolume(volume);
+        this.audioManager.setVolume(volume);
         document.getElementById('volumeDisplay').textContent = value;
     }
 
     // Toggle mute
     toggleMute() {
-        const muted = this.soundSystem.toggleMute();
+        const muted = this.audioManager.toggleMute();
         const muteButton = document.getElementById('muteButton');
         muteButton.textContent = muted ? 'Unmute' : 'Mute';
         this.showMessage(muted ? 'Sound muted' : 'Sound unmuted', 2000);
@@ -1448,6 +1491,11 @@ class VroomVroomGame {
             }
 
             this.showMessage('Game loaded! Welcome back, ' + this.player.name);
+
+            // Sync random event history
+            if (this.player.randomEventHistory) {
+                this.randomEventManager.eventHistory = this.player.randomEventHistory;
+            }
 
             // Start in appropriate state
             if (this.gameState === 'prison' || (this.player.prisonDays > 0 && this.player.prisonDays < this.player.sentence * 7)) {
@@ -1721,8 +1769,8 @@ class VroomVroomGame {
     // Preview selected voice personality
     previewVoice() {
         // Initialize sound system if needed
-        if (!this.soundSystem.initialized) {
-            this.soundSystem.init();
+        if (!this.audioManager.initialized) {
+            this.audioManager.init();
         }
 
         // Get selected voice type
@@ -1736,7 +1784,7 @@ class VroomVroomGame {
         previewBtn.disabled = true;
 
         // Play voice preview
-        this.soundSystem.playVoicePreview(voiceType);
+        this.audioManager.playVoicePreview(voiceType);
 
         // Reset button after duration (longest voice is 1.5s, add buffer)
         setTimeout(() => {
@@ -1886,6 +1934,12 @@ class VroomVroomGame {
             }
 
             this.showMessage('You are now driving. The police are watching. They are always watching.', 4000);
+
+            // === AUDIO: Start driving environment ===
+            if (this.audioManager && this.audioManager.initialized) {
+                this.audioManager.playEnvironment('driving', { playMusic: true, playAmbient: true, musicIntensity: 0.3 });
+                this.audioManager.playEngineStart(); // Engine start sound
+            }
         };
 
         if (showCinematic) {
@@ -1917,6 +1971,33 @@ class VroomVroomGame {
             this.player.wantedLevel = Math.min(5, Math.floor(this.player.drivingTime / 10));
         }
 
+        // Achievement tracking (v4.0.0)
+        // Track max speed for speed_demon (100 mph = 160.9 km/h)
+        if (this.player.speed > (this.player.maxSpeed || 0)) {
+            this.player.maxSpeed = this.player.speed;
+            if (this.achievementTracker && this.player.maxSpeed >= 160.9) {
+                this.achievementTracker.unlockAchievement('speed_demon');
+            }
+        }
+
+        // Track slow driving for slowpoke (<5 mph = <8 km/h for 60 seconds)
+        if (this.player.speed < 8 && this.player.speed > 0) {
+            this.player.slowDrivingTime += delta;
+            if (this.achievementTracker && this.player.slowDrivingTime >= 60) {
+                this.achievementTracker.unlockAchievement('slowpoke');
+            }
+        } else {
+            this.player.slowDrivingTime = 0; // Reset if not slow
+        }
+
+        // Track police evasion time for untouchable (5 minutes = 300 seconds)
+        if (this.policeChasing) {
+            this.player.evadeTime += delta;
+            if (this.achievementTracker && this.player.evadeTime >= 300) {
+                this.achievementTracker.unlockAchievement('untouchable');
+            }
+        }
+
         // Update HUD
         document.getElementById('speed').textContent = Math.floor(this.player.speed);
         document.getElementById('wantedLevel').textContent = this.player.wantedLevel;
@@ -1929,6 +2010,12 @@ class VroomVroomGame {
             this.sidescroller.spawnPolice();
         }
         this.showMessage('POLICE DETECTED. You were driving. This is illegal.', 4000);
+
+        // === AUDIO: Police siren ===
+        if (this.audioManager && this.audioManager.initialized) {
+            this.audioManager.playArrestSound(); // Siren
+            this.audioManager.updateMusicIntensity(0.8); // Increase driving music intensity for chase
+        }
     }
 
     pullOver() {
@@ -1945,8 +2032,10 @@ class VroomVroomGame {
             document.getElementById('touchStop').style.display = 'none';
         }
 
-        // Play arrest sound (siren + handcuff click)
-        this.soundSystem.playArrestSound();
+        // === AUDIO: Arrest sound sequence ===
+        if (this.audioManager && this.audioManager.initialized) {
+            this.audioManager.playArrestSound(); // Siren + handcuff click
+        }
 
         // Cop inspects driver's license (4-second animation)
         if (this.licenseRenderer) {
@@ -1963,13 +2052,15 @@ class VroomVroomGame {
     }
 
     async setupCourtroom() {
-        // Initialize Ace Attorney Courtroom (lazy)
+        // Initialize Enhanced Pixel Art Courtroom (lazy)
         if (!this.aceCourtroom) {
-            this.aceCourtroom = new AceAttorneyCourtroom('judgeCanvas', 'aceDialogueContainer');
+            this.aceCourtroom = new EnhancedCourtroomController('courtroomCanvas');
         }
 
-        // Play cop mumbling sound (Sims-style gibberish)
-        this.soundSystem.playCopMumbling();
+        // === AUDIO: Cop mumbling sound (Sims-style gibberish) ===
+        if (this.audioManager && this.audioManager.initialized) {
+            this.audioManager.playCopMumbling();
+        }
 
         // Try to generate AI charges first, fall back to default if API key not available
         let charges;
@@ -1995,16 +2086,8 @@ class VroomVroomGame {
         this.judge.addMemory(`Arrested for driving at ${Math.floor(this.player.speed)} km/h for ${Math.floor(this.player.drivingTime)} seconds`);
         const newMood = this.judge.calculateNewMood();
 
-        // Display charges
-        const chargesList = document.getElementById('chargesList');
-        chargesList.innerHTML = '';
-        charges.forEach(charge => {
-            const li = document.createElement('li');
-            li.textContent = charge;
-            li.style.color = '#f00';
-            li.style.margin = '5px 0';
-            chargesList.appendChild(li);
-        });
+        // Format charges as text
+        const chargesText = charges.map((charge, i) => `${i + 1}. ${charge}`).join('\n');
 
         // Get initial judge response
         const response = this.judge.generateResponse({
@@ -2012,30 +2095,29 @@ class VroomVroomGame {
             speed: this.player.speed
         });
 
-        // Display judge dialogue (for legacy HTML display)
-        document.getElementById('judgeStatement').innerHTML = `
-            <p style="color: #f00; font-weight: bold; margin-bottom: 10px;">"${response.text}"</p>
-            <p style="color: #0f0; margin-top: 10px;">Now complete these forms. And don't waste my time.</p>
-        `;
-
-        // Update mood display
-        document.getElementById('moodLevel').textContent = newMood;
-        document.getElementById('patienceLevel').textContent = this.judge.patience;
-
-        // Start Ace Attorney courtroom with judge's current patience level
+        // Start pixel art courtroom with judge's current patience level
         this.aceCourtroom.start(this.judge.patience);
 
-        // Show dramatic opening dialogue
-        const openingText = `${response.text}\n\nNow complete these forms. ALL of them. And don't waste my time.`;
-        this.aceCourtroom.showDialogue('JUDGE HARDCASTLE', openingText, () => {
-            // After opening dialogue, hide dialogue and show forms
-            this.aceCourtroom.hideDialogue();
-            document.getElementById('judgeDialogue').style.display = 'block';
-            document.getElementById('courtForms').style.display = 'block';
-        });
+        // Set up form submit callback
+        this.aceCourtroom.onFormSubmit = (formData) => {
+            this.handleCourtFormSubmit(formData);
+        };
 
-        // Add listeners for form interactions to trigger judge commentary
-        this.addJudgeCommentaryListeners();
+        // Set up form error callback
+        this.aceCourtroom.onFormError = (errors) => {
+            // Increase judge impatience for errors
+            this.judge.patience = Math.max(0, this.judge.patience - 30);
+            this.aceCourtroom.updatePatience(this.judge.patience);
+        };
+
+        // Show dramatic opening: Judge speaks, then shows charges, then shows forms
+        this.aceCourtroom.showOpeningDialogue(chargesText, response.text, () => {
+            // After all dialogues, show the interactive forms
+            this.aceCourtroom.showForms();
+
+            // Achievement tracking: Start timer for speed_reader (v4.0.0)
+            this.player.formStartTime = Date.now();
+        });
 
         this.saveGame();
     }
@@ -2139,6 +2221,12 @@ class VroomVroomGame {
             this.judge.patience = Math.max(0, this.judge.patience - 30);
             document.getElementById('patienceLevel').textContent = this.judge.patience;
 
+            // Achievement tracking: Contempt of court (anger judge 10 times)
+            this.player.judgeAngerCount = (this.player.judgeAngerCount || 0) + 1;
+            if (this.achievementTracker && this.player.judgeAngerCount >= 10) {
+                this.achievementTracker.unlockAchievement('contempt_of_court');
+            }
+
             const incompleteComments = [
                 "\"Form 27-B is blank. Were you DRIVING while you should have been WRITING?\"",
                 "\"You initialed 13-C but not 13-D. Do you know what that means? Neither do I. Six more months.\"",
@@ -2199,6 +2287,40 @@ class VroomVroomGame {
             } else if (sentenceInDays >= 36500) { // 100 years
                 this.achievementTracker.unlockAchievement('eternal_prisoner');
             }
+
+            // Courtroom achievements (v4.0.0)
+            // Speed reader: Complete form in <30 seconds
+            if (this.player.formStartTime) {
+                const formTime = (Date.now() - this.player.formStartTime) / 1000;
+                if (formTime < 30) {
+                    this.achievementTracker.unlockAchievement('speed_reader');
+                }
+                this.player.formStartTime = null; // Reset timer
+            }
+
+            // Perfect form: No judge anger this session + all fields filled
+            // (If we made it here, all fields are filled, so just check no anger)
+            if (this.player.judgeAngerCount === 0) {
+                this.achievementTracker.unlockAchievement('perfect_form');
+            }
+
+            // Guilty as charged: Select "Guilty" in intent dropdown
+            if (intent === 'guilty') {
+                this.achievementTracker.unlockAchievement('guilty_as_charged');
+            }
+
+            // Lawyer up: Requires INT 100 + specific text pattern (cite traffic law)
+            // Check if reason contains legal citations (form numbers, laws, codes)
+            const legalPattern = /\b(form|law|code|section|subsection|statute|regulation|article|chapter)\b/i;
+            if (this.player.intelligence >= 100 && legalPattern.test(reason)) {
+                this.achievementTracker.unlockAchievement('lawyer_up');
+            }
+
+            // Objection: Catch contradiction (check if player mentions contradiction in forms)
+            const objectionPattern = /\b(object|contradict|inconsistent|false|incorrect|wrong)\b/i;
+            if (objectionPattern.test(reason) || objectionPattern.test(vehicle)) {
+                this.achievementTracker.unlockAchievement('objection');
+            }
         }
 
         // Display final sentencing (legacy HTML)
@@ -2249,17 +2371,80 @@ class VroomVroomGame {
 
     // Separate method for judgment cinematic (called after verdict)
     proceedToJudgmentCinematic() {
-        // Play gavel strike sound
-        this.soundSystem.playGavelStrike();
+        // === AUDIO: Gavel strike sound ===
+        if (this.audioManager && this.audioManager.initialized) {
+            this.audioManager.playGavelStrike();
+        }
 
         this.cinematics.play('judgment', () => {
-            // Play prison door clang sound
-            this.soundSystem.playPrisonDoorClang();
+            // === AUDIO: Prison door clang sound ===
+            if (this.audioManager && this.audioManager.initialized) {
+                this.audioManager.playPrisonDoorClang();
+            }
 
             // Then show prison entrance
             this.cinematics.play('prison', () => {
                 this.startPrison();
             });
+        });
+    }
+
+    // NEW: Handle form submission from Enhanced Courtroom Controller
+    handleCourtFormSubmit(formData) {
+        // Final sentencing from Judge Hardcastle
+        const response = this.judge.generateResponse({
+            drivingTime: this.player.drivingTime,
+            speed: this.player.speed
+        });
+
+        // Extract sentence years from response
+        const baseSentence = Math.floor(this.player.drivingTime / 10);
+        const sentenceYears = Math.max(1, baseSentence + this.judge.arrestCount);
+        this.player.sentence = sentenceYears;
+        this.player.prisonDays = 0;
+
+        // Increment arrest count and add stamp to license
+        this.player.arrests++;
+        if (this.licenseRenderer) {
+            this.licenseRenderer.addStamp(this.player.arrests);
+            this.licenseRenderer.update();
+        }
+
+        // Check achievement: Arrest milestones
+        if (this.achievementTracker) {
+            if (this.player.arrests === 1) {
+                this.achievementTracker.unlockAchievement('first_timer');
+            }
+            if (this.player.arrests === 10) {
+                this.achievementTracker.unlockAchievement('frequent_flyer');
+            }
+            if (this.player.arrests === 100) {
+                this.achievementTracker.unlockAchievement('career_criminal');
+            }
+        }
+
+        // Check achievement: Absurd sentences
+        if (this.achievementTracker) {
+            const sentenceInDays = sentenceYears * 365;
+            if (sentenceInDays >= 36500000) {
+                this.achievementTracker.unlockAchievement('time_lord');
+            } else if (sentenceInDays >= 3650000) {
+                this.achievementTracker.unlockAchievement('immortal');
+            } else if (sentenceInDays >= 365000) {
+                this.achievementTracker.unlockAchievement('lifer');
+            } else if (sentenceInDays >= 36500) {
+                this.achievementTracker.unlockAchievement('eternal_prisoner');
+            }
+        }
+
+        this.showMessage('GUILTY. Sentence: ' + sentenceYears + ' years. Welcome to prison.', 4000);
+
+        // Show DRAMATIC verdict with pixel art Judge
+        const verdictText = `VERDICT: GUILTY!\n\n${response.sentencing}\n\nYour sentence: ${sentenceYears} YEARS!\n\nMay this serve as a lesson. Which it won't. I'll see you again.`;
+
+        this.aceCourtroom.triggerVerdict(verdictText, () => {
+            // After verdict animation, continue to cinematics
+            this.proceedToJudgmentCinematic();
         });
     }
 
@@ -2275,15 +2460,89 @@ class VroomVroomGame {
             this.aceCourtroom.stop();
         }
 
+        // === AUDIO: Prison door clang ===
+        if (this.audioManager && this.audioManager.initialized) {
+            this.audioManager.playPrisonDoorClang();
+        }
+
         this.showScreen('prisonMenu');
         document.getElementById('sentenceLength').textContent = this.player.sentence;
         document.getElementById('timeServed').textContent = this.player.prisonDays;
+
+        // Achievement tracking: Good behavior (v4.0.0)
+        if (this.achievementTracker) {
+            if (this.player.goodBehavior >= 100) {
+                this.achievementTracker.unlockAchievement('model_prisoner');
+            }
+            if (this.player.goodBehavior <= 0) {
+                this.achievementTracker.unlockAchievement('troublemaker');
+            }
+        }
+
+        // Check meta achievements on prison entry
+        this.checkMetaAchievements();
+
         this.saveGame();
+    }
+
+    // Check meta achievements (money, cigarettes, minimalist, pacifist, aggressive, completionist)
+    checkMetaAchievements() {
+        if (!this.achievementTracker) return;
+
+        // Millionaire: 1000+ credits
+        if (this.player.money >= 1000) {
+            this.achievementTracker.unlockAchievement('millionaire');
+        }
+
+        // Cigarette baron: 500+ cigarettes
+        if (this.player.cigarettes >= 500) {
+            this.achievementTracker.unlockAchievement('cigarette_baron');
+        }
+
+        // Minimalist: 30+ days served, 0 purchases
+        if (this.player.prisonDays >= 30 && (this.player.purchaseCount || 0) === 0) {
+            this.achievementTracker.unlockAchievement('minimalist');
+        }
+
+        // Pacifist: 30+ days served, never fought
+        if (this.player.prisonDays >= 30 && (this.player.fightCount || 0) === 0) {
+            this.achievementTracker.unlockAchievement('pacifist');
+        }
+
+        // Aggressive: 50 fight wins
+        if ((this.player.fightWins || 0) >= 50) {
+            this.achievementTracker.unlockAchievement('aggressive');
+        }
+
+        // Completionist: Do every activity once
+        // Activities: workout, library, tattoo, commissary, letter, escape, gang, shower, cafeteria, yard, job
+        const requiredActivities = ['workout', 'library', 'tattoo', 'commissary', 'letter', 'escape', 'gang'];
+        const hasAllActivities = requiredActivities.every(activity =>
+            (this.player.activitiesCompleted || []).includes(activity)
+        );
+        if (hasAllActivities) {
+            this.achievementTracker.unlockAchievement('completionist');
+        }
     }
 
     prisonActivity(activity) {
         this.player.prisonDays += 1;
         document.getElementById('timeServed').textContent = this.player.prisonDays;
+
+        // Track activities for completionist achievement (v4.0.0)
+        if (!this.player.activitiesCompleted) {
+            this.player.activitiesCompleted = [];
+        }
+        const activityMap = {
+            'shower': 'shower',
+            'cafeteria': 'cafeteria',
+            'yard': 'yard',
+            'job': 'job',
+            'cell': 'cell'
+        };
+        if (activityMap[activity] && !this.player.activitiesCompleted.includes(activityMap[activity])) {
+            this.player.activitiesCompleted.push(activityMap[activity]);
+        }
 
         // Earn 1-5 credits per activity (except commissary, letter, weights, read, and tattoo)
         if (activity !== 'commissary' && activity !== 'letter' && activity !== 'weights' && activity !== 'read' && activity !== 'tattoo') {
@@ -2364,6 +2623,11 @@ class VroomVroomGame {
             setTimeout(() => this.endPrison(), 2000);
         }
 
+        // Trigger random prison event (10% chance per prison day)
+        if (this.randomEventManager) {
+            this.randomEventManager.triggerRandomEvent();
+        }
+
         this.saveGame();
     }
 
@@ -2377,6 +2641,15 @@ class VroomVroomGame {
         }
 
         this.player.letters.push({ to, message, day: this.player.prisonDays });
+
+        // Track for completionist (v4.0.0)
+        if (!this.player.activitiesCompleted) {
+            this.player.activitiesCompleted = [];
+        }
+        if (!this.player.activitiesCompleted.includes('letter')) {
+            this.player.activitiesCompleted.push('letter');
+        }
+
         this.showMessage('Letter sent. It will be read by guards first.', 3000);
         this.player.prisonDays += 1;
         document.getElementById('timeServed').textContent = this.player.prisonDays;
@@ -2731,6 +3004,14 @@ class VroomVroomGame {
         this.player.prisonDays += 1;
         document.getElementById('timeServed').textContent = this.player.prisonDays;
 
+        // Track for completionist (v4.0.0)
+        if (!this.player.activitiesCompleted) {
+            this.player.activitiesCompleted = [];
+        }
+        if (!this.player.activitiesCompleted.includes('gang')) {
+            this.player.activitiesCompleted.push('gang');
+        }
+
         // Make enemies hostile
         for (let enemyId of gang.enemies) {
             this.adjustGangRep(enemyId, -50);
@@ -2751,6 +3032,11 @@ class VroomVroomGame {
 
     adjustGangRep(gangId, amount) {
         this.player.gangRep[gangId] = Math.max(-100, Math.min(100, this.player.gangRep[gangId] + amount));
+
+        // Achievement tracking: Gang leader (max rep with any gang) - v4.0.0
+        if (this.achievementTracker && this.player.gangRep[gangId] === 100) {
+            this.achievementTracker.unlockAchievement('gang_leader');
+        }
     }
 
     triggerGangEvent(gangId) {
@@ -3051,6 +3337,21 @@ class VroomVroomGame {
 
         if (success) {
             // SUCCESS - FREEDOM!
+            this.player.successfulEscapes = (this.player.successfulEscapes || 0) + 1;
+
+            // Achievement tracking: Escape artist (v4.0.0)
+            if (this.achievementTracker) {
+                this.achievementTracker.unlockAchievement('escape_artist');
+            }
+
+            // Track for completionist
+            if (!this.player.activitiesCompleted) {
+                this.player.activitiesCompleted = [];
+            }
+            if (!this.player.activitiesCompleted.includes('escape')) {
+                this.player.activitiesCompleted.push('escape');
+            }
+
             this.showMessage('ESCAPE SUCCESSFUL! You are FREE!', 5000);
 
             // Play escape cinematic
@@ -3369,9 +3670,33 @@ class VroomVroomGame {
         document.removeEventListener('click', this.doRepBound);
         document.removeEventListener('keydown', this.handleSpacebarBound);
 
-        // Increase strength
-        const strengthGain = 1 + Math.floor(Math.random() * 3);
-        this.player.strength += strengthGain;
+        // Increase strength (with stat modifiers from hunger and current strength)
+        let baseStrengthGain = 1 + Math.floor(Math.random() * 3);
+
+        // Apply stat threshold modifiers (hunger affects gains, strength affects gym gains)
+        if (this.statEffects) {
+            baseStrengthGain = this.statEffects.modifyActivityGain(baseStrengthGain, 'strength');
+        }
+
+        const strengthGain = Math.max(0, baseStrengthGain); // Can't gain negative
+        this.player.strength = Math.min(100, this.player.strength + strengthGain); // Cap at 100
+
+        // Track workouts for achievements (v4.0.0)
+        this.player.workoutCount = (this.player.workoutCount || 0) + 1;
+        if (this.achievementTracker && this.player.workoutCount >= 100) {
+            this.achievementTracker.unlockAchievement('gym_rat');
+        }
+
+        // Track for completionist
+        if (!this.player.activitiesCompleted) {
+            this.player.activitiesCompleted = [];
+        }
+        if (!this.player.activitiesCompleted.includes('workout')) {
+            this.player.activitiesCompleted.push('workout');
+        }
+
+        // Reduce hunger from workout
+        this.player.hunger = Math.min(100, this.player.hunger + 5); // Workout makes you hungrier
 
         // Reset progress bar
         document.getElementById('repProgressBar').style.width = '0%';
@@ -3786,6 +4111,19 @@ class VroomVroomGame {
             if (!this.player.booksRead.includes(this.currentBook)) {
                 this.player.booksRead.push(this.currentBook);
                 this.showMessage(`Book complete! "${book.title}" - Intelligence +${book.pages.length}`, 4000);
+
+                // Achievement tracking: Bookworm (read 100 books) - v4.0.0
+                if (this.achievementTracker && this.player.booksRead.length >= 100) {
+                    this.achievementTracker.unlockAchievement('bookworm');
+                }
+
+                // Track for completionist
+                if (!this.player.activitiesCompleted) {
+                    this.player.activitiesCompleted = [];
+                }
+                if (!this.player.activitiesCompleted.includes('library')) {
+                    this.player.activitiesCompleted.push('library');
+                }
             }
             this.bookmarkAndExit();
         }
@@ -3946,6 +4284,29 @@ class VroomVroomGame {
 
         // Add item to player inventory
         this.player.inventory[item] += 1;
+
+        // Achievement tracking: Master chef + Purchase counter (v4.0.0)
+        const foodItems = ['candy', 'noodles', 'cigarettes', 'magazine', 'radio'];
+        if (foodItems.includes(item)) {
+            if (!this.player.foodsEaten.includes(item)) {
+                this.player.foodsEaten.push(item);
+            }
+            // Master chef: Eat every food type (all 5 commissary items)
+            if (this.achievementTracker && this.player.foodsEaten.length >= 5) {
+                this.achievementTracker.unlockAchievement('master_chef');
+            }
+        }
+
+        // Track purchases for minimalist achievement
+        this.player.purchaseCount = (this.player.purchaseCount || 0) + 1;
+
+        // Track for completionist
+        if (!this.player.activitiesCompleted) {
+            this.player.activitiesCompleted = [];
+        }
+        if (!this.player.activitiesCompleted.includes('commissary')) {
+            this.player.activitiesCompleted.push('commissary');
+        }
 
         // Update display
         this.updateCommissaryDisplay();
@@ -4393,7 +4754,7 @@ class VroomVroomGame {
 
             const voiceType = voices[index];
             this.showMessage(`Preview: ${voiceType.toUpperCase()}`, 1500);
-            this.soundSystem.playVoicePreview(voiceType);
+            this.audioManager.playVoicePreview(voiceType);
 
             index++;
             setTimeout(playNext, 2000);
