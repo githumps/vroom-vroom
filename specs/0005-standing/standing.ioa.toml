@@ -1,0 +1,60 @@
+# spec 0005 — Standing I/O Automaton
+#
+# Models the single canonical morality axis (DESIGN.md §6) that REPLACES the legacy
+# trio goodBehaviorPoints / goodBehavior / corruption. Standing is established once
+# at intake, then only adjusted, and always stays within [0,100].
+#
+# The kernel has no value guards, so the [0,100] bound is carried as an attested
+# bool the Adjust action must preserve.
+#
+# Verified by `temper verify -s specs/0005-standing/`.
+
+[automaton]
+name = "Standing"
+states = ["Uninitialised", "Established"]
+initial = "Uninitialised"
+
+[[state]]
+name = "standing_established_once_per_section_6_2"
+type = "bool"
+initial = "false"
+
+[[state]]
+name = "standing_within_bounds_0_100_per_section_6_3"
+type = "bool"
+initial = "false"
+
+[[action]]
+name = "EstablishStanding"
+kind = "input"
+from = ["Uninitialised"]
+to = "Established"
+params = ["inmate_id"]
+guard = "is_false standing_established_once_per_section_6_2"
+effect = [
+  { type = "set_bool", var = "standing_established_once_per_section_6_2", value = true },
+  { type = "set_bool", var = "standing_within_bounds_0_100_per_section_6_3", value = true },
+]
+hint = "§6.1/6.2 the one source of truth is set once at intake; corruption/good-behaviour are views of it."
+
+[[action]]
+name = "AdjustStanding"
+kind = "input"
+from = ["Established"]
+to = "Established"
+params = ["delta_id"]
+guard = [
+  { type = "is_true", var = "standing_established_once_per_section_6_2" },
+  { type = "is_true", var = "standing_within_bounds_0_100_per_section_6_3" },
+]
+hint = "§6.3 adjustments clamp into [0,100]; the bound bool stays true (never re-initialised, §6.2)."
+
+[[invariant]]
+name = "EstablishedRequiresInit"
+when = ["Established"]
+assert = "standing_established_once_per_section_6_2"
+
+[[invariant]]
+name = "StandingAlwaysWithinBoundsOnceEstablished"
+when = ["Established"]
+assert = "standing_within_bounds_0_100_per_section_6_3"

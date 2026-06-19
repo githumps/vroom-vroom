@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Spec 0001 Pursuit — CSDL companion to pursuit.ioa.toml. (literal filename model.csdl.xml)
+  Mirrors every [[state]] as a <Property> and every [[action]] as an <Action>.
+-->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+
+    <Schema Namespace="Temper.Vocab" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Term Name="StateMachine.States" Type="Collection(Edm.String)" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.InitialState" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.ValidFromStates" Type="Collection(Edm.String)" AppliesTo="Action"/>
+      <Term Name="StateMachine.TargetState" Type="Edm.String" AppliesTo="Action"/>
+      <Term Name="Agent.Hint" Type="Edm.String" AppliesTo="Action EntityType"/>
+      <Term Name="ShardKey" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="AuthZ.CedarPolicy" Type="Edm.String" AppliesTo="EntityType Action"/>
+    </Schema>
+
+    <Schema Namespace="Vroom.Pursuit" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+      <EnumType Name="PursuitStatus">
+        <Member Name="Cruising" Value="0"/>
+        <Member Name="Pursued" Value="1"/>
+        <Member Name="Evaded" Value="2"/>
+        <Member Name="Caught" Value="3"/>
+      </EnumType>
+
+      <EntityType Name="Pursuit">
+        <Key>
+          <PropertyRef Name="PursuitId"/>
+        </Key>
+        <Property Name="PursuitId" Type="Edm.String" Nullable="false"/>
+        <Property Name="UserId" Type="Edm.String" Nullable="false"/>
+        <Property Name="Status" Type="Vroom.Pursuit.PursuitStatus" Nullable="false"/>
+
+        <Property Name="police_patrol_active_per_section_2_2" Type="Edm.Boolean" DefaultValue="false"/>
+        <Property Name="gap_opened_above_evade_threshold_per_section_2_5" Type="Edm.Boolean" DefaultValue="false"/>
+        <Property Name="gap_closed_below_caught_threshold_per_section_2_5" Type="Edm.Boolean" DefaultValue="false"/>
+
+        <Annotation Term="Temper.Vocab.StateMachine.States">
+          <Collection>
+            <String>Cruising</String>
+            <String>Pursued</String>
+            <String>Evaded</String>
+            <String>Caught</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.InitialState" String="Cruising"/>
+        <Annotation Term="Temper.Vocab.ShardKey" String="UserId"/>
+        <Annotation Term="Temper.Vocab.AuthZ.CedarPolicy" String="policies/pursuit.cedar"/>
+      </EntityType>
+
+      <Action Name="BeginPursuit" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.Pursuit.Pursuit"/>
+        <Parameter Name="patrol_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.Pursuit.Pursuit"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates">
+          <Collection><String>Cruising</String></Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Pursued"/>
+      </Action>
+
+      <Action Name="Evade" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.Pursuit.Pursuit"/>
+        <Parameter Name="driver_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.Pursuit.Pursuit"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates">
+          <Collection><String>Pursued</String></Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Evaded"/>
+      </Action>
+
+      <Action Name="Catch" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.Pursuit.Pursuit"/>
+        <Parameter Name="patrol_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.Pursuit.Pursuit"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates">
+          <Collection><String>Pursued</String></Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Caught"/>
+      </Action>
+
+      <EntityContainer Name="PursuitService">
+        <EntitySet Name="Pursuits" EntityType="Vroom.Pursuit.Pursuit"/>
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

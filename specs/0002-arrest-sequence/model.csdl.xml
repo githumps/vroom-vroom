@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spec 0002 ArrestSequence — CSDL companion (literal filename model.csdl.xml). -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+
+    <Schema Namespace="Temper.Vocab" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Term Name="StateMachine.States" Type="Collection(Edm.String)" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.InitialState" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.ValidFromStates" Type="Collection(Edm.String)" AppliesTo="Action"/>
+      <Term Name="StateMachine.TargetState" Type="Edm.String" AppliesTo="Action"/>
+      <Term Name="Agent.Hint" Type="Edm.String" AppliesTo="Action EntityType"/>
+      <Term Name="ShardKey" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="AuthZ.CedarPolicy" Type="Edm.String" AppliesTo="EntityType Action"/>
+    </Schema>
+
+    <Schema Namespace="Vroom.ArrestSequence" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+      <EnumType Name="ArrestSequenceStatus">
+        <Member Name="Busted" Value="0"/>
+        <Member Name="CopWindow" Value="1"/>
+        <Member Name="Cuffs" Value="2"/>
+        <Member Name="BackSeat" Value="3"/>
+        <Member Name="Intake" Value="4"/>
+        <Member Name="Defender" Value="5"/>
+        <Member Name="HandedOff" Value="6"/>
+      </EnumType>
+
+      <EntityType Name="ArrestSequence">
+        <Key>
+          <PropertyRef Name="ArrestSequenceId"/>
+        </Key>
+        <Property Name="ArrestSequenceId" Type="Edm.String" Nullable="false"/>
+        <Property Name="UserId" Type="Edm.String" Nullable="false"/>
+        <Property Name="Status" Type="Vroom.ArrestSequence.ArrestSequenceStatus" Nullable="false"/>
+
+        <Property Name="intake_booking_completed_per_section_3_2" Type="Edm.Boolean" DefaultValue="false"/>
+        <Property Name="defender_consulted_per_section_3_3" Type="Edm.Boolean" DefaultValue="false"/>
+
+        <Annotation Term="Temper.Vocab.StateMachine.States">
+          <Collection>
+            <String>Busted</String>
+            <String>CopWindow</String>
+            <String>Cuffs</String>
+            <String>BackSeat</String>
+            <String>Intake</String>
+            <String>Defender</String>
+            <String>HandedOff</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.InitialState" String="Busted"/>
+        <Annotation Term="Temper.Vocab.ShardKey" String="UserId"/>
+        <Annotation Term="Temper.Vocab.AuthZ.CedarPolicy" String="policies/arrest-sequence.cedar"/>
+      </EntityType>
+
+      <Action Name="ApproachCopWindow" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Parameter Name="officer_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Busted</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="CopWindow"/>
+      </Action>
+
+      <Action Name="ApplyCuffs" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Parameter Name="officer_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>CopWindow</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Cuffs"/>
+      </Action>
+
+      <Action Name="LoadIntoBackSeat" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Parameter Name="officer_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Cuffs</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="BackSeat"/>
+      </Action>
+
+      <Action Name="ArriveAtIntake" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Parameter Name="clerk_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>BackSeat</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Intake"/>
+      </Action>
+
+      <Action Name="CompleteIntake" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Parameter Name="clerk_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Intake</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Defender"/>
+      </Action>
+
+      <Action Name="ConsultDefender" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Parameter Name="defender_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Defender</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Defender"/>
+      </Action>
+
+      <Action Name="HandOffToCourtroom" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Parameter Name="case_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.ArrestSequence.ArrestSequence"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Defender</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="HandedOff"/>
+      </Action>
+
+      <EntityContainer Name="ArrestSequenceService">
+        <EntitySet Name="ArrestSequences" EntityType="Vroom.ArrestSequence.ArrestSequence"/>
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

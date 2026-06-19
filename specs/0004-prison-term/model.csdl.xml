@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spec 0004 PrisonTerm — CSDL companion (literal filename model.csdl.xml). -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+
+    <Schema Namespace="Temper.Vocab" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Term Name="StateMachine.States" Type="Collection(Edm.String)" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.InitialState" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.ValidFromStates" Type="Collection(Edm.String)" AppliesTo="Action"/>
+      <Term Name="StateMachine.TargetState" Type="Edm.String" AppliesTo="Action"/>
+      <Term Name="Agent.Hint" Type="Edm.String" AppliesTo="Action EntityType"/>
+      <Term Name="ShardKey" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="AuthZ.CedarPolicy" Type="Edm.String" AppliesTo="EntityType Action"/>
+    </Schema>
+
+    <Schema Namespace="Vroom.PrisonTerm" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+      <EnumType Name="PrisonTermStatus">
+        <Member Name="Admitted" Value="0"/>
+        <Member Name="Serving" Value="1"/>
+        <Member Name="Released" Value="2"/>
+      </EnumType>
+
+      <EntityType Name="PrisonTerm">
+        <Key><PropertyRef Name="PrisonTermId"/></Key>
+        <Property Name="PrisonTermId" Type="Edm.String" Nullable="false"/>
+        <Property Name="UserId" Type="Edm.String" Nullable="false"/>
+        <Property Name="Status" Type="Vroom.PrisonTerm.PrisonTermStatus" Nullable="false"/>
+
+        <Property Name="required_days_served_reached_per_section_5_2" Type="Edm.Boolean" DefaultValue="false"/>
+
+        <Annotation Term="Temper.Vocab.StateMachine.States">
+          <Collection>
+            <String>Admitted</String>
+            <String>Serving</String>
+            <String>Released</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.InitialState" String="Admitted"/>
+        <Annotation Term="Temper.Vocab.ShardKey" String="UserId"/>
+        <Annotation Term="Temper.Vocab.AuthZ.CedarPolicy" String="policies/prison-term.cedar"/>
+      </EntityType>
+
+      <Action Name="BeginServing" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.PrisonTerm.PrisonTerm"/>
+        <Parameter Name="inmate_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.PrisonTerm.PrisonTerm"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Admitted</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Serving"/>
+      </Action>
+
+      <Action Name="AttestTermComplete" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.PrisonTerm.PrisonTerm"/>
+        <Parameter Name="attestor" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.PrisonTerm.PrisonTerm"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Serving</String></Collection></Annotation>
+      </Action>
+
+      <Action Name="Release" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.PrisonTerm.PrisonTerm"/>
+        <Parameter Name="warden_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.PrisonTerm.PrisonTerm"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Serving</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Released"/>
+      </Action>
+
+      <EntityContainer Name="PrisonTermService">
+        <EntitySet Name="PrisonTerms" EntityType="Vroom.PrisonTerm.PrisonTerm"/>
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

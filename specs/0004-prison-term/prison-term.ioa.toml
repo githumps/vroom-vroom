@@ -1,0 +1,64 @@
+# spec 0004 — PrisonTerm I/O Automaton
+#
+# Models serving the sentence (core/game.js startPrison/prisonActivity/endPrison)
+# per DESIGN.md §5. Admitted -> Serving -> Released. Release happens only once the
+# required term (sentence years x 7 days) has been served.
+#
+# Verified by `temper verify -s specs/0004-prison-term/`.
+
+[automaton]
+name = "PrisonTerm"
+states = ["Admitted", "Serving", "Released"]
+initial = "Admitted"
+
+[[state]]
+name = "required_days_served_reached_per_section_5_2"
+type = "bool"
+initial = "false"
+
+[[action]]
+name = "BeginServing"
+kind = "input"
+from = ["Admitted"]
+to = "Serving"
+params = ["inmate_id"]
+hint = "§5.1 intake done; the inmate begins serving the term."
+
+[[action]]
+name = "AttestTermComplete"
+kind = "input"
+from = ["Serving"]
+to = "Serving"
+params = ["attestor"]
+guard = "is_false required_days_served_reached_per_section_5_2"
+effect = [
+  { type = "set_bool", var = "required_days_served_reached_per_section_5_2", value = true },
+]
+hint = "§5.2 days served reached sentence x 7; the only gate that permits release."
+
+[[action]]
+name = "Release"
+kind = "input"
+from = ["Serving"]
+to = "Released"
+params = ["warden_id"]
+guard = "is_true required_days_served_reached_per_section_5_2"
+hint = "§5.2/5.3 release only after the required term is served."
+
+[[invariant]]
+name = "AdmittedBeforeServing"
+assert = "ordering(Admitted, Serving)"
+
+[[invariant]]
+name = "ServingBeforeReleased"
+assert = "ordering(Serving, Released)"
+
+[[invariant]]
+name = "ReleaseRequiresTermComplete"
+when = ["Released"]
+assert = "required_days_served_reached_per_section_5_2"
+
+[[invariant]]
+name = "ReleasedIsTerminal"
+when = ["Released"]
+assert = "no_further_transitions"

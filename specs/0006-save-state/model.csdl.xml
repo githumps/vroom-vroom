@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spec 0006 SaveState — CSDL companion (literal filename model.csdl.xml). -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+
+    <Schema Namespace="Temper.Vocab" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Term Name="StateMachine.States" Type="Collection(Edm.String)" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.InitialState" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.ValidFromStates" Type="Collection(Edm.String)" AppliesTo="Action"/>
+      <Term Name="StateMachine.TargetState" Type="Edm.String" AppliesTo="Action"/>
+      <Term Name="Agent.Hint" Type="Edm.String" AppliesTo="Action EntityType"/>
+      <Term Name="ShardKey" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="AuthZ.CedarPolicy" Type="Edm.String" AppliesTo="EntityType Action"/>
+    </Schema>
+
+    <Schema Namespace="Vroom.SaveState" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+      <EnumType Name="SaveStateStatus">
+        <Member Name="Created" Value="0"/>
+        <Member Name="Migrated" Value="1"/>
+        <Member Name="Loaded" Value="2"/>
+      </EnumType>
+
+      <EntityType Name="SaveState">
+        <Key><PropertyRef Name="SaveStateId"/></Key>
+        <Property Name="SaveStateId" Type="Edm.String" Nullable="false"/>
+        <Property Name="UserId" Type="Edm.String" Nullable="false"/>
+        <Property Name="Status" Type="Vroom.SaveState.SaveStateStatus" Nullable="false"/>
+
+        <Property Name="migrated_to_current_version_per_section_7_2" Type="Edm.Boolean" DefaultValue="false"/>
+        <Property Name="validated_once_per_section_7_3" Type="Edm.Boolean" DefaultValue="false"/>
+
+        <Annotation Term="Temper.Vocab.StateMachine.States">
+          <Collection>
+            <String>Created</String>
+            <String>Migrated</String>
+            <String>Loaded</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.InitialState" String="Created"/>
+        <Annotation Term="Temper.Vocab.ShardKey" String="UserId"/>
+        <Annotation Term="Temper.Vocab.AuthZ.CedarPolicy" String="policies/save-state.cedar"/>
+      </EntityType>
+
+      <Action Name="MigrateSave" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.SaveState.SaveState"/>
+        <Parameter Name="from_version" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.SaveState.SaveState"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Created</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Migrated"/>
+      </Action>
+
+      <Action Name="LoadSave" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.SaveState.SaveState"/>
+        <Parameter Name="save_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.SaveState.SaveState"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Migrated</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Loaded"/>
+      </Action>
+
+      <EntityContainer Name="SaveStateService">
+        <EntitySet Name="SaveStates" EntityType="Vroom.SaveState.SaveState"/>
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

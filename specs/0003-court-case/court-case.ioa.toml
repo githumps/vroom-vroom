@@ -1,0 +1,69 @@
+# spec 0003 — CourtCase I/O Automaton
+#
+# Models Judge Hardcastle's courtroom (core/game.js setupCourtroom/submitCourtForms)
+# per DESIGN.md §4. Paperwork is filed, then the case is sentenced. The verdict
+# is ALWAYS guilty and a sentence is assigned exactly once.
+#
+# Verified by `temper verify -s specs/0003-court-case/`.
+
+[automaton]
+name = "CourtCase"
+states = ["Arraigned", "PaperworkFiled", "Sentenced"]
+initial = "Arraigned"
+
+[[state]]
+name = "paperwork_completed_per_section_4_4"
+type = "bool"
+initial = "false"
+
+[[state]]
+name = "verdict_is_guilty_per_section_4_2"
+type = "bool"
+initial = "false"
+
+[[state]]
+name = "sentence_assigned_once_per_section_4_3"
+type = "bool"
+initial = "false"
+
+[[action]]
+name = "FilePaperwork"
+kind = "input"
+from = ["Arraigned"]
+to = "PaperworkFiled"
+params = ["defendant_id"]
+guard = "is_false paperwork_completed_per_section_4_4"
+effect = [
+  { type = "set_bool", var = "paperwork_completed_per_section_4_4", value = true },
+]
+hint = "§4.4 the absurd forms are completed before sentencing."
+
+[[action]]
+name = "Sentence"
+kind = "input"
+from = ["PaperworkFiled"]
+to = "Sentenced"
+params = ["judge_id"]
+guard = [
+  { type = "is_true", var = "paperwork_completed_per_section_4_4" },
+  { type = "is_false", var = "sentence_assigned_once_per_section_4_3" },
+]
+effect = [
+  { type = "set_bool", var = "verdict_is_guilty_per_section_4_2", value = true },
+  { type = "set_bool", var = "sentence_assigned_once_per_section_4_3", value = true },
+]
+hint = "§4.1/4.2/4.3 guilty verdict; sentence assigned exactly once."
+
+[[invariant]]
+name = "PaperworkBeforeSentence"
+assert = "ordering(PaperworkFiled, Sentenced)"
+
+[[invariant]]
+name = "VerdictAlwaysGuilty"
+when = ["Sentenced"]
+assert = "verdict_is_guilty_per_section_4_2"
+
+[[invariant]]
+name = "SentencedIsTerminal"
+when = ["Sentenced"]
+assert = "no_further_transitions"
