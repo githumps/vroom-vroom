@@ -1,0 +1,57 @@
+# spec 0007 — GameLoop I/O Automaton
+#
+# Models the macro cycle (DESIGN.md §1): Driving -> Arrest -> Courtroom -> Prison
+# -> (released) -> Driving. The loop never terminates; phases cannot be skipped
+# (you can't reach Courtroom without an Arrest, or Prison without a verdict).
+# Exactly one phase is active at a time (inherent: the machine is in one state).
+#
+# Verified by `temper verify -s specs/0007-game-loop/`.
+
+[automaton]
+name = "GameLoop"
+states = ["Driving", "Arrest", "Courtroom", "Prison"]
+initial = "Driving"
+
+[[action]]
+name = "GetCaught"
+kind = "input"
+from = ["Driving"]
+to = "Arrest"
+params = ["incident_id"]
+hint = "§1.1 caught while driving begins the arrest; the only way out of Driving toward court."
+
+[[action]]
+name = "ProceedToCourt"
+kind = "input"
+from = ["Arrest"]
+to = "Courtroom"
+params = ["case_id"]
+hint = "§1.1 the arrest sequence hands off to the courtroom."
+
+[[action]]
+name = "DeliverVerdict"
+kind = "input"
+from = ["Courtroom"]
+to = "Prison"
+params = ["sentence_id"]
+hint = "§1.2 a courtroom verdict is required to enter prison."
+
+[[action]]
+name = "ReleaseToStreets"
+kind = "input"
+from = ["Prison"]
+to = "Driving"
+params = ["release_id"]
+hint = "§1.3 sentence served; released back to Driving — the loop closes."
+
+[[invariant]]
+name = "MustDriveBeforeArrest"
+assert = "ordering(Driving, Arrest)"
+
+[[invariant]]
+name = "MustBeArrestedBeforeCourt"
+assert = "ordering(Arrest, Courtroom)"
+
+[[invariant]]
+name = "MustBeSentencedBeforePrison"
+assert = "ordering(Courtroom, Prison)"

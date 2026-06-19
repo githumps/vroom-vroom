@@ -1,0 +1,63 @@
+# spec 0006 — SaveState I/O Automaton
+#
+# Models the planned versioned Save module (replaces the raw JSON.stringify in
+# core/game.js loadGame/saveGame) per DESIGN.md §7. A save is created, migrated to
+# the current schema version, then loaded — validation happens exactly once.
+#
+# Verified by `temper verify -s specs/0006-save-state/`.
+
+[automaton]
+name = "SaveState"
+states = ["Created", "Migrated", "Loaded"]
+initial = "Created"
+
+[[state]]
+name = "migrated_to_current_version_per_section_7_2"
+type = "bool"
+initial = "false"
+
+[[state]]
+name = "validated_once_per_section_7_3"
+type = "bool"
+initial = "false"
+
+[[action]]
+name = "MigrateSave"
+kind = "input"
+from = ["Created"]
+to = "Migrated"
+params = ["from_version"]
+guard = "is_false migrated_to_current_version_per_section_7_2"
+effect = [
+  { type = "set_bool", var = "migrated_to_current_version_per_section_7_2", value = true },
+]
+hint = "§7.2 run the migration chain to the current schema version before loading."
+
+[[action]]
+name = "LoadSave"
+kind = "input"
+from = ["Migrated"]
+to = "Loaded"
+params = ["save_id"]
+guard = [
+  { type = "is_true", var = "migrated_to_current_version_per_section_7_2" },
+  { type = "is_false", var = "validated_once_per_section_7_3" },
+]
+effect = [
+  { type = "set_bool", var = "validated_once_per_section_7_3", value = true },
+]
+hint = "§7.1/7.2/7.3 load the migrated save; validate exactly once."
+
+[[invariant]]
+name = "MigrateBeforeLoad"
+assert = "ordering(Migrated, Loaded)"
+
+[[invariant]]
+name = "LoadRequiresMigration"
+when = ["Loaded"]
+assert = "migrated_to_current_version_per_section_7_2"
+
+[[invariant]]
+name = "LoadedIsTerminal"
+when = ["Loaded"]
+assert = "no_further_transitions"

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spec 0003 CourtCase — CSDL companion (literal filename model.csdl.xml). -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+
+    <Schema Namespace="Temper.Vocab" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Term Name="StateMachine.States" Type="Collection(Edm.String)" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.InitialState" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.ValidFromStates" Type="Collection(Edm.String)" AppliesTo="Action"/>
+      <Term Name="StateMachine.TargetState" Type="Edm.String" AppliesTo="Action"/>
+      <Term Name="Agent.Hint" Type="Edm.String" AppliesTo="Action EntityType"/>
+      <Term Name="ShardKey" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="AuthZ.CedarPolicy" Type="Edm.String" AppliesTo="EntityType Action"/>
+    </Schema>
+
+    <Schema Namespace="Vroom.CourtCase" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+      <EnumType Name="CourtCaseStatus">
+        <Member Name="Arraigned" Value="0"/>
+        <Member Name="PaperworkFiled" Value="1"/>
+        <Member Name="Sentenced" Value="2"/>
+      </EnumType>
+
+      <EntityType Name="CourtCase">
+        <Key><PropertyRef Name="CourtCaseId"/></Key>
+        <Property Name="CourtCaseId" Type="Edm.String" Nullable="false"/>
+        <Property Name="UserId" Type="Edm.String" Nullable="false"/>
+        <Property Name="Status" Type="Vroom.CourtCase.CourtCaseStatus" Nullable="false"/>
+
+        <Property Name="paperwork_completed_per_section_4_4" Type="Edm.Boolean" DefaultValue="false"/>
+        <Property Name="verdict_is_guilty_per_section_4_2" Type="Edm.Boolean" DefaultValue="false"/>
+        <Property Name="sentence_assigned_once_per_section_4_3" Type="Edm.Boolean" DefaultValue="false"/>
+
+        <Annotation Term="Temper.Vocab.StateMachine.States">
+          <Collection>
+            <String>Arraigned</String>
+            <String>PaperworkFiled</String>
+            <String>Sentenced</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.InitialState" String="Arraigned"/>
+        <Annotation Term="Temper.Vocab.ShardKey" String="UserId"/>
+        <Annotation Term="Temper.Vocab.AuthZ.CedarPolicy" String="policies/court-case.cedar"/>
+      </EntityType>
+
+      <Action Name="FilePaperwork" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.CourtCase.CourtCase"/>
+        <Parameter Name="defendant_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.CourtCase.CourtCase"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Arraigned</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="PaperworkFiled"/>
+      </Action>
+
+      <Action Name="Sentence" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.CourtCase.CourtCase"/>
+        <Parameter Name="judge_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.CourtCase.CourtCase"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>PaperworkFiled</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Sentenced"/>
+      </Action>
+
+      <EntityContainer Name="CourtCaseService">
+        <EntitySet Name="CourtCases" EntityType="Vroom.CourtCase.CourtCase"/>
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,124 @@
+# spec 0002 — ArrestSequence I/O Automaton
+#
+# Models the cinematic arrest beats (systems/arrest-sequence.js) per DESIGN.md §3.
+# Beats play strictly in order; Intake booking must complete before the Defender
+# beat; the courtroom hand-off happens only after Defender.
+#
+# Verified by `temper verify -s specs/0002-arrest-sequence/`.
+
+[automaton]
+name = "ArrestSequence"
+states = ["Busted", "CopWindow", "Cuffs", "BackSeat", "Intake", "Defender", "HandedOff"]
+initial = "Busted"
+
+# ─────────────────────────── State variables ───────────────────────────
+
+[[state]]
+name = "intake_booking_completed_per_section_3_2"
+type = "bool"
+initial = "false"
+
+[[state]]
+name = "defender_consulted_per_section_3_3"
+type = "bool"
+initial = "false"
+
+# ─────────────────────────── Actions ───────────────────────────
+
+[[action]]
+name = "ApproachCopWindow"
+kind = "input"
+from = ["Busted"]
+to = "CopWindow"
+params = ["officer_id"]
+hint = "§3.1 angry cop at the window; first beat after BUSTED."
+
+[[action]]
+name = "ApplyCuffs"
+kind = "input"
+from = ["CopWindow"]
+to = "Cuffs"
+params = ["officer_id"]
+hint = "§3.1 handcuffs beat."
+
+[[action]]
+name = "LoadIntoBackSeat"
+kind = "input"
+from = ["Cuffs"]
+to = "BackSeat"
+params = ["officer_id"]
+hint = "§3.1 back-seat cop-car ride beat."
+
+[[action]]
+name = "ArriveAtIntake"
+kind = "input"
+from = ["BackSeat"]
+to = "Intake"
+params = ["clerk_id"]
+hint = "§3.1 jail intake/booking begins."
+
+[[action]]
+name = "CompleteIntake"
+kind = "input"
+from = ["Intake"]
+to = "Defender"
+params = ["clerk_id"]
+guard = "is_false intake_booking_completed_per_section_3_2"
+effect = [
+  { type = "set_bool", var = "intake_booking_completed_per_section_3_2", value = true },
+]
+hint = "§3.2 intake booking completes before the Defender beat."
+
+[[action]]
+name = "ConsultDefender"
+kind = "input"
+from = ["Defender"]
+to = "Defender"
+params = ["defender_id"]
+guard = [
+  { type = "is_true", var = "intake_booking_completed_per_section_3_2" },
+  { type = "is_false", var = "defender_consulted_per_section_3_3" },
+]
+effect = [
+  { type = "set_bool", var = "defender_consulted_per_section_3_3", value = true },
+]
+hint = "§3.3 the (terrible) public defender beat; requires intake done first."
+
+[[action]]
+name = "HandOffToCourtroom"
+kind = "input"
+from = ["Defender"]
+to = "HandedOff"
+params = ["case_id"]
+guard = [
+  { type = "is_true", var = "intake_booking_completed_per_section_3_2" },
+  { type = "is_true", var = "defender_consulted_per_section_3_3" },
+]
+hint = "§3.3 hand off to the Courtroom only after Intake + Defender."
+
+# ─────────────────────────── Invariants ───────────────────────────
+
+[[invariant]]
+name = "CopWindowBeforeCuffs"
+assert = "ordering(CopWindow, Cuffs)"
+
+[[invariant]]
+name = "CuffsBeforeBackSeat"
+assert = "ordering(Cuffs, BackSeat)"
+
+[[invariant]]
+name = "BackSeatBeforeIntake"
+assert = "ordering(BackSeat, Intake)"
+
+[[invariant]]
+name = "IntakeBeforeDefender"
+assert = "ordering(Intake, Defender)"
+
+[[invariant]]
+name = "DefenderBeforeHandOff"
+assert = "ordering(Defender, HandedOff)"
+
+[[invariant]]
+name = "HandedOffIsTerminal"
+when = ["HandedOff"]
+assert = "no_further_transitions"

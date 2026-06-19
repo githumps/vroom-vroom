@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spec 0005 Standing — CSDL companion (literal filename model.csdl.xml). -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+
+    <Schema Namespace="Temper.Vocab" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Term Name="StateMachine.States" Type="Collection(Edm.String)" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.InitialState" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="StateMachine.ValidFromStates" Type="Collection(Edm.String)" AppliesTo="Action"/>
+      <Term Name="StateMachine.TargetState" Type="Edm.String" AppliesTo="Action"/>
+      <Term Name="Agent.Hint" Type="Edm.String" AppliesTo="Action EntityType"/>
+      <Term Name="ShardKey" Type="Edm.String" AppliesTo="EntityType"/>
+      <Term Name="AuthZ.CedarPolicy" Type="Edm.String" AppliesTo="EntityType Action"/>
+    </Schema>
+
+    <Schema Namespace="Vroom.Standing" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+      <EnumType Name="StandingStatus">
+        <Member Name="Uninitialised" Value="0"/>
+        <Member Name="Established" Value="1"/>
+      </EnumType>
+
+      <EntityType Name="Standing">
+        <Key><PropertyRef Name="StandingId"/></Key>
+        <Property Name="StandingId" Type="Edm.String" Nullable="false"/>
+        <Property Name="UserId" Type="Edm.String" Nullable="false"/>
+        <Property Name="Status" Type="Vroom.Standing.StandingStatus" Nullable="false"/>
+
+        <Property Name="standing_established_once_per_section_6_2" Type="Edm.Boolean" DefaultValue="false"/>
+        <Property Name="standing_within_bounds_0_100_per_section_6_3" Type="Edm.Boolean" DefaultValue="false"/>
+
+        <Annotation Term="Temper.Vocab.StateMachine.States">
+          <Collection>
+            <String>Uninitialised</String>
+            <String>Established</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.InitialState" String="Uninitialised"/>
+        <Annotation Term="Temper.Vocab.ShardKey" String="UserId"/>
+        <Annotation Term="Temper.Vocab.AuthZ.CedarPolicy" String="policies/standing.cedar"/>
+      </EntityType>
+
+      <Action Name="EstablishStanding" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.Standing.Standing"/>
+        <Parameter Name="inmate_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.Standing.Standing"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Uninitialised</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Established"/>
+      </Action>
+
+      <Action Name="AdjustStanding" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Vroom.Standing.Standing"/>
+        <Parameter Name="delta_id" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Vroom.Standing.Standing"/>
+        <Annotation Term="Temper.Vocab.StateMachine.ValidFromStates"><Collection><String>Established</String></Collection></Annotation>
+        <Annotation Term="Temper.Vocab.StateMachine.TargetState" String="Established"/>
+      </Action>
+
+      <EntityContainer Name="StandingService">
+        <EntitySet Name="Standings" EntityType="Vroom.Standing.Standing"/>
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

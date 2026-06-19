@@ -1,0 +1,97 @@
+# spec 0001 — Pursuit I/O Automaton
+#
+# Models the driving police chase — the driving screen (sidescroller-engine.js)
+# per DESIGN.md §2. A clean cruise may begin a Pursuit, which resolves to
+# exactly one of Evaded or Caught. Flipping any bool below breaks the §2 contract.
+#
+# Verified by `temper verify -s specs/0001-pursuit/`.
+
+[automaton]
+name = "Pursuit"
+states = ["Cruising", "Pursued", "Evaded", "Caught"]
+initial = "Cruising"
+
+# ─────────────────────────── State variables ───────────────────────────
+
+[[state]]
+name = "police_patrol_active_per_section_2_2"
+type = "bool"
+initial = "false"
+
+[[state]]
+name = "gap_opened_above_evade_threshold_per_section_2_5"
+type = "bool"
+initial = "false"
+
+[[state]]
+name = "gap_closed_below_caught_threshold_per_section_2_5"
+type = "bool"
+initial = "false"
+
+# ─────────────────────────── Actions ───────────────────────────
+
+[[action]]
+name = "BeginPursuit"
+kind = "input"
+from = ["Cruising"]
+to = "Pursued"
+params = ["patrol_id"]
+guard = "is_false police_patrol_active_per_section_2_2"
+effect = [
+  { type = "set_bool", var = "police_patrol_active_per_section_2_2", value = true },
+]
+hint = "§2.2 a patrol begins the chase; driving was clean until now (§2.1)."
+
+[[action]]
+name = "Evade"
+kind = "input"
+from = ["Pursued"]
+to = "Evaded"
+params = ["driver_id"]
+guard = [
+  { type = "is_true", var = "police_patrol_active_per_section_2_2" },
+  { type = "is_false", var = "gap_closed_below_caught_threshold_per_section_2_5" },
+]
+effect = [
+  { type = "set_bool", var = "gap_opened_above_evade_threshold_per_section_2_5", value = true },
+]
+hint = "§2.5 skilled driving opens the gap past the evade threshold; §2.6 stays in Driving."
+
+[[action]]
+name = "Catch"
+kind = "input"
+from = ["Pursued"]
+to = "Caught"
+params = ["patrol_id"]
+guard = [
+  { type = "is_true", var = "police_patrol_active_per_section_2_2" },
+  { type = "is_false", var = "gap_opened_above_evade_threshold_per_section_2_5" },
+]
+effect = [
+  { type = "set_bool", var = "gap_closed_below_caught_threshold_per_section_2_5", value = true },
+]
+hint = "§2.5 the gap closes past the caught threshold; §2.6 Caught advances the loop to Arrest."
+
+# ─────────────────────────── Invariants ───────────────────────────
+
+[[invariant]]
+name = "MustBePursuedBeforeCaught"
+assert = "ordering(Pursued, Caught)"
+
+[[invariant]]
+name = "MustBePursuedBeforeEvaded"
+assert = "ordering(Pursued, Evaded)"
+
+[[invariant]]
+name = "EvadeAndCatchAreMutuallyExclusive"
+assert = "!(gap_opened_above_evade_threshold_per_section_2_5 && gap_closed_below_caught_threshold_per_section_2_5)"
+
+[[invariant]]
+name = "CaughtIsTerminal"
+when = ["Caught"]
+assert = "no_further_transitions"
+
+[[invariant]]
+name = "EvadedIsTerminal"
+when = ["Evaded"]
+assert = "no_further_transitions"
