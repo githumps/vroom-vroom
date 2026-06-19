@@ -797,7 +797,10 @@ class VroomVroomGame {
         console.log('[VROOM] Initializing Sidescroller Engine...');
         this.sidescrollerRenderer = new SidescrollerRenderer();
         this.sidescroller = new SidescrollerEngine('gameCanvas', this);
-        console.log('[VROOM] ✅ Sidescroller Engine initialized - 2D pixel art driving ready');
+        // Fixed-timestep clock so driving feels identical at 60Hz / 120Hz / 144Hz.
+        this.drivingClock = new FixedTimestep({ step: 1 / 60, maxSteps: 5 });
+        this.wireDrivingOutcomes();
+        console.log('[VROOM] ✅ Driving Engine initialized - lane-weaving pursuit driver');
 
         // Keep Three.js for car preview only (character creation)
         // Note: We still need this for the car selection preview
@@ -1012,7 +1015,8 @@ class VroomVroomGame {
         touchStop.addEventListener('touchstart', (e) => {
             e.preventDefault();
             if (this.gameState === 'driving') {
-                this.pullOver();
+                this.startArrest({ reason: 'surrender', speed: this.player.speed,
+                    distance: this.sidescroller ? Math.floor(this.sidescroller.distance) : 0 });
             }
         });
     }
@@ -1022,7 +1026,9 @@ class VroomVroomGame {
 
         if (e.key === ' ' && this.gameState === 'driving') {
             e.preventDefault();
-            this.pullOver();
+            // Surrender -> same cinematic arrest path as being caught.
+            this.startArrest({ reason: 'surrender', speed: this.player.speed,
+                distance: this.sidescroller ? Math.floor(this.sidescroller.distance) : 0 });
         }
     }
 
@@ -1905,22 +1911,22 @@ class VroomVroomGame {
             this.player.drivingTime = 0;
             this.player.wantedLevel = 0;
             this.policeChasing = false;
-            this.policeSpawnTime = Math.random() * 10 + 5; // 5-15 seconds before police
+            this._arrestInProgress = false;
 
-            // Reset sidescroller engine
+            // Reset driving engine + clock (engine now owns police/pursuit timing)
             if (this.sidescroller) {
                 this.sidescroller.reset();
                 this.sidescroller.start();
+                const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+                this.drivingClock.reset(now);
             }
 
-            // Reset courtroom forms for next arrest
-            document.getElementById('reasonForDriving').value = '';
-            document.getElementById('vehicleDesc').value = '';
-            document.getElementById('intentStatement').value = '';
-            document.getElementById('initial1').value = '';
-            document.getElementById('initial2').value = '';
-            document.getElementById('initial3').value = '';
-            document.getElementById('judgeDialogue').style.display = 'none';
+            // Reset courtroom forms for next arrest (legacy HTML form; the courtroom
+            // now renders to canvas, so these may not exist - guard every access).
+            ['reasonForDriving', 'vehicleDesc', 'intentStatement', 'initial1', 'initial2', 'initial3']
+                .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            const judgeDialogueEl = document.getElementById('judgeDialogue');
+            if (judgeDialogueEl) judgeDialogueEl.style.display = 'none';
 
             // Re-enable all form inputs
             document.querySelectorAll('#courtroom input, #courtroom textarea, #courtroom select').forEach(el => {
@@ -1949,30 +1955,66 @@ class VroomVroomGame {
         }
     }
 
-    updateDriving(delta) {
+    // Wire the driving engine's outcomes + juice events to game systems (audio,
+    // HUD, achievements, the loop). Called once after the engine is built.
+    wireDrivingOutcomes() {
+        const e = this.sidescroller;
+        if (!e) return;
+
+        e.onPoliceSpawn = () => {
+            this.policeChasing = true;
+            this.showMessage('POLICE DETECTED. You were driving. This is illegal.', 3500);
+            if (this.audioManager && this.audioManager.initialized) {
+                this.audioManager.playArrestSound();
+                this.audioManager.updateMusicIntensity(0.85);
+            }
+        };
+
+        e.onHeatChange = (level) => {
+            this.player.wantedLevel = level;
+            const el = document.getElementById('wantedLevel');
+            if (el) el.textContent = level;
+            if (this.audioManager && this.audioManager.initialized) {
+                this.audioManager.updateMusicIntensity(Math.min(1, 0.3 + level * 0.14));
+            }
+        };
+
+        e.onCrash = (info) => {
+            if (this.audioManager && this.audioManager.initialized) {
+                if (typeof this.audioManager.playCrash === 'function') this.audioManager.playCrash();
+                else this.audioManager.playButtonClick();
+            }
+        };
+
+        e.onNearMiss = () => {
+            // Untouchable-style style points; small dopamine, no state churn.
+        };
+
+        // EVADE: you lost them. Stay free, banked heat, keep driving.
+        e.onEvade = (info) => {
+            this.policeChasing = false;
+            this.player.successfulEscapes = (this.player.successfulEscapes || 0) + 1;
+            if (this.achievementTracker) this.achievementTracker.unlockAchievement('untouchable');
+            this.showMessage('You lost them. For now. Keep driving.', 3500);
+            if (this.audioManager && this.audioManager.initialized) {
+                this.audioManager.updateMusicIntensity(0.4);
+            }
+            // Engine keeps running; the next patrol will come.
+        };
+
+        // CAUGHT: chase ended or hit a roadblock -> the arrest sequence.
+        e.onCaught = (info) => {
+            this.startArrest(info);
+        };
+    }
+
+    // Per-frame HUD sync while driving (engine owns the simulation).
+    updateDrivingHud() {
         if (!this.sidescroller) return;
+        const e = this.sidescroller;
+        this.player.speed = e.playerCar.speed;
 
-        // Update sidescroller engine
-        this.sidescroller.update(delta);
-
-        // Sync player speed from sidescroller
-        this.player.speed = this.sidescroller.playerCar.speed;
-
-        // Update driving time
-        this.player.drivingTime += delta;
-
-        // Spawn police after time
-        if (!this.policeChasing && this.player.drivingTime > this.policeSpawnTime) {
-            this.spawnPolice();
-        }
-
-        // Update wanted level
-        if (this.policeChasing) {
-            this.player.wantedLevel = Math.min(5, Math.floor(this.player.drivingTime / 10));
-        }
-
-        // Achievement tracking (v4.0.0)
-        // Track max speed for speed_demon (100 mph = 160.9 km/h)
+        // speed_demon: 160.9 km/h+ (engine speed units read as km/h)
         if (this.player.speed > (this.player.maxSpeed || 0)) {
             this.player.maxSpeed = this.player.speed;
             if (this.achievementTracker && this.player.maxSpeed >= 160.9) {
@@ -1980,41 +2022,48 @@ class VroomVroomGame {
             }
         }
 
-        // Track slow driving for slowpoke (<5 mph = <8 km/h for 60 seconds)
-        if (this.player.speed < 8 && this.player.speed > 0) {
-            this.player.slowDrivingTime += delta;
-            if (this.achievementTracker && this.player.slowDrivingTime >= 60) {
-                this.achievementTracker.unlockAchievement('slowpoke');
-            }
-        } else {
-            this.player.slowDrivingTime = 0; // Reset if not slow
-        }
-
-        // Track police evasion time for untouchable (5 minutes = 300 seconds)
-        if (this.policeChasing) {
-            this.player.evadeTime += delta;
-            if (this.achievementTracker && this.player.evadeTime >= 300) {
-                this.achievementTracker.unlockAchievement('untouchable');
-            }
-        }
-
-        // Update HUD
-        document.getElementById('speed').textContent = Math.floor(this.player.speed);
-        document.getElementById('wantedLevel').textContent = this.player.wantedLevel;
-        document.getElementById('drivingTime').textContent = Math.floor(this.player.drivingTime);
+        const speedEl = document.getElementById('speed');
+        const timeEl = document.getElementById('drivingTime');
+        if (speedEl) speedEl.textContent = Math.floor(this.player.speed);
+        if (timeEl) timeEl.textContent = Math.floor(this.player.drivingTime);
     }
 
-    spawnPolice() {
-        this.policeChasing = true;
-        if (this.sidescroller) {
-            this.sidescroller.spawnPolice();
-        }
-        this.showMessage('POLICE DETECTED. You were driving. This is illegal.', 4000);
+    // Begin the cinematic arrest sequence (angry cop -> cuffs -> back seat ->
+    // intake -> public defender -> courtroom). Falls back to the legacy court
+    // flow until the full sequence screens are wired (next slice).
+    startArrest(info) {
+        if (this._arrestInProgress) return;
+        this._arrestInProgress = true;
+        this.gameState = 'arrest';
+        if (this.sidescroller) this.sidescroller.stop();
 
-        // === AUDIO: Police siren ===
+        // Hide the driving HUD + mobile controls; the sequence owns the screen.
+        const hud = document.getElementById('drivingHUD');
+        if (hud) hud.style.display = 'none';
+        if (this.isMobile()) {
+            const mc = document.getElementById('mobileControls'); if (mc) mc.classList.remove('active');
+            const ts = document.getElementById('touchStop'); if (ts) ts.style.display = 'none';
+        }
+        document.body.classList.remove('state-driving');
+        document.body.classList.add('state-courtroom');
+
         if (this.audioManager && this.audioManager.initialized) {
-            this.audioManager.playArrestSound(); // Siren
-            this.audioManager.updateMusicIntensity(0.8); // Increase driving music intensity for chase
+            this.audioManager.playArrestSound();
+        }
+
+        const toCourtroom = () => {
+            this.gameState = 'courtroom';
+            this.showScreen('courtroom');
+            this.setupCourtroom();
+        };
+
+        // Play the cinematic arrest sequence, then hand off to the courtroom.
+        if (typeof ArrestSequence !== 'undefined') {
+            if (!this.arrestSequence) this.arrestSequence = new ArrestSequence(this);
+            this.arrestSequence.play(info || {}, toCourtroom);
+        } else {
+            // Fallback: legacy cinematic.
+            this.cinematics.play('arrest', toCourtroom);
         }
     }
 
@@ -4782,18 +4831,21 @@ class VroomVroomGame {
     animate() {
         requestAnimationFrame(() => this.animate());
 
-        const delta = 0.016; // ~60fps
+        const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
 
-        if (this.gameState === 'driving') {
-            this.updateDriving(delta);
-            // Render sidescroller
-            if (this.sidescroller) {
-                this.sidescroller.render();
+        if (this.gameState === 'driving' && this.sidescroller) {
+            // Fixed-timestep update (decoupled from refresh rate), interpolated render.
+            const { steps, alpha } = this.drivingClock.sample(now);
+            for (let i = 0; i < steps; i++) {
+                this.sidescroller.update(this.drivingClock.step);
+                this.player.drivingTime += this.drivingClock.step;
             }
+            this.updateDrivingHud();
+            this.sidescroller.render(alpha);
         }
 
         // Note: Three.js renderer only used for car preview (offscreen canvas)
-        // Main game canvas now rendered by sidescroller engine
+        // Main game canvas now rendered by the driving engine.
     }
 }
 
